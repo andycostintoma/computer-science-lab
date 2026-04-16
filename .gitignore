@@ -1,0 +1,9 @@
+.vscode
+
+# DrRacket
+*.bak
+compiled
+
+# JetBrains IDEs
+.idea
+*.iml
