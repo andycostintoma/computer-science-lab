@@ -1,5 +1,3 @@
-# How to Code - Notes
-
 Note: To run the programs, download DrRacket.
 
 This is a repository with code and notes from the How to Code courses.
@@ -7,9 +5,9 @@ This is a repository with code and notes from the How to Code courses.
 Links:
 - https://www.edx.org/course/how-to-code-simple-data
 - https://www.edx.org/course/how-to-code-complex-data
-- https://htdp.org/2022-8-7/Book/index.html
+- https://htdp.org/
 
-[Design Recipes](media/Design-Recipes.md)
+[Design Recipes](desging-recipes.md)
 
 ## BSL - Beginning Student Language
 
@@ -45,7 +43,7 @@ Example:
 
 An expression that starts with an open parenthesis and an primitive operator is called **call to a primitive**
 
-![Untitled](media/img-001.png)
+![Untitled](img-001.png)
 
 To evaluate  a primitive call:
 
@@ -598,7 +596,7 @@ Well formed self-reference:
 
 ## Reference
 
-![Untitled](media/img-002.png)
+![Untitled](img-002.png)
 
 ```racket
 ;; Data definitions
@@ -1151,7 +1149,7 @@ It is important to remember that this notation is just an abbreviation for the c
 
 We consider the problem of looking up accounts among a large number of user accounts. We will start by representing the arbitrary number of accounts using a list.
 
-![VideoScreenshot--HtC1xCoursewareedX-0’21”.png](media/img-003.png)
+![VideoScreenshot--HtC1xCoursewareedX-0’21”.png](img-003.png)
 
 ```racket
 (define-struct account (num name))
@@ -1190,13 +1188,13 @@ We consider the problem of looking up accounts among a large number of user acco
          )]))
 ```
 
-![Untitled](media/img-004.png)
+![Untitled](img-004.png)
 
 Sorting the list doesn’t help. We still have to go through the list  from the beginning on average look at n/2 accounts
 
 ### Binary Search Trees
 
-![Untitled](media/img-005.png)
+![Untitled](img-005.png)
 
 At each level:
 
@@ -1207,7 +1205,7 @@ This rule is an **invariant** - it’s true over the whole tree
 
 Example - looking up for 14
 
-![Untitled](media/img-006.png)
+![Untitled](img-006.png)
 
 At each step where we don’t find what we’re looking for, we eliminate about half the tree.
 
@@ -1219,7 +1217,7 @@ A BST get smaller by 1/2 at each recursive call.
 
 ### A Data Definition for BSTs
 
-![VideoScreenshot--HtC1xCoursewareedX-7’21”.png](media/img-007.png)
+![VideoScreenshot--HtC1xCoursewareedX-7’21”.png](img-007.png)
 
 ```racket
 (define-struct node (key val l r))
@@ -1265,7 +1263,7 @@ A BST get smaller by 1/2 at each recursive call.
 
 ### Lookup in BSTs
 
-![Untitled](media/img-008.png)
+![Untitled](img-008.png)
 
 ```racket
 
@@ -1345,9 +1343,9 @@ A BST get smaller by 1/2 at each recursive call.
 
 ### Arbitrary Arity Tree
 
-![VideoScreenshot--HtC2xCoursewareedX-2’30”.png](media/img-009.png)
+![VideoScreenshot--HtC2xCoursewareedX-2’30”.png](img-009.png)
 
-![VideoScreenshot--HtC2xCoursewareedX-2’50”.png](media/img-010.png)
+![VideoScreenshot--HtC2xCoursewareedX-2’50”.png](img-010.png)
 
 Arbitrary-size in two dimensions requires two cycles in the type reference graph.
 
@@ -1374,11 +1372,11 @@ Arbitrary-size in two dimensions requires two cycles in the type reference graph
 (define D6 (make-elt "D6" 0 (list D4 D5)))
 ```
 
-![Untitled](media/img-011.png)
+![Untitled](img-011.png)
 
-![Untitled](media/img-012.png)
+![Untitled](img-012.png)
 
-![Untitled](media/img-013.png)
+![Untitled](img-013.png)
 
 ### Templating Mutual Recursion
 
@@ -1396,11 +1394,11 @@ Arbitrary-size in two dimensions requires two cycles in the type reference graph
               (fn-for-loe (rest loe)))]))
 ```
 
-![VideoScreenshot--HtC2xCoursewareedX-4’43”.png](media/img-014.png)
+![VideoScreenshot--HtC2xCoursewareedX-4’43”.png](img-014.png)
 
 ### Functions on Mutually Recursive Data
 
-![Untitled](media/img-011.png)
+![Untitled](img-011.png)
 
 ```racket
 (require 2htdp/image)
@@ -1498,7 +1496,7 @@ Arbitrary-size in two dimensions requires two cycles in the type reference graph
 
 Searching an arbitrary-arity tree for the first element to have a given property leads to a backtracking traversal of the tree.
 
-![Untitled](media/img-011.png)
+![Untitled](img-011.png)
 
 ```racket
 (require 2htdp/image)
@@ -1576,7 +1574,7 @@ Searching an arbitrary-arity tree for the first element to have a given property
 
 Looking for F3 in D6
 
-![Untitled](media/img-015.png)
+![Untitled](img-015.png)
 
 Each time we get to a failing leaf,  we go back up to its parent and then try the next child, the next sub, that's called backtracking.
 
@@ -1648,7 +1646,7 @@ Each time we get to a failing leaf,  we go back up to its parent and then try th
                    (prefix=? (rest lsta) (rest lstb)))]))
 ```
 
-![VideoScreenshot--HtC2xCoursewareedX-7’30”.png](media/img-016.png)
+![VideoScreenshot--HtC2xCoursewareedX-7’30”.png](img-016.png)
 
 ## Local
 
@@ -1672,7 +1670,7 @@ Each time we get to a failing leaf,  we go back up to its parent and then try th
 ;; accio portkey
 ```
 
-![VideoScreenshot--HtC2xCoursewareedX-4’03”.png](media/img-017.png)
+![VideoScreenshot--HtC2xCoursewareedX-4’03”.png](img-017.png)
 
 ### Lexical Scoping
 
@@ -2185,7 +2183,7 @@ When the function passed to an abstract function requires access to a parameter 
 
 A closure is a locally defined function in which the body of the function uses a parameter of the enclosing function definition. The closure can be defined with local or lambda, but it must be defined inside of another function. In the example below, the helper function bigger? is a closure.
 
-![Untitled](media/img-018.png)
+![Untitled](img-018.png)
 
 ```racket
 (require 2htdp/image)
@@ -2235,7 +2233,7 @@ Since the local is within the scope of (define (wider-than-only w loi)), we can 
 
 wider-than? is a closure: it "closes over” the value of w passed to wider-than-only
 
-![Untitled](media/img-019.png)
+![Untitled](img-019.png)
 
 wider-than? takes in i but w is in its body as well!
 So it must be defined where w has meaning -- in the definition of wider-than-only.
@@ -2351,9 +2349,9 @@ When we design a fold function, it is an abstract function based directly off th
 
 fold is the abstract function for the (listof X) type, based on its template--so most of the functions we've made based on this template can be implemented using fold.
 
-![Untitled](media/img-020.png)
+![Untitled](img-020.png)
 
-![Untitled](media/img-011.png)
+![Untitled](img-011.png)
 
 ```racket
 ; PROBLEM:
@@ -2547,9 +2545,9 @@ The template for generative recursion is:
 
 Fractals are images that have a recursive structure. They provide a fun first example of generative recursion.
 
-![Untitled](media/img-021.png)
+![Untitled](img-021.png)
 
-![Untitled](media/img-022.png)
+![Untitled](img-022.png)
 
 ```racket
 (define CUTOFF 5)
@@ -2592,9 +2590,9 @@ Fractals are images that have a recursive structure. They provide a fun first ex
          ]))
 ```
 
-![Untitled](media/img-023.png)
+![Untitled](img-023.png)
 
-![Untitled](media/img-024.png)
+![Untitled](img-024.png)
 
 ```racket
 ;; Number -> Image
@@ -2642,7 +2640,7 @@ Fractals are images that have a recursive structure. They provide a fun first ex
 
 In generative recursion we no longer can count on well-formed type comments and the template rules to guarantee that the recursion will end. Instead we must formulate our own proof of that for each function that uses generative recursion.
 
-![VideoScreenshot--HtC2xCoursewareedX-3’17”.png](media/img-025.png)
+![VideoScreenshot--HtC2xCoursewareedX-3’17”.png](img-025.png)
 
 ## lambda Expressions
 
@@ -2709,17 +2707,17 @@ In generative recursion we no longer can count on well-formed type comments and 
                 (qsort (filter (lambda (n) (< n p)) lon))))))
 ```
 
-![Untitled](media/img-026.png)
+![Untitled](img-026.png)
 
 ## Template blending
 
 ### Sudoku
 
-![VideoScreenshot--HtC2xCoursewareedX-0’58”.png](media/img-027.png)
+![VideoScreenshot--HtC2xCoursewareedX-0’58”.png](img-027.png)
 
 The goal is to fill every square with Natural[1,9] WITHOUT a duplicate number in any unit (row, column, box)
 
-![Untitled](media/img-028.png)
+![Untitled](img-028.png)
 
 ```racket
 (require racket/list) ;gets list-ref, take and drop
@@ -2929,9 +2927,9 @@ The goal is to fill every square with Natural[1,9] WITHOUT a duplicate number in
 
 ### Sudoku - Template blending
 
-![VideoScreenshot--HtC2xCoursewareedX-2’13”.png](media/img-029.png)
+![VideoScreenshot--HtC2xCoursewareedX-2’13”.png](img-029.png)
 
-![VideoScreenshot--HtC2xCoursewareedX-5’09”.png](media/img-030.png)
+![VideoScreenshot--HtC2xCoursewareedX-5’09”.png](img-030.png)
 
 The basic idea behind a Sudoku board solver involves generating a tree of all possible boards that could follow from an initial board and looking for a solution. The tree is generated through a generative recursion process, and each board can have zero to nine valid children, making it an arbitrary-arity tree. The solver uses backtracking search to explore the tree until a solution or a dead end is reached. The key takeaway is that the Sudoku solver involves generative recursion over an arbitrary-arity tree with backtracking search, and that these three aspects are crucial to its design.
 
@@ -2996,7 +2994,7 @@ We can simplify the template
     (solve--bd bd)))
 ```
 
-![VideoScreenshot--HtC2xCoursewareedX-10’30”.png](media/img-031.png)
+![VideoScreenshot--HtC2xCoursewareedX-10’30”.png](img-031.png)
 
 Lastly, templating according to backtracking search
 
@@ -3017,7 +3015,7 @@ Lastly, templating according to backtracking search
     (solve--bd bd)))
 ```
 
-![VideoScreenshot--HtC2xCoursewareedX-13’06”.png](media/img-032.png)
+![VideoScreenshot--HtC2xCoursewareedX-13’06”.png](img-032.png)
 
 ### Complete Sudoku
 
@@ -3471,9 +3469,9 @@ The accumulator HtDF recipe consists of the following steps:
 4.  Code the function body.
 5. Test and debug until correct
 
-![Untitled](media/img-033.png)
+![Untitled](img-033.png)
 
-![Untitled](media/img-034.png)
+![Untitled](img-034.png)
 
 ```racket
 (define (skip1 lox0)
@@ -3520,7 +3518,7 @@ The accumulator HtDF recipe consists of the following steps:
     (skip1 lox0 ...)))
 ```
 
-![Untitled](media/img-035.png)
+![Untitled](img-035.png)
 
 ```racket
 (define (skip1 lox0)
@@ -3547,17 +3545,17 @@ There are always 3 things we need to do when providing the details
 
 1. We need to provide the initial value
 
-![Untitled](media/img-036.png)
+![Untitled](img-036.png)
 
 1. We need to exploit the accumulator value
 
-    ![Untitled](media/img-037.png)
+    ![Untitled](img-037.png)
 
 2. We need to preserve this fact we've set about the accumulator, we need to make sure that in each recursive call, it's still the one base position.
 
-    ![Untitled](media/img-038.png)
+    ![Untitled](img-038.png)
 
-    ![Untitled](media/img-039.png)
+    ![Untitled](img-039.png)
 
     ## Another example - skipn
 
@@ -3593,7 +3591,7 @@ There are always 3 things we need to do when providing the details
         (skipn lox0 ...)))
     ```
 
-    ![Untitled](media/img-040.png)
+    ![Untitled](img-040.png)
 
     ```racket
     ;;templated according to (listof X) and accumulator
@@ -3641,17 +3639,17 @@ There are always 3 things we need to do when providing the details
 (sum (list 1 2 3 4 5))
 ```
 
-![Untitled](media/img-041.png)
+![Untitled](img-041.png)
 
 The longer the list gets, the more computation is pending and the list of pluses waiting to happen becomes longer. This can lead to the stack, a limited and expensive part of the computer's memory, being used up quickly. To avoid this, a solution to add up long lists without proportionally using more stack would be better.
 
-![Untitled](media/img-042.png)
+![Untitled](img-042.png)
 
 The reason for the buildup is due to three separate concepts: tail position, function call in tail position, and recursive function call in tail position. The buildup occurs because the plus expression is in tail position, meaning that its result becomes the result of the enclosing function. When an expression's result directly becomes the result of the enclosing function, it is said to be in tail position.
 
-![Untitled](media/img-043.png)
+![Untitled](img-043.png)
 
-![Untitled](media/img-044.png)
+![Untitled](img-044.png)
 
 Two expressions, (first lon) and sum, sit in operand position to the plus, (first lon) is not in tail position because its result still needs to be operated on by plus. The call to sum is also not in tail position because its result still needs to be handed to plus. The plus primitive call expression is in tail position. The buildup occurs due to a recursive call that is not in tail position, causing a growing context of pending operations. The non-tail position recursive call to sum causes the build-up and the plus is waiting for it.
 
@@ -3667,7 +3665,7 @@ Two expressions, (first lon) and sum, sit in operand position to the plus, (firs
 (sum lon0 ...)))
 ```
 
-![Untitled](media/img-045.png)
+![Untitled](img-045.png)
 
 So the context is building up because the recursive call is not in tail position. To resolve this, we need to make a version of sum in which the recursive call is in tail position, which is called tail recursion. This can be achieved using an accumulator.
 
@@ -3690,7 +3688,7 @@ So the context is building up because the recursive call is not in tail position
     (sum lon0 ...)))
 ```
 
-![Untitled](media/img-046.png)
+![Untitled](img-046.png)
 
 To avoid the addition waiting for SUM, we need to move the (+ (first lon) into the accumulator argument, so that it's not around the call to SUM. This will prevent the build-up of the context.
 
@@ -3728,7 +3726,7 @@ To avoid the addition waiting for SUM, we need to move the (+ (first lon) into t
     (sum lon0 0)))
 ```
 
-![VideoScreenshot--HtC2xCoursewareedX-7’29”.png](media/img-047.png)
+![VideoScreenshot--HtC2xCoursewareedX-7’29”.png](img-047.png)
 
 Let's compare the two versions of the sum function. Both have the structural recursion template, but the new version has an added accumulator. The base case of an empty list, which is 0, is in a different place: in the original version, it's in the function definition, while in the new version it's the initial value of the accumulator. The original version has + (first lon) around the recursive call, while in the new version it sits in the accumulator position, adding the current number to the result so far. The elements of the two versions are the same, just rearranged.
 
@@ -3824,7 +3822,7 @@ In tail recursion using an accumulator, the idea is to move the operations that 
     (fn-for-wiz w)))
 ```
 
-![Untitled](media/img-048.png)
+![Untitled](img-048.png)
 
 ### Accumulators on mutually recursive functions
 
@@ -3860,7 +3858,7 @@ In tail recursion using an accumulator, the idea is to move the operations that 
     (fn-for-wiz w ...)))
 ```
 
-![Untitled](media/img-049.png)
+![Untitled](img-049.png)
 
 When adding an accumulator to mutually recursive functions, the accumulator must be added to all the functions and in all their calls. The parent house was added as a parameter to both fn-for-wiz and fn-for-low and included in all mutually recursive calls. This is important to ensure the accumulator is correctly used in all functions.
 
@@ -3883,7 +3881,7 @@ When adding an accumulator to mutually recursive functions, the accumulator must
     (fn-for-wiz w ...)))
 ```
 
-![Untitled](media/img-050.png)
+![Untitled](img-050.png)
 
 ```racket
 ; template from Wizard plus lost context accumulator
@@ -3909,7 +3907,7 @@ When adding an accumulator to mutually recursive functions, the accumulator must
     (fn-for-wiz w "")))
 ```
 
-![Untitled](media/img-048.png)
+![Untitled](img-048.png)
 
 ### Worklist accumulators - count wizards
 
@@ -3949,7 +3947,7 @@ When adding an accumulator to mutually recursive functions, the accumulator must
     (fn-for-wiz w ...)))
 ```
 
-![Untitled](media/img-051.png)
+![Untitled](img-051.png)
 
 We're putting (... rsf) here because the result so far there might have something to do with rsf;
 
@@ -3981,7 +3979,7 @@ It might also have to do with the other elements (wiz-name, wiz-house, (first lo
 
 ***In mutually recursive function w/ accumulators, usually only one of the functions provides NEW values for each accumulator***
 
-![Untitled](media/img-052.png)
+![Untitled](img-052.png)
 
 ```racket
 #;
@@ -4026,25 +4024,25 @@ It might also have to do with the other elements (wiz-name, wiz-house, (first lo
 
 ***todo is a worklist accumulator***
 
-![VideoScreenshot--HtC2xCoursewareedX-5’48”.png](media/img-053.png)
+![VideoScreenshot--HtC2xCoursewareedX-5’48”.png](img-053.png)
 
-![VideoScreenshot--HtC2xCoursewareedX-6’19”.png](media/img-054.png)
+![VideoScreenshot--HtC2xCoursewareedX-6’19”.png](img-054.png)
 
-![VideoScreenshot--HtC2xCoursewareedX-6’32”.png](media/img-055.png)
+![VideoScreenshot--HtC2xCoursewareedX-6’32”.png](img-055.png)
 
-![VideoScreenshot--HtC2xCoursewareedX-6’51”.png](media/img-056.png)
+![VideoScreenshot--HtC2xCoursewareedX-6’51”.png](img-056.png)
 
-![VideoScreenshot--HtC2xCoursewareedX-7’14”.png](media/img-057.png)
+![VideoScreenshot--HtC2xCoursewareedX-7’14”.png](img-057.png)
 
-![VideoScreenshot--HtC2xCoursewareedX-7’19”.png](media/img-058.png)
+![VideoScreenshot--HtC2xCoursewareedX-7’19”.png](img-058.png)
 
-![VideoScreenshot--HtC2xCoursewareedX-7’34”.png](media/img-059.png)
+![VideoScreenshot--HtC2xCoursewareedX-7’34”.png](img-059.png)
 
-![VideoScreenshot--HtC2xCoursewareedX-7’47”.png](media/img-060.png)
+![VideoScreenshot--HtC2xCoursewareedX-7’47”.png](img-060.png)
 
-![VideoScreenshot--HtC2xCoursewareedX-8’20”.png](media/img-061.png)
+![VideoScreenshot--HtC2xCoursewareedX-8’20”.png](img-061.png)
 
-![VideoScreenshot--HtC2xCoursewareedX-9’05”.png](media/img-062.png)
+![VideoScreenshot--HtC2xCoursewareedX-9’05”.png](img-062.png)
 
 In this his tree traversal algorithm, the tree is traversed from node K to nodes H, C, D, I, and J and so on. The algorithm starts with empty list of children that haven't been visited yet and RSF value of zero. At each node, fn-for-wiz is called with the current node as the first argument, the list of children that haven't been visited yet as the second argument, and the RSF value as the third argument. The algorithm is tail recursive, meaning the result is produced only at the end, and each node calls the next one in a straight line until the end of the tree is reached.
 
@@ -4052,23 +4050,23 @@ The order of arguments passed to the append function affects the order of traver
 
 ### Depth first traversal
 
-![VideoScreenshot--HtC2xCoursewareedX-10’04”.png](media/img-063.png)
+![VideoScreenshot--HtC2xCoursewareedX-10’04”.png](img-063.png)
 
 ### Breadth first traversal
 
-![VideoScreenshot--HtC2xCoursewareedX-10’27”.png](media/img-064.png)
+![VideoScreenshot--HtC2xCoursewareedX-10’27”.png](img-064.png)
 
 ### Same house as parent - using worklist accumulator
 
-![VideoScreenshot--HtC2xCoursewareedX-4’01”.png](media/img-065.png)
+![VideoScreenshot--HtC2xCoursewareedX-4’01”.png](img-065.png)
 
 ***the order of the function call***
 
-![VideoScreenshot--HtC2xCoursewareedX-4’45”.png](media/img-066.png)
+![VideoScreenshot--HtC2xCoursewareedX-4’45”.png](img-066.png)
 
-![VideoScreenshot--HtC2xCoursewareedX-7’51”.png](media/img-067.png)
+![VideoScreenshot--HtC2xCoursewareedX-7’51”.png](img-067.png)
 
-![VideoScreenshot--HtC2xCoursewareedX-8’09”.png](media/img-068.png)
+![VideoScreenshot--HtC2xCoursewareedX-8’09”.png](img-068.png)
 
 Each entry on our worklist accumulator includes: the wizard to visit, together with that wizard’s parent house
 
@@ -4173,7 +4171,7 @@ In the tail recursive traversal, the worklist accumulator needs to be more compl
     (fn-for-wiz ... w ...)))
 ```
 
-![VideoScreenshot--HtC2xCoursewareedX-8’24”.png](media/img-069.png)
+![VideoScreenshot--HtC2xCoursewareedX-8’24”.png](img-069.png)
 
 ```racket
 ; FIFTH STEP
@@ -4278,7 +4276,7 @@ In the tail recursive traversal, the worklist accumulator needs to be more compl
     (fn-for-wiz empty w "" empty)))
 ```
 
-![VideoScreenshot--HtC2xCoursewareedX-15’04”.png](media/img-070.png)
+![VideoScreenshot--HtC2xCoursewareedX-15’04”.png](img-070.png)
 
 The recipes, and in particular the idea that every function can be based on one or
 more templates plus details enables you to think about programs in terms of higher
@@ -4405,7 +4403,7 @@ level structure or models.
 
 ### Graphs
 
-![VideoScreenshot--HtC2xCoursewareedX-3’11”.png](media/img-071.png)
+![VideoScreenshot--HtC2xCoursewareedX-3’11”.png](img-071.png)
 
 ***acyclic graph: graph without cycles***
 
@@ -4418,7 +4416,7 @@ level structure or models.
 - ***a name***
 - ***zero or more paths to other nodes***
 
-![Untitled](media/img-072.png)
+![Untitled](img-072.png)
 
 ```racket
 PROBLEM:
@@ -4443,13 +4441,13 @@ for the four houses above.
 ;; interp. the room's name, and a list of rooms tht the exits lead to
 ```
 
-![Untitled](media/img-073.png)
+![Untitled](img-073.png)
 
 ```racket
 (define H1 (make-room "A" (list (make-room "B"))))
 ```
 
-![Untitled](media/img-074.png)
+![Untitled](img-074.png)
 
 ***Both A and B refer to each other → unlike a tree there’s no clear hierarchical structure where the parent contains children but the children do not contain their parent.***
 
@@ -4457,9 +4455,9 @@ for the four houses above.
 
 ***this name will allow us to refer to this room; even inside the expression that makes the room!***
 
-![Untitled](media/img-075.png)
+![Untitled](img-075.png)
 
-![Untitled](media/img-076.png)
+![Untitled](img-076.png)
 
 ```racket
 (define H2 (shared ((-0- (make-room "A" (list (make-room "B" (list -0-))))))
@@ -4468,7 +4466,7 @@ for the four houses above.
 
 ***-0- is a special name for the result of the next expression which we’ll be able to use in circular structure***
 
-![Untitled](media/img-077.png)
+![Untitled](img-077.png)
 
 ```racket
 > H2
@@ -4481,7 +4479,7 @@ for the four houses above.
 (list "B")
 ```
 
-![Untitled](media/img-078.png)
+![Untitled](img-078.png)
 
 ```racket
 (define H3
@@ -4501,7 +4499,7 @@ Another way to define
     -A-))
 ```
 
-![Untitled](media/img-079.png)
+![Untitled](img-079.png)
 
 ```racket
 > H3
@@ -4514,9 +4512,9 @@ Another way to define
 (list "B")
 ```
 
-![Untitled](media/img-080.png)
+![Untitled](img-080.png)
 
-![Untitled](media/img-081.png)
+![Untitled](img-081.png)
 
 ```racket
 (define H4
@@ -4537,13 +4535,13 @@ Another way to define
   -0-)
 ```
 
-![Untitled](media/img-082.png)
+![Untitled](img-082.png)
 
-![Untitled](media/img-083.png)
+![Untitled](img-083.png)
 
-![Untitled](media/img-084.png)
+![Untitled](img-084.png)
 
-![Untitled](media/img-085.png)
+![Untitled](img-085.png)
 
 ```racket
 (define H5
@@ -4557,7 +4555,7 @@ Another way to define
 
 ### Templating
 
-![Untitled](media/img-086.png)
+![Untitled](img-086.png)
 
 In the context of working with house graphs (graphs of rooms), having an accumulator that keeps track of every room you've already visited is helpful in detecting when you are going in a circle. The accumulator value progresses as you traverse the graph, and note that because there can be more than one arrow that comes into a given room in a graph, the accumulator value may be different depending on which arrow you follow.
 
@@ -4589,7 +4587,7 @@ Therefore, having a context preserving accumulator can help in identifying cycle
     (fn-for-room r0 empty empty)))
 ```
 
-![Untitled](media/img-087.png)
+![Untitled](img-087.png)
 
 ### Problem: reachable?
 
@@ -4776,11 +4774,11 @@ In summary, **`pick-max`** is a function that selects the room with the maximum 
 
 ### During Game
 
-![Space_Invaders_Example.png](media/img-088.png)
+![Space_Invaders_Example.png](img-088.png)
 
 ### Game Over
 
-![Untitled](media/img-089.png)
+![Untitled](img-089.png)
 
 ### Constant:
 

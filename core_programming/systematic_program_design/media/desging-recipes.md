@@ -1,9 +1,8 @@
-# Design Recipes
 
 | Core Recipes                   | Data Driven            | Control Driven       | Abstraction              |
 | ------------------------------ | ---------------------- | -------------------- | ------------------------ |
-| How to Design Functions (HtDF) | Data Driven -Templates |
-| Function Composition           | From Examples          |
+| How to Design Functions (HtDF) | Data Driven -Templates |                      |                          |
+| Function Composition           | From Examples          |                      |                          |
 | How to Design Data (HtDD)      | 2 One-of Data          | Backtracking Search  | From Type Comments       |
 | How to Design Worlds (HtDW)    |                        | Generative Recursion |                          |
 |                                |                        | Accumulators         | Using Abstract Functions |
@@ -339,7 +338,7 @@ A common case is for the itemization to be comprised of 2 or more intervals. In 
 ;;  atomic non-distinct:  Number[0, 5]
 ```
 
-## ****Compound data (structures)****
+## Compound data (structures)
 
 Use structures when two or more values naturally belong together. The define-struct goes at the beginning of the data definition, before the types comment.
 
