@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="320" viewBox="0 0 760 320" role="img" aria-labelledby="title desc">
+  <title id="title">Triode vacuum tube control</title>
+  <desc id="desc">A heated cathode emits electrons, and a control grid allows or blocks current to the anode.</desc>
+  <style>
+    text { font-family: Arial, sans-serif; fill: #172033; }
+    .bulb { fill: #eef2ff; stroke: #3730a3; stroke-width: 3; opacity: 0.8; }
+    .electrode { stroke: #334155; stroke-width: 6; stroke-linecap: round; }
+    .grid { stroke: #7c3aed; stroke-width: 3; }
+    .electron { fill: #2563eb; }
+    .label { font-family: Arial, sans-serif; font-size: 17px; font-weight: 700; }
+    .note { font-family: Arial, sans-serif; font-size: 14px; }
+    .arrow { stroke: #2563eb; stroke-width: 2.5; marker-end: url(#arrow); }
+  </style>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#2563eb" />
+    </marker>
+  </defs>
+  <ellipse cx="380" cy="155" rx="180" ry="115" class="bulb" />
+  <line x1="250" y1="155" x2="295" y2="155" class="electrode" />
+  <text x="215" y="160" text-anchor="end" class="label">heated cathode</text>
+  <line x1="465" y1="155" x2="520" y2="155" class="electrode" />
+  <text x="545" y="160" class="label">anode</text>
+  <line x1="365" y1="90" x2="365" y2="220" class="grid" />
+  <line x1="385" y1="90" x2="385" y2="220" class="grid" />
+  <line x1="405" y1="90" x2="405" y2="220" class="grid" />
+  <text x="385" y="68" text-anchor="middle" class="label">control grid</text>
+  <circle cx="315" cy="155" r="6" class="electron" /><circle cx="335" cy="145" r="6" class="electron" /><circle cx="335" cy="168" r="6" class="electron" />
+  <line x1="315" y1="155" x2="450" y2="155" class="arrow" />
+  <text x="380" y="285" text-anchor="middle" class="note">Positive grid charge permits electron flow; negative grid charge blocks it.</text>
+</svg>

@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="820" height="290" viewBox="0 0 820 290" role="img" aria-labelledby="title desc">
+  <title id="title">Switch technology evolution</title>
+  <desc id="desc">Computing switches evolve from relays to vacuum tubes to transistors.</desc>
+  <style>
+    text { font-family: Arial, sans-serif; fill: #172033; }
+    .box { fill: #f8fafc; stroke: #334155; stroke-width: 2; rx: 14; }
+    .relay { fill: #fff7ed; }
+    .tube { fill: #eef2ff; }
+    .transistor { fill: #ecfdf5; }
+    .label { font-size: 20px; font-weight: 700; }
+    .note { font-size: 14px; }
+    .arrow { stroke: #334155; stroke-width: 3; marker-end: url(#arrow); }
+  </style>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#334155" />
+    </marker>
+  </defs>
+  <rect x="35" y="55" width="220" height="155" class="box relay" />
+  <text x="145" y="92" text-anchor="middle" class="label">Relays</text>
+  <text x="145" y="125" text-anchor="middle" class="note">electro-mechanical</text>
+  <text x="145" y="150" text-anchor="middle" class="note">moving metal arm</text>
+  <text x="145" y="175" text-anchor="middle" class="note">~50 switches / second</text>
+  <line x1="265" y1="132" x2="320" y2="132" class="arrow" />
+  <rect x="330" y="55" width="220" height="155" class="box tube" />
+  <text x="440" y="92" text-anchor="middle" class="label">Vacuum Tubes</text>
+  <text x="440" y="125" text-anchor="middle" class="note">electronic</text>
+  <text x="440" y="150" text-anchor="middle" class="note">no moving parts</text>
+  <text x="440" y="175" text-anchor="middle" class="note">thousands / second</text>
+  <line x1="560" y1="132" x2="615" y2="132" class="arrow" />
+  <rect x="625" y="55" width="160" height="155" class="box transistor" />
+  <text x="705" y="92" text-anchor="middle" class="label">Transistors</text>
+  <text x="705" y="125" text-anchor="middle" class="note">solid-state</text>
+  <text x="705" y="150" text-anchor="middle" class="note">semiconductor gate</text>
+  <text x="705" y="175" text-anchor="middle" class="note">fast, small, reliable</text>
+  <text x="118" y="248" class="note">Each step improves the switch: less mechanical motion, more speed, more reliability, less size.</text>
+</svg>

@@ -264,3 +264,85 @@ The contract is simple: each completed HDL chip must produce the expected output
 Chapter [1](#1-boolean-logic) establishes the elementary logic gate toolbox used by later processing and memory chips. Although this book uses Nand as the primitive foundation, other complete bases such as Nor or combinations of And, Or, and Not are theoretically equivalent.
 
 The chapter intentionally avoids physical engineering details and low-level efficiency concerns. Its goal is to teach the abstract logic-design layer that sits between Boolean functions and the larger chips built in the next chapters.
+
+### 2 Boolean Arithmetic
+
+Chapter 2 moves from Boolean logic gates to arithmetic chips. The chapter starts with binary number representation, develops adders, and culminates in the Hack Arithmetic Logic Unit, which later becomes the computational core of the CPU.
+
+The main theme is reduction: many machine-level arithmetic and logical operations can be built from binary addition, bitwise operations, and carefully chosen control signals. Two's complement representation is especially important because it lets the same addition hardware handle both nonnegative and signed integers.
+
+#### 2.1 Arithmetic Operations
+
+General-purpose computers need arithmetic operations such as addition, sign conversion, subtraction, comparison, multiplication, and division. This chapter focuses first on addition and sign conversion, because later operations can be implemented from these simpler building blocks.
+
+Addition is treated as a foundational operation. Understanding binary addition explains not only arithmetic circuits but also a large part of how digital hardware reduces complex behavior to simple bit-level processing.
+
+#### 2.2 Binary Numbers
+
+Binary representation works like decimal representation, but with base 2 instead of base 10. Each bit's contribution depends on its position, and a binary code represents the weighted sum of powers of two.
+
+Computers represent everything internally with binary codes, even when users interact with decimal numbers or screen characters. Decimal notation is a human-facing convention; the machine must convert between human-readable decimal forms and internal binary forms when necessary.
+
+Because computers are finite machines, integer values are represented using a fixed word size. An `n`-bit word can represent `2^n` distinct values. If all values are nonnegative, the range is `0` through `2^n - 1`; representing values outside the fixed range requires larger or multi-word representations.
+
+#### 2.3 Binary Addition
+
+Binary numbers are added from right to left, just like decimal numbers. The least significant bits are added first, and each addition may produce a carry that feeds into the next more significant bit.
+
+If the most significant addition produces a carry beyond the fixed word size, the result overflows. The Hack hardware ignores overflow and guarantees only the low `n` bits of an `n`-bit addition result.
+
+#### 2.4 Signed Binary Numbers
+
+Signed binary numbers divide the available code space between nonnegative and negative values. The dominant representation is two's complement, where the `n`-bit representation of `-x` is the code for `2^n - x`.
+
+In two's complement, an `n`-bit system represents values from `-2^(n-1)` through `2^(n-1) - 1`. Nonnegative numbers begin with `0`, negative numbers begin with `1`, and negating a number can be done by flipping all bits and adding `1`.
+
+The key hardware payoff is that subtraction becomes addition: `x - y` can be computed as `x + (-y)`. This means the same binary adder can handle signed addition and subtraction without special signed-number hardware.
+
+#### 2.5 Specification
+
+The chapter specifies a hierarchy of arithmetic chips. As usual, the specification describes what each chip does before discussing how to build it.
+
+##### 2.5.1 Adders
+
+The adder hierarchy starts with a half-adder, which adds two bits and produces a `sum` and `carry`. A full-adder adds three bits, allowing it to include an incoming carry from a less significant bit.
+
+A multi-bit adder chains this idea across a fixed-width word. For Hack, the important version is a 16-bit adder that adds two 16-bit inputs and outputs the low 16 bits of the result.
+
+The chapter also specifies an incrementer, a special-purpose chip that adds `1` to a 16-bit input. This will later support advancing to the next instruction address.
+
+##### 2.5.2 The Arithmetic Logic Unit
+
+The Hack ALU computes a selected arithmetic or logical function over two 16-bit inputs, `x` and `y`. It is controlled by six 1-bit control inputs: `zx`, `nx`, `zy`, `ny`, `f`, and `no`.
+
+The control bits are interpreted as a sequence of simple micro-actions. The ALU may zero and/or negate each input, then choose between bitwise And and addition, then optionally negate the final output.
+
+This small control scheme is enough to produce the eighteen documented Hack ALU functions, including constants, identity operations, negation, increment/decrement, addition, subtraction, And, and Or. The six control bits actually encode sixty-four possible operations, but Hack uses only the subset needed by its instruction set.
+
+The ALU also outputs `zr` and `ng`. `zr` reports whether the result is zero, and `ng` reports whether the result is negative. These status bits will later drive CPU branching decisions.
+
+#### 2.6 Implementation
+
+The implementation guidance is intentionally sparse. The learner is expected to derive a logic design, write HDL, and test it with the supplied hardware simulator.
+
+The half-adder can be built directly from logic gates already seen in Project 1. The full-adder can be built from two half-adders plus an additional gate. The 16-bit adder is a ripple-style design: each bit position uses the carry from the previous position.
+
+Although the HDL describes all bit positions at once, the carry values conceptually propagate from least significant bit to most significant bit. Timing and synchronization are deferred until the memory chapter.
+
+The ALU implementation follows the pseudocode implied by the control bits. The main work is building reusable patterns for zeroing, negating, selecting between And and Add, optionally negating the output, and deriving the `zr` and `ng` flags.
+
+#### 2.7 Project
+
+Project 2 asks the learner to implement the arithmetic chips from the chapter: adders, incrementer, and ALU. The required building blocks are the Chapter 1 gates and the chips built progressively during the project.
+
+The book recommends using built-in versions of Chapter 1 chips rather than copying Project 1 HDL files into the Project 2 folder. Built-ins are guaranteed to match the specification and make the simulator faster.
+
+The same constraints from Project 1 still apply: use only specified chips, prefer simple correct HDL, and avoid inventing extra helper chips.
+
+#### 2.8 Perspective
+
+The chapter's adder design prioritizes clarity over efficiency. A ripple-carry adder is easy to understand, but it can be slow because each carry must propagate through the word. Faster hardware can use carry-lookahead techniques, but those optimizations are outside this course's main path.
+
+The Hack ALU deliberately provides only a small hardware feature set. Operations like multiplication, division, and square root are left to the operating system, where they can be implemented in software using lower-level ALU operations.
+
+This division of labor is a recurring systems trade-off: hardware implementations are faster but more expensive, while software implementations keep the hardware simple and shift complexity upward into system services.

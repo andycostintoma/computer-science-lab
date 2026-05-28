@@ -867,7 +867,7 @@ All the adder chips presented so far are generic: any computer that performs ari
 As its name implies, an Arithmetic Logic Unit is a chip designed to compute a set of arithmetic and logic operations. Exactly *which* operations an ALU should feature is a design decision derived from cost-effectiveness considerations. In the case of the Hack platform, we decided that (i) the ALU will perform only integer arithmetic (and not, for example, floating point arithmetic) and (ii) the ALU will compute the set of eighteen arithmetic-logical functions shown in figure 2.5a.
 
 ![](media/figure_2.5a.png)
-**Figure 2.5a**    The Hack ALU, designed to compute the eighteen arithmetic-logical functions shown on the right (the symbols `!`, `&amp;`, and `|` represent, respectively, the 16-bit operations `Not`, `And`, and `Or`). For now, ignore the `zr` and `ng` output bits.
+**Figure 2.5a**    The Hack ALU, designed to compute the eighteen arithmetic-logical functions shown on the right (the symbols `!`, `&`, and `|` represent, respectively, the 16-bit operations `Not`, `And`, and `Or`). For now, ignore the `zr` and `ng` output bits.
 
 As seen in figure 2.5a, the Hack ALU operates on two 16-bit two’s complement integers, denoted `x` and `y`, and on six 1-bit inputs, called *control bits*. These control bits “tell” the ALU which function to compute. The exact specification is given in figure 2.5b.
 
