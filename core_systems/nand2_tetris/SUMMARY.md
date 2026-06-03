@@ -281,6 +281,10 @@ Addition is treated as a foundational operation. Understanding binary addition e
 
 Binary representation works like decimal representation, but with base 2 instead of base 10. Each bit's contribution depends on its position, and a binary code represents the weighted sum of powers of two.
 
+![](media/2-1.png)
+
+![](media/2-2.png)
+
 Computers represent everything internally with binary codes, even when users interact with decimal numbers or screen characters. Decimal notation is a human-facing convention; the machine must convert between human-readable decimal forms and internal binary forms when necessary.
 
 Because computers are finite machines, integer values are represented using a fixed word size. An `n`-bit word can represent `2^n` distinct values. If all values are nonnegative, the range is `0` through `2^n - 1`; representing values outside the fixed range requires larger or multi-word representations.
@@ -289,11 +293,17 @@ Because computers are finite machines, integer values are represented using a fi
 
 Binary numbers are added from right to left, just like decimal numbers. The least significant bits are added first, and each addition may produce a carry that feeds into the next more significant bit.
 
+![](media/figure_wo_caption_2.1.png)
+
 If the most significant addition produces a carry beyond the fixed word size, the result overflows. The Hack hardware ignores overflow and guarantees only the low `n` bits of an `n`-bit addition result.
 
 #### 2.4 Signed Binary Numbers
 
 Signed binary numbers divide the available code space between nonnegative and negative values. The dominant representation is two's complement, where the `n`-bit representation of `-x` is the code for `2^n - x`.
+
+![](media/figure_2.1.png)
+
+**Figure 2.1** Two's complement representation of signed numbers, in a 4-bit binary system.
 
 In two's complement, an `n`-bit system represents values from `-2^(n-1)` through `2^(n-1) - 1`. Nonnegative numbers begin with `0`, negative numbers begin with `1`, and negating a number can be done by flipping all bits and adding `1`.
 
@@ -307,19 +317,45 @@ The chapter specifies a hierarchy of arithmetic chips. As usual, the specificati
 
 The adder hierarchy starts with a half-adder, which adds two bits and produces a `sum` and `carry`. A full-adder adds three bits, allowing it to include an incoming carry from a less significant bit.
 
+![](media/figure_2.2.png)
+
+**Figure 2.2** Half-adder, designed to add 2 bits.
+
+![](media/figure_2.3.png)
+
+**Figure 2.3** Full-adder, designed to add 3 bits.
+
 A multi-bit adder chains this idea across a fixed-width word. For Hack, the important version is a 16-bit adder that adds two 16-bit inputs and outputs the low 16 bits of the result.
 
+![](media/figure_2.4.png)
+
+**Figure 2.4** 16-bit adder, designed to add two 16-bit numbers, with an example of addition action (on the left).
+
 The chapter also specifies an incrementer, a special-purpose chip that adds `1` to a 16-bit input. This will later support advancing to the next instruction address.
+
+![](media/figure_wo_caption_2.2.png)
 
 ##### 2.5.2 The Arithmetic Logic Unit
 
 The Hack ALU computes a selected arithmetic or logical function over two 16-bit inputs, `x` and `y`. It is controlled by six 1-bit control inputs: `zx`, `nx`, `zy`, `ny`, `f`, and `no`.
 
+![](media/figure_2.5a.png)
+
+**Figure 2.5a** The Hack ALU, designed to compute the eighteen arithmetic-logical functions shown on the right. The symbols `!`, `&`, and `|` represent the 16-bit operations `Not`, `And`, and `Or`. For now, ignore the `zr` and `ng` output bits.
+
 The control bits are interpreted as a sequence of simple micro-actions. The ALU may zero and/or negate each input, then choose between bitwise And and addition, then optionally negate the final output.
+
+![](media/figure_2.5b.png)
+
+**Figure 2.5b** Taken together, the values of the six control bits `zx`, `nx`, `zy`, `ny`, `f`, and `no` cause the ALU to compute one of the functions listed in the rightmost column.
 
 This small control scheme is enough to produce the eighteen documented Hack ALU functions, including constants, identity operations, negation, increment/decrement, addition, subtraction, And, and Or. The six control bits actually encode sixty-four possible operations, but Hack uses only the subset needed by its instruction set.
 
 The ALU also outputs `zr` and `ng`. `zr` reports whether the result is zero, and `ng` reports whether the result is negative. These status bits will later drive CPU branching decisions.
+
+![](media/figure_2.5c.png)
+
+**Figure 2.5c** The Hack ALU API.
 
 #### 2.6 Implementation
 
