@@ -382,3 +382,147 @@ The chapter's adder design prioritizes clarity over efficiency. A ripple-carry a
 The Hack ALU deliberately provides only a small hardware feature set. Operations like multiplication, division, and square root are left to the operating system, where they can be implemented in software using lower-level ALU operations.
 
 This division of labor is a recurring systems trade-off: hardware implementations are faster but more expensive, while software implementations keep the hardware simple and shift complexity upward into system services.
+
+### 3 Memory
+
+Chapter 3 moves from combinational chips to sequential chips. The core problem is persistence over time: arithmetic chips can transform values, but a computer also needs devices that can remember state across clock cycles.
+
+The chapter introduces discrete time, the clocked Data Flip-Flop, registers, RAM hierarchies, and the program counter. The main systems idea is that memory emerges from feedback plus controlled delay, and that fast random access emerges from putting combinational selection logic on top of large banks of registers.
+
+#### 3.1 Memory Devices
+
+Programs rely on variables, arrays, and objects that persist over time, so the hardware platform must offer stateful memory devices. Classical combinational logic cannot do this by itself because it has no notion of past versus present state.
+
+The chapter therefore introduces the Data Flip-Flop (`DFF`) as the primitive sequential building block. Larger devices like `Bit`, `Register`, RAM, and `PC` are all built on top of it.
+
+![](media/figure_3.1.png)
+
+**Figure 3.1** The memory hierarchy built in this chapter.
+
+#### 3.2 Sequential Logic
+
+Sequential logic extends the earlier Boolean logic model with time. Combinational chips depend only on current inputs; sequential chips depend on current inputs plus state that was committed in previous cycles.
+
+##### 3.2.1 Time Matters
+
+Real chips are not instantaneous: signals take time to travel and gate networks take time to stabilize. The book handles this complexity by modeling time discretely as cycles instead of continuously.
+
+![](media/figure_3.2.png)
+
+**Figure 3.2** Discrete time representation: state changes are observed only during cycle transitions, while within-cycle fluctuations are ignored.
+
+This abstraction solves two problems at once. First, it hides transient propagation delays as long as the clock cycle is longer than the slowest computation. Second, it synchronizes the entire machine so that all stateful elements commit their updates together at cycle boundaries.
+
+##### 3.2.2 Flip-Flops
+
+The `DFF` is the primitive memory element used throughout the chapter. Its behavior is `out(t) = in(t - 1)`: at the end of each cycle, it emits the input from the previous cycle.
+
+![](media/figure_3.3.png)
+
+**Figure 3.3** The data flip-flop and its behavior over time.
+
+This one-cycle delay is what makes memory possible. Because all `DFF`s in the system share the same clock, they act like a synchronized substrate on which higher-level memory chips can be built.
+
+##### 3.2.3 Combinational and Sequential Logic
+
+Combinational chips ignore time and respond only to present input combinations. Sequential chips, by contrast, contain `DFF`s directly or indirectly, which lets them respond to previously stored values.
+
+![](media/figure_3.4.png)
+
+**Figure 3.4** Sequential logic design typically combines `DFF`s with combinational chips and feedback paths.
+
+The crucial design rule is that feedback without delay is problematic in combinational logic, but feedback through a `DFF` is safe because the delay breaks circular self-dependence within the same cycle. This also explains how a whole computer can be synchronized despite different signal travel times across the hardware.
+
+#### 3.3 Specification
+
+The chapter specifies the memory abstractions needed by the Hack platform: `DFF`, `Bit`, `Register`, RAM families, and `PC`. As usual, the focus is first on interface and behavior rather than implementation.
+
+##### 3.3.1 Data Flip-Flop
+
+The `DFF` is specified as the most elementary sequential device. It has one data input, one data output, a clock input, and the behavior `out(t) = in(t - 1)`.
+
+Its importance is architectural rather than glamorous: every memory device later in the chapter relies on this primitive time-delayed state transition.
+
+##### 3.3.2 Registers
+
+The chapter specifies a 1-bit register named `Bit` and a 16-bit `Register`. Both have an `in` input, a `load` control bit, and an `out` output that continuously emits the currently stored value.
+
+![](media/figure_3.5.png)
+
+**Figure 3.5** 1-bit register (`Bit`).
+
+![](media/figure_3.6.png)
+
+**Figure 3.6** 16-bit `Register`.
+
+The behavior is the same in both cases: when `load` is `1`, the device commits the input value and emits it from the next cycle onward; when `load` is `0`, it preserves the previous value.
+
+##### 3.3.3 Random Access Memory
+
+RAM is specified as an addressable collection of `Register` chips. The address selects one register, the output exposes the selected register's current contents, and the `load` bit determines whether the selected register should be updated on the next cycle.
+
+![](media/figure_3.7.png)
+
+**Figure 3.7** A RAM chip as a collection of addressable `Register` chips.
+
+The key property is random access: selection time should be effectively independent of which register is chosen. The abstraction therefore behaves like a direct-access bank of memory words, even though it is implemented from many smaller chips.
+
+##### 3.3.4 Counter
+
+The `PC` chip is a specialized register that can do more than hold a value. It can preserve its value, load a new value, increment by `1`, or reset to `0`.
+
+![](media/figure_3.8.png)
+
+**Figure 3.8** Program Counter (`PC`).
+
+This chip later becomes the program counter in the CPU. Its interface is register-like, but with extra `inc` and `reset` control bits layered on top of ordinary load behavior.
+
+#### 3.4 Implementation
+
+The implementation section explains how to realize the chapter's abstractions from lower-level sequential and combinational building blocks. The recurring strategy is to store state in registers and use selection logic to decide when and where new values should flow.
+
+##### 3.4.1 Data Flip-Flop
+
+Although `DFF`s can be built from feedback loops of primitive logic gates, the chapter treats them as built-in primitives. The simulator supplies a `DFF` implementation directly, which lets the learner focus on higher-level memory design.
+
+##### 3.4.2 Registers
+
+The `Bit` register is built by combining a `DFF` with a multiplexer. The design goal is: if `load` is asserted, feed the new input into the `DFF`; otherwise, feed back the previously stored output.
+
+![](media/figure_3.9.png)
+
+**Figure 3.9** Invalid and correct implementations of the `Bit` register.
+
+The invalid design exposes why the multiplexer is necessary: a register needs both state preservation and conditional overwrite. The correct solution uses the `load` bit as the mux selector, routing either the new `in` value or the old stored value back into the `DFF`. A 16-bit `Register` then follows by instantiating sixteen `Bit` chips in parallel.
+
+##### 3.4.3 RAM
+
+The Hack RAM hierarchy is built recursively. The roadmap begins with `RAM8`, then grows to `RAM64`, `RAM512`, `RAM4K`, and `RAM16K`.
+
+![](media/figure_wo_caption_3.1.png)
+
+To read from RAM, combinational selection logic routes the chosen register's output to the chip's output. To write, the input bus is broadcast to all child registers, while address decoding plus the `load` signal ensures that only the selected register accepts the new value.
+
+The important systems insight is that RAM gets its random-access property from combinational addressing logic. Hierarchical composition scales the memory size, while multiplexers and demultiplexers keep selection fast and direct.
+
+##### 3.4.4 Counter
+
+The counter is implemented by combining a `Register`, an incrementer from Chapter 2, and multiplexing logic that prioritizes `reset`, `load`, and `inc` behaviors.
+
+The same pattern appears again: persistent storage comes from the register, while control flow comes from combinational logic deciding which next-state value should be written back on the next cycle.
+
+#### 3.5 Project
+
+Project 3 asks the learner to implement the memory chips of the chapter using the supplied HDL stubs, tests, and compare files. The permitted building blocks are the primitive `DFF`, the chips built earlier in the project, and gates from previous chapters.
+
+The project uses two RAM subfolders for practical simulator reasons. Lower-level RAM chips live in `projects/03/a`, while higher-level ones live in `projects/03/b`, which encourages the simulator to use built-in versions of certain lower-level parts and prevents huge recursive in-memory constructions.
+
+The recommended path is to consult the HDL appendix and hardware simulator tutorial as needed, then build the chips in the `projects/03` folder in order.
+
+#### 3.6 Perspective
+
+The perspective section notes that real flip-flops are usually built from lower-level combinational gates in carefully designed feedback configurations, but that this physical detail is intentionally abstracted away here.
+
+The chapter also emphasizes that modern memory technologies are not necessarily implemented literally as textbook flip-flops, and that the recursive RAM constructions used in the course are elegant teaching designs rather than guaranteed optimal industrial ones.
+
+Still, the abstractions are fundamental: registers, RAM, and counters are standard building blocks across computer systems. Combined with the ALU from Chapter 2, they provide the remaining hardware pieces needed to build the CPU and the larger machine architecture introduced in Chapter 5.
