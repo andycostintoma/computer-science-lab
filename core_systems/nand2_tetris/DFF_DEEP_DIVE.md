@@ -7,7 +7,7 @@ Before this point, the chips are combinational. A combinational chip has no memo
 Memory requires a different idea. A memory chip must preserve information across time. To understand how that is possible, we need to climb one abstraction ladder:
 
 ```text
-feedback -> latch -> SR latch -> gated D latch -> D flip-flop -> Bit -> Register -> RAM
+feedback -> AND-OR latch -> SR latch -> gated D latch -> D flip-flop -> Bit -> Register -> RAM
 ```
 
 Nand2Tetris intentionally starts at `DFF` and treats it as primitive. This note explains the missing internal story so the primitive feels less magical.
@@ -39,23 +39,74 @@ That previous output is state.
 
 State means a system has a condition that persists over time.
 
-![A feedback loop can preserve a previous output](media/feedback-memory-cell.svg)
+Feedback is not a special kind of gate. It is just wiring.
 
-Consider this simple equation:
+You take the output wire and connect it back to one of the gate's inputs:
 
 ```text
-next Q = input OR old Q
+             +----+
+input ------>| f  |----> Q
+        +--->|    |      |
+        |    +----+      |
+        |                |
+        +----------------+
 ```
 
-`Q` is the stored output.
+The gate still computes normally. The only new thing is that one of its inputs is the previous output.
 
-If `old Q = 0` and `input = 1`, then:
+Because real gates have tiny propagation delays, this does not mean the output changes infinitely many times at once. A change moves through the gate, appears at the output a moment later, and then the feedback wire presents that new value back to the input. For the mental model in this note, we write that as:
+
+```text
+next Q = current input combined with old Q
+```
+
+`Q` means the output we are trying to store.
+
+### OR Gate With Feedback
+
+Start with an OR gate whose output is fed back into one of its inputs:
+
+```text
+next Q = set OR old Q
+```
+
+Here, the external input is called `set`, because it can force the stored value to `1`.
+
+The OR rule is:
+
+```text
+0 OR 0 = 0
+0 OR 1 = 1
+1 OR 0 = 1
+1 OR 1 = 1
+```
+
+So the feedback behavior is:
+
+| set | old Q | next Q | Meaning |
+|-----|-------|--------|---------|
+| 0 | 0 | 0 | hold 0 |
+| 0 | 1 | 1 | hold 1 |
+| 1 | 0 | 1 | set to 1 |
+| 1 | 1 | 1 | stay 1 |
+
+The important rows are the first two:
+
+```text
+set = 0
+next Q = 0 OR old Q
+next Q = old Q
+```
+
+When `set = 0`, the OR gate preserves the old value.
+
+If `old Q = 0` and `set = 1`, then:
 
 ```text
 next Q = 1 OR 0 = 1
 ```
 
-Now suppose `input` goes back to `0`. The circuit still has the old output feeding back:
+Now suppose `set` goes back to `0`. The circuit still has the old output feeding back:
 
 ```text
 next Q = 0 OR 1 = 1
@@ -65,19 +116,133 @@ The `1` keeps itself alive.
 
 This is the first hint of memory. The circuit is no longer merely calculating a fresh answer from outside inputs. It is preserving a previous value.
 
-This simple feedback circuit is not enough for a computer memory cell, because it can remember `1` but has no clean way to return to `0`. A useful memory cell needs controlled ways to set, reset, and hold its value.
-
-## 2. Set, Reset, And Hold
-
-A one-bit memory cell needs three basic operations:
+But this OR-feedback circuit has a problem: once it stores `1`, there is no way to force it back to `0`. If `old Q = 1`, then:
 
 ```text
-set   -> store 1
-reset -> store 0
-hold  -> keep the old value
+next Q = set OR 1
+next Q = 1
 ```
 
-One way to see this is through an AND-OR latch equation:
+No value of `set` can make the output `0`.
+
+So OR feedback gives us:
+
+```text
+set to 1
+hold old value
+```
+
+But it does not give us reset.
+
+### AND Gate With Feedback
+
+Now look at an AND gate with feedback:
+
+```text
+             +-----+
+keep ------->| AND |----> Q
+        +--->|     |      |
+        |    +-----+      |
+        |                 |
+        +-----------------+
+```
+
+The equation is:
+
+```text
+next Q = keep AND old Q
+```
+
+The external input is called `keep`, because it decides whether the old value is allowed to survive.
+
+The AND rule is:
+
+```text
+0 AND 0 = 0
+0 AND 1 = 0
+1 AND 0 = 0
+1 AND 1 = 1
+```
+
+So the feedback behavior is:
+
+| keep | old Q | next Q | Meaning |
+|------|-------|--------|---------|
+| 1 | 0 | 0 | hold 0 |
+| 1 | 1 | 1 | hold 1 |
+| 0 | 0 | 0 | stay 0 |
+| 0 | 1 | 0 | reset to 0 |
+
+The important rows are the first two:
+
+```text
+keep = 1
+next Q = 1 AND old Q
+next Q = old Q
+```
+
+When `keep = 1`, the AND gate preserves the old value.
+
+When `keep = 0`, the AND gate forces the output to `0`:
+
+```text
+next Q = 0 AND old Q
+next Q = 0
+```
+
+So AND feedback gives us:
+
+```text
+reset to 0
+hold old value
+```
+
+But it does not give us set.
+
+### Combining OR Feedback And AND Feedback
+
+Now the AND-OR latch should feel like a direct consequence of these two feedback patterns.
+
+The OR part provides the ability to force `1`:
+
+```text
+old Q OR set
+```
+
+The AND part provides the ability to force `0`:
+
+```text
+... AND keep
+```
+
+Combined:
+
+```text
+next Q = (old Q OR set) AND keep
+```
+
+Combining the two patterns gives one circuit the three operations we need:
+
+```text
+set to 1
+reset to 0
+hold old value
+```
+
+The next section treats this combined circuit as a named memory device: the AND-OR latch.
+
+![AND-OR latch with feedback](media/and-or-latch.jpg)
+
+## 2. The AND-OR Latch
+
+The AND-OR latch is a first complete one-bit memory idea. It combines the two feedback behaviors from the previous section:
+
+```text
+OR feedback  -> can set to 1 or hold
+AND feedback -> can reset to 0 or hold
+```
+
+The circuit can be summarized by one equation:
 
 ```text
 next Q = (old Q OR set) AND keep
@@ -85,11 +250,11 @@ next Q = (old Q OR set) AND keep
 
 The parts have simple roles:
 
-- `old Q` is the feedback path
-- `set` forces the stored bit to `1`
-- `keep` allows the stored bit to survive
+- `old Q` is the value returning through the feedback wire
+- `set` asks the OR part to force the value to `1`
+- `keep` asks the AND part to let the value survive
 
-The behavior is:
+Now derive the behavior from the equation.
 
 | set | keep | next Q | Meaning |
 |-----|------|--------|---------|
@@ -98,7 +263,7 @@ The behavior is:
 | 0 | 0 | 0 | reset |
 | 1 | 0 | 0 | reset wins in this form |
 
-The hold row is the memory row:
+The hold case is the memory case:
 
 ```text
 set = 0
@@ -108,19 +273,19 @@ next Q = (old Q OR 0) AND 1
 next Q = old Q
 ```
 
-If the cell held `0`, it keeps `0`:
+So if the cell held `0`, it keeps `0`:
 
 ```text
 next Q = (0 OR 0) AND 1 = 0
 ```
 
-If the cell held `1`, it keeps `1`:
+And if the cell held `1`, it keeps `1`:
 
 ```text
 next Q = (1 OR 0) AND 1 = 1
 ```
 
-The set row forces the value high:
+The set case forces the value high:
 
 ```text
 set = 1
@@ -130,7 +295,7 @@ next Q = (old Q OR 1) AND 1
 next Q = 1
 ```
 
-The reset row forces the value low:
+The reset case forces the value low:
 
 ```text
 keep = 0
@@ -139,52 +304,39 @@ next Q = anything AND 0
 next Q = 0
 ```
 
-The important idea is not that every real latch is built exactly from this equation. The important idea is that a memory cell needs a feedback path plus control signals that can force the state to `1` or `0`.
+At this point we have the essential memory operations:
+
+```text
+set   -> store 1
+reset -> store 0
+hold  -> keep the old value
+```
+
+The important idea is not that every real latch is built exactly in this AND-OR form. The important idea is the pattern: a memory cell needs a feedback path plus control signals that can force the state to `1` or `0`.
 
 The standard form of this idea is the SR latch.
 
 ## 3. The SR Latch
 
-`SR` means set-reset.
+A standard way to implement set-reset memory is to cross-couple two NOR gates.
 
-An SR latch stores one bit. It has two control inputs:
+![SR latch implemented from two cross-coupled NOR gates](media/sr-latch.png)
+
+The two gates are connected in a loop:
+
+- the top NOR gate produces `Q`
+- the bottom NOR gate produces `not Q`
+- `Q` feeds back into the bottom NOR gate
+- `not Q` feeds back into the top NOR gate
+
+That cross-coupling is the memory mechanism. Each output helps determine the other output's next value.
+
+The external inputs are:
 
 ```text
 S = set
 R = reset
 ```
-
-Its main output is usually called `Q`. Many diagrams also show `not Q`, the opposite of `Q`.
-
-The abstract behavior is:
-
-| S | R | Next Q | Meaning |
-|---|---|--------|---------|
-| 0 | 0 | old Q | hold |
-| 1 | 0 | 1 | set |
-| 0 | 1 | 0 | reset |
-| 1 | 1 | invalid | contradictory command |
-
-The hold row is what makes the SR latch memory:
-
-```text
-S = 0 and R = 0 -> keep old Q
-```
-
-When neither input is asking for a change, the latch maintains its previous state through feedback.
-
-### How An SR Latch Is Implemented
-
-A common SR latch implementation uses two NOR gates connected in a loop.
-
-![SR latch implemented from two cross-coupled NOR gates](media/sr-latch.png)
-
-The two NOR gates are cross-coupled:
-
-- the output of the top NOR gate feeds the bottom NOR gate
-- the output of the bottom NOR gate feeds the top NOR gate
-
-That cross-coupling is the feedback that creates memory.
 
 Using NOR gates, the latch equations are:
 
@@ -199,7 +351,7 @@ Remember the NOR rule:
 NOR(a, b) = 1 only when a = 0 and b = 0
 ```
 
-Now walk through the useful cases.
+Now derive the latch behavior from the implementation.
 
 ### Set
 
@@ -278,6 +430,15 @@ Again, the state reproduces itself.
 
 This is the precise mechanism of memory: the feedback loop settles into one of two stable states and stays there until `S` or `R` forces it to change.
 
+After deriving the cases, we can treat the SR latch as a simple abstract device:
+
+| S | R | Next Q | Meaning |
+|---|---|--------|---------|
+| 0 | 0 | old Q | hold |
+| 1 | 0 | 1 | set |
+| 0 | 1 | 0 | reset |
+| 1 | 1 | invalid | contradictory command |
+
 ### The Invalid Case
 
 The input `S = 1, R = 1` is invalid for this abstraction because it asks for both commands at once:
@@ -293,26 +454,25 @@ That is why higher-level memory elements avoid exposing raw `S` and `R` as indep
 
 ## 4. The Gated D Latch
 
-A raw SR latch is useful, but awkward. Whoever uses it must avoid the invalid input combination. A computer memory cell should have a cleaner interface:
+A raw SR latch is useful, but awkward. Whoever uses it must avoid the invalid input combination. The next implementation step is to put control logic in front of the SR latch so the invalid case cannot be requested accidentally.
+
+![Gated D latch built from enable logic and an SR latch](media/gated-d-latch.jpg)
+
+The circuit exposes two inputs:
 
 ```text
 D      = the data bit to store
 enable = whether writing is allowed
-Q      = the stored output
 ```
 
-This is the D latch.
-
-![Gated D latch built from enable logic and an SR latch](media/gated-d-latch.jpg)
-
-The D latch hides the raw `S` and `R` inputs. Internally, it generates safe set and reset signals from `D` and `enable`:
+Internally, the circuit converts `D` and `enable` into safe SR latch inputs:
 
 ```text
 S = enable AND D
 R = enable AND NOT(D)
 ```
 
-This removes the invalid case.
+This is the key implementation trick.
 
 If `D = 1`, then `NOT(D) = 0`, so:
 
@@ -332,7 +492,14 @@ R = enable AND 1
 
 The latch can reset, but it cannot set at the same time.
 
-The behavior is:
+The impossible case is now removed by construction:
+
+```text
+D and NOT(D) cannot both be 1
+therefore S and R cannot both be 1
+```
+
+Now the circuit can be understood abstractly as a D latch:
 
 | enable | D | S | R | Next Q |
 |--------|---|---|---|--------|
@@ -341,7 +508,7 @@ The behavior is:
 | 1 | 0 | 0 | 1 | 0 |
 | 1 | 1 | 1 | 0 | 1 |
 
-So the D latch has a simple rule:
+The public rule is now simple:
 
 ```text
 if enable = 0:
@@ -350,7 +517,9 @@ else:
     copy D into Q
 ```
 
-This looks very close to the Nand2Tetris `Bit` chip, whose behavior is controlled by `load`.
+This is a higher-level abstraction than the SR latch. The caller no longer says `set` or `reset` directly. The caller says, "Here is the data bit; store it if writing is enabled."
+
+That already looks close to the Nand2Tetris `Bit` chip, whose behavior is controlled by `load`.
 
 But a D latch still has an important timing problem.
 
@@ -444,6 +613,34 @@ An edge is the instant when the clock changes:
 low -> high   rising edge
 high -> low   falling edge
 ```
+
+One conceptual way to build edge-triggered behavior is to place two D latches in sequence:
+
+```text
+             clock = 0              clock = 1
+D input -> [ master latch ] -> [ slave latch ] -> Q output
+```
+
+The two latches are enabled on opposite clock levels:
+
+```text
+master latch enabled when clock = 0
+slave latch enabled when clock = 1
+```
+
+During the low part of the clock, the master latch can follow `D`, but the slave latch is closed. Since the slave is closed, the outside output `Q` does not change.
+
+At the rising edge, the master closes and the slave opens. The slave copies the master's final value to `Q`.
+
+After that, while the clock remains high, the master is closed, so changes on `D` cannot pass through to the slave.
+
+The result is the abstraction we wanted:
+
+```text
+Q changes only at the clock edge.
+```
+
+This is the implementation idea behind a D flip-flop. Real circuits have more timing details, but the abstraction is edge-triggered storage.
 
 Nand2Tetris abstracts away the internal construction and gives this behavior:
 
@@ -621,12 +818,13 @@ DFF output in this cycle equals DFF input from the previous cycle.
 
 ## Essential Model
 
-The whole chapter can be compressed into four ideas:
+The whole chapter can be compressed into five ideas:
 
 ```text
 Feedback lets a circuit preserve a previous output.
-An SR latch turns feedback into set, reset, and hold behavior.
-A D latch gives that memory cell one data input and one enable input.
+An AND-OR latch combines set, reset, and hold behavior.
+An SR latch implements the same memory idea with cross-coupled gates.
+A D latch hides raw set/reset behind one data input and one enable input.
 A DFF samples the data only at a clock edge, giving Nand2Tetris clean discrete-time memory.
 ```
 
@@ -634,8 +832,9 @@ And the construction ladder is:
 
 ```text
 feedback
+  -> AND-OR latch
   -> SR latch
-  -> D latch
+  -> gated D latch
   -> DFF
   -> Bit
   -> Register
