@@ -526,3 +526,1004 @@ The perspective section notes that real flip-flops are usually built from lower-
 The chapter also emphasizes that modern memory technologies are not necessarily implemented literally as textbook flip-flops, and that the recursive RAM constructions used in the course are elegant teaching designs rather than guaranteed optimal industrial ones.
 
 Still, the abstractions are fundamental: registers, RAM, and counters are standard building blocks across computer systems. Combined with the ALU from Chapter 2, they provide the remaining hardware pieces needed to build the CPU and the larger machine architecture introduced in Chapter 5.
+
+
+## Full Book Headings and Images Index
+
+This index is auto-generated from `The_Elements_of_Computing_Systems_2021.md` and includes every heading and image in source order.
+
+## Table of Contents
+
+## Preface
+
+### Scope
+
+### Courses
+
+### Resources
+
+### Structure
+
+### Projects
+
+### The Second Edition
+
+### Acknowledgments
+
+## I Hardware
+
+### Introduction
+
+#### Hello, World Below
+
+![](media/figure_wo_caption_I.1.png)
+
+#### Nand to Tetris
+
+![](media/figure_I.1.png)
+
+#### Abstraction and Implementation
+
+#### Methodology
+
+#### The Road Ahead
+
+### 1 Boolean Logic
+
+#### 1.1 Boolean Algebra
+
+![](media/figure_1.1.png)
+
+![](media/figure_1.2.png)
+
+##### Boolean Functions
+
+![](media/figure_1.3.png)
+
+##### Truth Tables and Boolean Expressions
+
+#### 1.2 Logic Gates
+
+![](media/figure_1.4.png)
+
+##### Primitive and Composite Gates
+
+![](media/figure_1.5.png)
+
+![](media/figure_1.6.png)
+
+#### 1.3 Hardware Construction
+
+##### 1.3.1 Hardware Description Language
+
+![](media/figure_1.7.png)
+
+##### Testing
+
+##### 1.3.2 Hardware Simulation
+
+![](media/figure_1.8.png)
+
+#### 1.4 Specification
+
+##### 1.4.1 Nand
+
+![](media/figure_wo_caption_1.1.png)
+
+![](media/figure_wo_caption_1.2.png)
+
+##### 1.4.2 Basic Logic Gates
+
+![](media/figure_wo_caption_1.3.png)
+
+![](media/figure_wo_caption_1.4.png)
+
+![](media/figure_wo_caption_1.5.png)
+
+![](media/figure_wo_caption_1.6.png)
+
+![](media/figure_1.9.png)
+
+![](media/figure_1.10.png)
+
+##### 1.4.3 Multi-Bit Versions of Basic Gates
+
+![](media/figure_wo_caption_1.7.png)
+
+![](media/figure_wo_caption_1.8.png)
+
+![](media/figure_wo_caption_1.9.png)
+
+![](media/figure_wo_caption_1.10.png)
+
+##### 1.4.4 Multi-Way Versions of Basic Gates
+
+![](media/figure_wo_caption_1.11.png)
+
+![](media/figure_wo_caption_1.12.png)
+
+![](media/figure_wo_caption_1.13.png)
+
+![](media/figure_wo_caption_1.14.png)
+
+![](media/figure_wo_caption_1.15.png)
+
+#### 1.5 Implementation
+
+##### 1.5.1 Behavioral Simulation
+
+![](media/figure_wo_caption_1.16.png)
+
+##### 1.5.2 Hardware Implementation
+
+##### 1.5.3 Built-In Chips
+
+#### 1.6 Project
+
+##### General Implementation Tips
+
+#### 1.7 Perspective
+
+### 2 Boolean Arithmetic
+
+#### 2.1 Arithmetic Operations
+
+#### 2.2 Binary Numbers
+
+![](media/2-1.png)
+
+![](media/2-2.png)
+
+#### 2.3 Binary Addition
+
+![](media/figure_wo_caption_2.1.png)
+
+#### 2.4 Signed Binary Numbers
+
+![](media/figure_2.1.png)
+
+#### 2.5 Specification
+
+##### 2.5.1 Adders
+
+![](media/figure_2.2.png)
+
+![](media/figure_2.3.png)
+
+![](media/figure_2.4.png)
+
+![](media/figure_wo_caption_2.2.png)
+
+##### 2.5.2 The Arithmetic Logic Unit
+
+![](media/figure_2.5a.png)
+
+![](media/figure_2.5b.png)
+
+![](media/figure_2.5c.png)
+
+#### 2.6 Implementation
+
+#### 2.7 Project
+
+#### 2.8 Perspective
+
+### 3 Memory
+
+#### 3.1 Memory Devices
+
+![](media/figure_3.1.png)
+
+#### 3.2 Sequential Logic
+
+##### 3.2.1 Time Matters
+
+![](media/figure_3.2.png)
+
+##### 3.2.2 Flip-Flops
+
+![](media/figure_3.3.png)
+
+##### 3.2.3 Combinational and Sequential Logic
+
+![](media/figure_3.4.png)
+
+#### 3.3 Specification
+
+##### 3.3.1 Data Flip-Flop
+
+##### 3.3.2 Registers
+
+![](media/figure_3.5.png)
+
+![](media/figure_3.6.png)
+
+##### 3.3.3 Random Access Memory
+
+![](media/figure_3.7.png)
+
+##### 3.3.4 Counter
+
+![](media/figure_3.8.png)
+
+#### 3.4 Implementation
+
+##### 3.4.1 Data Flip-Flop
+
+##### 3.4.2 Registers
+
+![](media/figure_3.9.png)
+
+##### 3.4.3 RAM
+
+![](media/figure_wo_caption_3.1.png)
+
+##### 3.4.4 Counter
+
+#### 3.5 Project
+
+#### 3.6 Perspective
+
+### 4 Machine Language
+
+#### 4.1 Machine Language: Overview
+
+##### 4.1.1 Hardware Elements
+
+##### 4.1.2 Languages
+
+##### 4.1.3 Instructions
+
+![](media/figure_wo_caption_4.1.png)
+
+![](media/figure_4.1.png)
+
+#### 4.2 The Hack Machine Language
+
+##### 4.2.1 Background
+
+![](media/figure_4.2.png)
+
+![](media/figure_4.3.png)
+
+##### 4.2.2 Program Example
+
+![](media/figure_4.4.png)
+
+##### 4.2.3 The Hack Language Specification
+
+![](media/figure_4.5.png)
+
+##### The A-instruction
+
+##### The C-instruction
+
+![](media/figure_wo_caption_4.2.png)
+
+##### 4.2.4 Symbols
+
+![](media/figure_wo_caption_4.3.png)
+
+##### 4.2.5 Input/Output Handling
+
+![](media/figure_wo_caption_4.4.png)
+
+##### 4.2.7 Syntax Conventions and File Formats
+
+#### 4.3 Hack Programming
+
+![](media/figure_4.6.png)
+
+![](media/figure_4.7.png)
+
+#### 4.4 Project
+
+![](media/figure_4.8.png)
+
+#### 4.5 Perspective
+
+### 5 Computer Architecture
+
+#### 5.1 Computer Architecture Fundamentals
+
+##### 5.1.1 The Stored Program Concept
+
+##### 5.1.2 The von Neumann Architecture
+
+![](media/figure_5.1.png)
+
+##### 5.1.3 Memory
+
+##### 5.1.4 Central Processing Unit
+
+##### 5.1.5 Input and Output
+
+#### 5.2 The Hack Hardware Platform: Specification
+
+##### 5.2.1 Overview
+
+##### 5.2.2 Central Processing Unit
+
+![](media/figure_5.2.png)
+
+##### 5.2.3 Instruction Memory
+
+![](media/figure_5.3.png)
+
+##### 5.2.4 Input/Output
+
+![](media/figure_5.4.png)
+
+![](media/figure_5.5.png)
+
+##### 5.2.5 Data Memory
+
+![](media/figure_5.6.png)
+
+##### 5.2.6 Computer
+
+![](media/figure_5.7.png)
+
+#### 5.3 Implementation
+
+##### 5.3.1 The Central Processing Unit
+
+![](media/figure_5.8.png)
+
+##### 5.3.2 Memory
+
+##### 5.3.3 Computer
+
+![](media/figure_5.9.png)
+
+#### 5.4 Project
+
+![](media/figure_5.10.png)
+
+#### 5.5 Perspective
+
+### 6 Assembler
+
+#### 6.1 Background
+
+![](media/figure_6.1.png)
+
+#### 6.2 The Hack Machine Language Specification
+
+##### 6.2.1 Programs
+
+![](media/figure_6.2.png)
+
+##### 6.2.2 Symbols
+
+##### 6.2.3 Syntax Conventions
+
+#### 6.3 Assembly-to-Binary Translation
+
+##### 6.3.1 Handling Instructions
+
+##### 6.3.2 Handling Symbols
+
+#### 6.4 Implementation
+
+##### 6.4.1 Developing a Basic Assembler
+
+##### The Parser
+
+![](media/figure_wo_caption_6.1.png)
+
+##### The Code Module
+
+![](media/figure_wo_caption_6.2.png)
+
+##### The Hack Assembler
+
+##### 6.4.2 Completing the Assembler
+
+##### The Symbol Table
+
+![](media/figure_wo_caption_6.3.png)
+
+#### 6.5 Project
+
+![](media/figure_6.3.png)
+
+#### 6.6 Perspective
+
+## II Software
+
+### Introduction
+
+#### A Taste of Jack Programming
+
+![](media/figure_II.1.png)
+
+![](media/figure_II.2.png)
+
+#### Program Compilation
+
+![](media/figure_II.3.png)
+
+### 7 Virtual Machine I: Processing
+
+#### 7.1 The Virtual Machine Paradigm
+
+![](media/figure_7.1.png)
+
+#### 7.2 Stack Machine
+
+##### 7.2.1 Push and Pop
+
+![](media/figure_7.2.png)
+
+##### 7.2.2 Stack Arithmetic
+
+![](media/figure_wo_caption_7.1.png)
+
+![](media/figure_7.3a.png)
+
+![](media/figure_7.3b.png)
+
+##### 7.2.3 Virtual Memory Segments
+
+![](media/figure_7.4.png)
+
+#### 7.3 VM Specification, Part I
+
+##### Push / Pop Commands
+
+![](media/1.png)
+
+##### Arithmetic-Logical Commands
+
+![](media/figure_7.5.png)
+
+#### 7.4 Implementation
+
+##### 7.4.1 Standard VM Mapping on the Hack Platform, Part I
+
+![](media/figure_wo_caption_7.2.png)
+
+![](media/figure_wo_caption_7.3.png)
+
+##### Memory Segments Mapping
+
+##### 7.4.2 The VM Emulator
+
+![](media/figure_7.6.png)
+
+##### 7.4.3 Design Suggestions for the VM Implementation
+
+##### Program Structure
+
+##### The Parser
+
+![](media/figure_wo_caption_7.4.png)
+
+##### The CodeWriter
+
+![](media/figure_wo_caption_7.5.png)
+
+##### The VM Translator
+
+##### Implementation Tips
+
+#### 7.5 Project
+
+##### Testing and Implementation Stages
+
+#### 7.6 Perspective
+
+### 8 Virtual Machine II: Control
+
+#### 8.1 High-Level Magic
+
+#### 8.2 Branching
+
+![](media/figure_8.1.png)
+
+#### 8.3 Functions
+
+![](media/figure_8.2.png)
+
+![](media/figure_8.3.png)
+
+![](media/figure_8.4.png)
+
+#### 8.4 VM Specification, Part II
+
+##### Branching Commands
+
+##### Function Commands
+
+##### VM Program
+
+#### 8.5 Implementation
+
+##### 8.5.1 Function Call and Return
+
+![](media/figure_8.5.png)
+
+##### 8.5.2 Standard VM Mapping on the Hack Platform, Part II
+
+![](media/figure_wo_caption_8.1.png)
+
+![](media/figure_8.6.png)
+
+##### 8.5.3 Design Suggestions for the VM Implementation
+
+##### The VMTranslator
+
+##### The Parser
+
+##### The CodeWriter
+
+![](media/figure_wo_caption_8.2.png)
+
+#### 8.6 Project
+
+##### Testing and Implementation Stages
+
+##### Implementation Tips
+
+#### 8.7 Perspective
+
+### 9 High-Level Language
+
+#### 9.1 Examples
+
+![](media/figure_9.1.png)
+
+![](media/figure_9.2.png)
+
+![](media/figure_9.3a.png)
+
+![](media/figure_9.3b.png)
+
+![](media/figure_9.4.png)
+
+![](media/figure_9.5.png)
+
+#### 9.2 The Jack Language Specification
+
+##### 9.2.1 Syntactic Elements
+
+![](media/figure_9.6.png)
+
+##### 9.2.2 Program Structure
+
+![](media/figure_wo_caption_9.1.png)
+
+![](media/figure_wo_caption_9.2.png)
+
+##### 9.2.3 Data Types
+
+![](media/figure_wo_caption_9.3.png)
+
+![](media/figure_wo_caption_9.4.png)
+
+![](media/figure_wo_caption_9.5.png)
+
+![](media/figure_wo_caption_9.6.png)
+
+![](media/figure_wo_caption_9.7.png)
+
+##### 9.2.4 Variables
+
+![](media/figure_9.7.png)
+
+##### 9.2.5 Statements
+
+![](media/figure_wo_caption_9.8.png)
+
+##### 9.2.6 Expressions
+
+##### 9.2.7 Subroutine Calls
+
+##### Function calls / Constructor calls:
+
+##### Method calls:
+
+![](media/figure_wo_caption_9.9.png)
+
+##### 9.2.8 Object Construction and Disposal
+
+#### 9.3 Writing Jack Applications
+
+![](media/figure_9.8.png)
+
+#### 9.4 Project
+
+##### Compiling and Running a Jack Program
+
+#### 9.5 Perspective
+
+### 10 Compiler I: Syntax Analysis
+
+#### 10.1 Background
+
+![](media/figure_10.1.png)
+
+##### 10.1.1 Lexical Analysis
+
+![](media/figure_10.2.png)
+
+##### 10.1.2 Grammars
+
+![](media/figure_10.3.png)
+
+##### 10.1.3 Parsing
+
+![](media/figure_10.4a.png)
+
+![](media/figure_10.4b.png)
+
+##### 10.1.4 Parser
+
+![](media/figure_wo_caption_10.1.png)
+
+![](media/figure_wo_caption_10.2.png)
+
+#### 10.2 Specification
+
+##### 10.2.1 The Jack Language Grammar
+
+![](media/figure_wo_caption_10.3.png)
+
+![](media/figure_10.5.png)
+
+##### 10.2.2 A Syntax Analyzer for the Jack Language
+
+![](media/figure_wo_caption_10.4.png)
+
+#### 10.3 Implementation
+
+##### The JackTokenizer
+
+![](media/figure_wo_caption_10.7.png)
+
+##### The CompilationEngine
+
+![](media/figure_wo_caption_10.8.png)
+
+##### The JackAnalyzer
+
+#### 10.4 Project
+
+##### 10.4.1 Tokenizer
+
+![](media/figure_wo_caption_10.5.png)
+
+##### Testing Guidelines
+
+##### 10.4.2 Compilation Engine
+
+![](media/figure_wo_caption_10.6.png)
+
+#### 10.5 Perspective
+
+### 11 Compiler II: Code Generation
+
+#### 11.1 Code Generation
+
+![](media/figure_11.1.png)
+
+##### 11.1.1 Handling Variables
+
+![](media/figure_11.2.png)
+
+##### 11.1.2 Compiling Expressions
+
+![](media/figure_11.3.png)
+
+![](media/figure_11.4.png)
+
+![](media/figure_11.5.png)
+
+##### 11.1.3 Compiling Strings
+
+##### 11.1.4 Compiling Statements
+
+![](media/figure_11.6.png)
+
+##### 11.1.5 Handling Objects
+
+##### 11.1.5.1 Compiling Constructors
+
+![](media/figure_11.7.png)
+
+![](media/figure_11.8.png)
+
+##### 11.1.5.2 Compiling Methods
+
+![](media/figure_wo_caption_11.1.png)
+
+![](media/figure_11.9.png)
+
+![](media/figure_wo_caption_11.2.png)
+
+![](media/figure_11.10.png)
+
+##### 11.1.6 Compiling Arrays
+
+![](media/figure_11.11.png)
+
+![](media/figure_11.12.png)
+
+#### 11.2 Specification
+
+#### 11.3 Implementation
+
+##### 11.3.1 Standard Mapping over the Virtual Machine
+
+##### 11.3.2 Implementation Guidelines
+
+##### The Operating System
+
+##### 11.3.3 Software Architecture
+
+##### The JackCompiler
+
+##### The JackTokenizer
+
+##### The SymbolTable
+
+![](media/figure_wo_caption_11.3.png)
+
+##### The VMWriter
+
+![](media/figure_wo_caption_11.4.png)
+
+##### The CompilationEngine
+
+![](media/figure_wo_caption_11.5.png)
+
+#### 11.4 Project
+
+##### Implementation Stages
+
+##### Test Programs
+
+#### 11.5 Perspective
+
+### 12 Operating System
+
+#### 12.1 Background
+
+##### 12.1.1 Mathematical Operations
+
+#### Efficiency First
+
+#### Multiplication
+
+![](media/figure_12.1.png)
+
+#### Division
+
+![](media/figure_12.2.png)
+
+#### Square Root
+
+![](media/figure_12.3.png)
+
+##### 12.1.2 Strings
+
+![](media/figure_wo_caption_12.1.png)
+
+![](media/figure_12.4.png)
+
+##### 12.1.3 Memory Management
+
+![](media/figure_12.5a.png)
+
+![](media/figure_12.5b.png)
+
+##### 12.1.4 Graphical Output
+
+![](media/figure_12.6.png)
+
+![](media/figure_12.7.png)
+
+![](media/figure_12.8.png)
+
+##### 12.1.5 Character Output
+
+![](media/figure_12.9.png)
+
+##### 12.1.6 Keyboard Input
+
+![](media/figure_12.10.png)
+
+#### 12.2 The Jack OS Specification
+
+#### 12.3 Implementation
+
+##### Math
+
+##### String
+
+##### Array
+
+##### Memory
+
+![](media/figure_12.11.png)
+
+![](media/figure_12.12.png)
+
+##### Screen
+
+##### Output
+
+##### Keyboard
+
+##### Sys
+
+#### 12.4 Project
+
+#### Testing Plan
+
+![](media/figure_12.13.png)
+
+![](media/figure_12.14.png)
+
+![](media/figure_12.15.png)
+
+![](media/figure_12.16.png)
+
+##### Sys
+
+#### Complete Test
+
+#### 12.5 Perspective
+
+### 13 More Fun to Go
+
+#### Hardware Realizations
+
+#### Hardware Improvements
+
+#### High-Level Languages
+
+#### Optimization
+
+#### Communications
+
+## Appendix 1: Boolean Function Synthesis
+
+### A1.1 Boolean Algebra
+
+![](media/figure_wo_caption_A1.1.png)
+
+![](media/figure_wo_caption_A1.2.png)
+
+### A1.2 Synthesizing Boolean Functions
+
+![](media/figure_A1.1.png)
+
+### A1.3 The Expressive Power of Nand
+
+## Appendix 2: Hardware Description Language
+
+### A2.1 HDL Basics
+
+![](media/figure_A2.1.png)
+
+![](media/figure_wo_caption_A2.1.png)
+
+![](media/figure_wo_caption_A2.2.png)
+
+![](media/figure_wo_caption_A2.3.png)
+
+![](media/figure_wo_caption_A2.4.png)
+
+### A2.2 Multi-Bit Buses
+
+![](media/figure_wo_caption_A2.5.png)
+
+![](media/figure_wo_caption_A2.6.png)
+
+![](media/figure_A2.2.png)
+
+### A2.3 Built-In Chips
+
+![](media/figure_A2.3.png)
+
+### A2.4 Sequential Chips
+
+![](media/figure_wo_caption_A2.7.png)
+
+![](media/figure_A2.4.png)
+
+![](media/figure_wo_caption_A2.8.png)
+
+### A2.5 Visualizing Chips
+
+![](media/figure_A2.5.png)
+
+![](media/figure_A2.6.png)
+
+### A2.6 HDL Survival Guide
+
+![](media/figure_wo_caption_A2.9.png)
+
+![](media/figure_wo_caption_A2.10.png)
+
+![](media/figure_wo_caption_A2.11.png)
+
+![](media/figure_wo_caption_A2.12.png)
+
+## Appendix 3: Test Description Language
+
+### A3.1 General Guidelines
+
+![](media/figure_wo_caption_A3.1.png)
+
+### A3.2 Testing Chips on the Hardware Simulator
+
+![](media/figure_A3.1.png)
+
+![](media/figure_wo_caption_A3.2.png)
+
+![](media/figure_A3.2.png)
+
+#### Setup Commands
+
+![](media/figure_wo_caption_A3.3.png)
+
+![](media/figure_wo_caption_A3.4.png)
+
+#### Simulation Commands
+
+![](media/figure_A3.3.png)
+
+![](media/figure_wo_caption_A3.5.png)
+
+### A3.3 Testing Machine Language Programs on the CPU Emulator
+
+![](media/figure_A3.4.png)
+
+![](media/2.png)
+
+#### Default Test Script
+
+![](media/figure_wo_caption_A3.6.png)
+
+### A3.4 Testing VM Programs on the VM Emulator
+
+![](media/figure_A3.5.png)
+
+![](media/3.png)
+
+![](media/4.png)
+
+![](media/5.png)
+
+#### Default Script
+
+![](media/figure_wo_caption_A3.7.png)
+
+## Appendix 4: The Hack Chip Set
+
+![](media/figure_wo_caption_A4.1.png)
+
+## Appendix 5: The Hack Character Set
+
+![](media/figure_wo_caption_A5.1.png)
+
+## Appendix 6: The Jack OS API
+
+### Math
+
+### String
+
+### Array
+
+### Output
+
+### Screen
+
+### Keyboard
+
+### Memory
+
+### Sys
