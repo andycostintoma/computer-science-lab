@@ -177,7 +177,7 @@ When neither input is asking for a change, the latch maintains its previous stat
 
 A common SR latch implementation uses two NOR gates connected in a loop.
 
-![SR latch implemented from two cross-coupled NOR gates](media/sr-nor-latch.svg)
+![SR latch implemented from two cross-coupled NOR gates](media/sr-latch.png)
 
 The two NOR gates are cross-coupled:
 
