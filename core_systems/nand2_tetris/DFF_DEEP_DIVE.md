@@ -303,7 +303,7 @@ Q      = the stored output
 
 This is the D latch.
 
-![Gated D latch built from enable logic and an SR latch](media/gated-d-latch.svg)
+![Gated D latch built from enable logic and an SR latch](media/gated-d-latch.jpg)
 
 The D latch hides the raw `S` and `R` inputs. Internally, it generates safe set and reset signals from `D` and `enable`:
 
