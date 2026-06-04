@@ -64,6 +64,86 @@ State means: the circuit has a condition that persists over time.
 
 ![Feedback-based latch intuition](media/06-and-or-latch-course.png)
 
+### How The AND-OR Latch Works
+
+The figure above is not just decoration. It is showing the first real trick behind memory: use feedback, then add controls that can force the feedback loop into `1` or `0`.
+
+The circuit can be understood as storing one value called `Q`.
+
+```text
+Q = the stored bit
+```
+
+The stored bit is fed back into the circuit. That means the circuit can reuse its previous output when computing its next output.
+
+A simple way to model the AND-OR latch is:
+
+```text
+next Q = (old Q OR set) AND keep
+```
+
+Where:
+
+- `set` is the signal that forces the latch to store `1`
+- `keep` is the signal that allows the old value to survive
+- if `keep = 0`, the latch is forced to `0`
+
+So the circuit has three useful modes:
+
+| set | keep | next Q | Meaning |
+|-----|------|--------|---------|
+| 0 | 1 | old Q | hold the previous value |
+| 1 | 1 | 1 | set the stored bit to 1 |
+| 0 | 0 | 0 | reset the stored bit to 0 |
+| 1 | 0 | 0 | reset wins in this version |
+
+The most important mode is hold:
+
+```text
+set = 0
+keep = 1
+
+next Q = (old Q OR 0) AND 1
+next Q = old Q
+```
+
+That means if the latch stored `0`, it keeps `0`:
+
+```text
+next Q = (0 OR 0) AND 1 = 0
+```
+
+And if the latch stored `1`, it keeps `1`:
+
+```text
+next Q = (1 OR 0) AND 1 = 1
+```
+
+That is memory: the output is not being freshly calculated only from outside inputs. It is preserving its previous value through feedback.
+
+The set mode forces the latch to `1`:
+
+```text
+set = 1
+keep = 1
+
+next Q = (old Q OR 1) AND 1
+next Q = 1
+```
+
+The reset mode forces the latch to `0`:
+
+```text
+keep = 0
+
+next Q = anything AND 0
+next Q = 0
+```
+
+This is why the AND-OR latch is a good teaching bridge. The `OR` part explains how the circuit can be forced high. The `AND` part explains how the circuit can be forced low. The feedback loop explains how it can hold a value when neither force is active.
+
+The later `SR latch` is the same idea expressed with more standard `set` and `reset` names.
+
 ### Simple Feedback Intuition
 
 Imagine this informal circuit:
