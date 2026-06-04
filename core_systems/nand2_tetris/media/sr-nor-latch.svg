@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="560" viewBox="0 0 980 560" role="img" aria-labelledby="title desc">
+  <title id="title">SR latch from cross-coupled NOR gates</title>
+  <desc id="desc">An SR latch implemented using two cross-coupled NOR gates. The Q output feeds back to the lower NOR gate, and the not Q output feeds back to the upper NOR gate.</desc>
+  <rect width="980" height="560" fill="#ffffff"/>
+  <defs>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M2,2 L10,6 L2,10 Z" fill="#111111"/>
+    </marker>
+  </defs>
+  <text x="490" y="48" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700" fill="#111111">SR Latch Implemented With NOR Gates</text>
+
+  <path d="M360 120 C450 120 490 172 490 220 C490 268 450 320 360 320 C400 270 400 170 360 120 Z" fill="#f2f6ff" stroke="#111111" stroke-width="3"/>
+  <circle cx="505" cy="220" r="13" fill="#ffffff" stroke="#111111" stroke-width="3"/>
+  <text x="423" y="228" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700" fill="#111111">NOR</text>
+
+  <path d="M360 340 C450 340 490 392 490 440 C490 488 450 540 360 540 C400 490 400 390 360 340 Z" fill="#fff7e6" stroke="#111111" stroke-width="3"/>
+  <circle cx="505" cy="440" r="13" fill="#ffffff" stroke="#111111" stroke-width="3"/>
+  <text x="423" y="448" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700" fill="#111111">NOR</text>
+
+  <line x1="115" y1="170" x2="366" y2="170" stroke="#111111" stroke-width="4" marker-end="url(#arrow)"/>
+  <text x="82" y="178" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700" fill="#111111">R</text>
+
+  <line x1="115" y1="490" x2="366" y2="490" stroke="#111111" stroke-width="4" marker-end="url(#arrow)"/>
+  <text x="82" y="498" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700" fill="#111111">S</text>
+
+  <line x1="518" y1="220" x2="850" y2="220" stroke="#111111" stroke-width="4" marker-end="url(#arrow)"/>
+  <text x="866" y="228" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700" fill="#111111">Q</text>
+
+  <line x1="518" y1="440" x2="850" y2="440" stroke="#111111" stroke-width="4" marker-end="url(#arrow)"/>
+  <text x="866" y="448" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700" fill="#111111">not Q</text>
+
+  <path d="M640 220 L640 110 L260 110 L260 390 L360 390" fill="none" stroke="#111111" stroke-width="4" marker-end="url(#arrow)"/>
+  <path d="M640 440 L640 550 L260 550 L260 270 L360 270" fill="none" stroke="#111111" stroke-width="4" marker-end="url(#arrow)"/>
+
+  <text x="490" y="92" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#111111">Cross-coupled outputs feed back into the opposite gate.</text>
+</svg>

@@ -1,103 +1,104 @@
-# DFF Deep Dive: From Feedback To Flip-Flops
+# From Gates To Memory: Latches, Flip-Flops, And The DFF
 
-This note is self-contained. You do not need the Crash Course Computer Science notes open beside it. The goal is to explain the missing bridge between ordinary logic gates and the `DFF` primitive used in Nand2Tetris Chapter 3.
+Chapter 3 of Nand2Tetris begins with a new kind of chip: the Data Flip-Flop, or `DFF`.
 
-Nand2Tetris starts Chapter 3 by saying that memory devices are built from a primitive gate called a Data Flip-Flop, or `DFF`. The book intentionally does not show how a `DFF` is built internally. It treats `DFF` the same way Chapter 1 treated `Nand`: as a given low-level building block.
+Before this point, the chips are combinational. A combinational chip has no memory: its output is determined only by its current inputs. If the inputs change, the output changes. The chip has no concept of what happened earlier.
 
-That is good for building the computer, but it can feel like a conceptual jump. This note fills that gap.
-
-The full ladder is:
+Memory requires a different idea. A memory chip must preserve information across time. To understand how that is possible, we need to climb one abstraction ladder:
 
 ```text
-feedback -> SR latch -> gated latch -> D latch -> D flip-flop -> Bit -> Register -> RAM
+feedback -> latch -> SR latch -> gated D latch -> D flip-flop -> Bit -> Register -> RAM
 ```
 
-The six core steps are:
+Nand2Tetris intentionally starts at `DFF` and treats it as primitive. This note explains the missing internal story so the primitive feels less magical.
+
+## 1. Feedback
+
+The simplest way for a circuit to remember something is to feed its output back into itself.
+
+In an ordinary combinational circuit, information flows in one direction:
 
 ```text
-1. Feedback means a circuit can remember.
-2. An SR latch can set, reset, or hold one bit.
-3. A gated latch adds write control.
-4. A D latch gives one safe data input.
-5. A clock coordinates when state changes.
-6. A D flip-flop samples data only at a clock edge.
+inputs -> logic -> output
 ```
 
-## 1. Feedback Means A Circuit Can Remember
-
-In Chapters 1 and 2, most chips are combinational circuits.
-
-A combinational circuit has no memory. Its output depends only on its current inputs.
+With feedback, the output becomes part of the next input:
 
 ```text
-current inputs -> logic gates -> current output
+external input -> logic -> output
+                    ^        |
+                    |________|
 ```
 
-Example:
-
-```text
-And(a, b) = a AND b
-```
-
-If `a` or `b` changes, the output changes. The chip does not remember what `a` or `b` used to be.
-
-Memory requires a different idea: feedback.
-
-Feedback means the output of a circuit is routed back into the circuit as one of its future inputs.
-
-```text
-        +-------+
-input ->| logic |-> output
-        +-------+     |
-            ^         |
-            |_________|
-```
-
-Now the output can depend on two things:
+This changes the meaning of the circuit. The output can now depend on two things:
 
 - the current external input
-- the previous output that was fed back
+- the previous output
 
 That previous output is state.
 
-State means: the circuit has a condition that persists over time.
+State means a system has a condition that persists over time.
 
-![Feedback-based latch intuition](media/06-and-or-latch-course.png)
+![A feedback loop can preserve a previous output](media/feedback-memory-cell.svg)
 
-### How The AND-OR Latch Works
-
-The figure above is not just decoration. It is showing the first real trick behind memory: use feedback, then add controls that can force the feedback loop into `1` or `0`.
-
-The circuit can be understood as storing one value called `Q`.
+Consider this simple equation:
 
 ```text
-Q = the stored bit
+next Q = input OR old Q
 ```
 
-The stored bit is fed back into the circuit. That means the circuit can reuse its previous output when computing its next output.
+`Q` is the stored output.
 
-A simple way to model the AND-OR latch is:
+If `old Q = 0` and `input = 1`, then:
+
+```text
+next Q = 1 OR 0 = 1
+```
+
+Now suppose `input` goes back to `0`. The circuit still has the old output feeding back:
+
+```text
+next Q = 0 OR 1 = 1
+```
+
+The `1` keeps itself alive.
+
+This is the first hint of memory. The circuit is no longer merely calculating a fresh answer from outside inputs. It is preserving a previous value.
+
+This simple feedback circuit is not enough for a computer memory cell, because it can remember `1` but has no clean way to return to `0`. A useful memory cell needs controlled ways to set, reset, and hold its value.
+
+## 2. Set, Reset, And Hold
+
+A one-bit memory cell needs three basic operations:
+
+```text
+set   -> store 1
+reset -> store 0
+hold  -> keep the old value
+```
+
+One way to see this is through an AND-OR latch equation:
 
 ```text
 next Q = (old Q OR set) AND keep
 ```
 
-Where:
+The parts have simple roles:
 
-- `set` is the signal that forces the latch to store `1`
-- `keep` is the signal that allows the old value to survive
-- if `keep = 0`, the latch is forced to `0`
+- `old Q` is the feedback path
+- `set` forces the stored bit to `1`
+- `keep` allows the stored bit to survive
 
-So the circuit has three useful modes:
+The behavior is:
 
 | set | keep | next Q | Meaning |
 |-----|------|--------|---------|
-| 0 | 1 | old Q | hold the previous value |
-| 1 | 1 | 1 | set the stored bit to 1 |
-| 0 | 0 | 0 | reset the stored bit to 0 |
-| 1 | 0 | 0 | reset wins in this version |
+| 0 | 1 | old Q | hold |
+| 1 | 1 | 1 | set |
+| 0 | 0 | 0 | reset |
+| 1 | 0 | 0 | reset wins in this form |
 
-The most important mode is hold:
+The hold row is the memory row:
 
 ```text
 set = 0
@@ -107,21 +108,19 @@ next Q = (old Q OR 0) AND 1
 next Q = old Q
 ```
 
-That means if the latch stored `0`, it keeps `0`:
+If the cell held `0`, it keeps `0`:
 
 ```text
 next Q = (0 OR 0) AND 1 = 0
 ```
 
-And if the latch stored `1`, it keeps `1`:
+If the cell held `1`, it keeps `1`:
 
 ```text
 next Q = (1 OR 0) AND 1 = 1
 ```
 
-That is memory: the output is not being freshly calculated only from outside inputs. It is preserving its previous value through feedback.
-
-The set mode forces the latch to `1`:
+The set row forces the value high:
 
 ```text
 set = 1
@@ -131,7 +130,7 @@ next Q = (old Q OR 1) AND 1
 next Q = 1
 ```
 
-The reset mode forces the latch to `0`:
+The reset row forces the value low:
 
 ```text
 keep = 0
@@ -140,220 +139,224 @@ next Q = anything AND 0
 next Q = 0
 ```
 
-This is why the AND-OR latch is a good teaching bridge. The `OR` part explains how the circuit can be forced high. The `AND` part explains how the circuit can be forced low. The feedback loop explains how it can hold a value when neither force is active.
+The important idea is not that every real latch is built exactly from this equation. The important idea is that a memory cell needs a feedback path plus control signals that can force the state to `1` or `0`.
 
-The later `SR latch` is the same idea expressed with more standard `set` and `reset` names.
+The standard form of this idea is the SR latch.
 
-### Simple Feedback Intuition
+## 3. The SR Latch
 
-Imagine this informal circuit:
+`SR` means set-reset.
 
-```text
-new output = input OR old output
-```
-
-If `old output` is `0` and `input` becomes `1`, the new output becomes `1`.
-
-Then, even if `input` goes back to `0`, the circuit still sees:
+An SR latch stores one bit. It has two control inputs:
 
 ```text
-new output = 0 OR old output
-new output = 0 OR 1
-new output = 1
+S = set
+R = reset
 ```
 
-The `1` keeps itself alive through feedback.
+Its main output is usually called `Q`. Many diagrams also show `not Q`, the opposite of `Q`.
 
-This is not yet a good computer memory cell, because once it becomes `1`, it cannot easily be reset. But it shows the important idea: feedback can preserve information.
+The abstract behavior is:
 
-### Bistable State
+| S | R | Next Q | Meaning |
+|---|---|--------|---------|
+| 0 | 0 | old Q | hold |
+| 1 | 0 | 1 | set |
+| 0 | 1 | 0 | reset |
+| 1 | 1 | invalid | contradictory command |
 
-A useful memory element must be bistable.
-
-`Bistable` means it has two stable states:
-
-```text
-stable 0
-stable 1
-```
-
-If it is in state `0`, it tends to remain `0` until forced to change.
-
-If it is in state `1`, it tends to remain `1` until forced to change.
-
-That is exactly what one bit of memory needs.
-
-## 2. SR Latch: Set, Reset, Hold
-
-The first practical one-bit memory circuit is usually explained as an `SR latch`.
-
-`SR` means:
-
-- `S` = set
-- `R` = reset
-
-The latch stores one bit. Its output is usually called `Q`.
-
-```text
-          +----------+
-S ------->|          |----> Q
-R ------->| SR latch |
-          |          |----> NOT Q
-          +----------+
-```
-
-The simplified behavior is:
-
-| S | R | Next Q |
-|---|---|--------|
-| 0 | 0 | keep old Q |
-| 1 | 0 | 1 |
-| 0 | 1 | 0 |
-| 1 | 1 | invalid / ambiguous |
-
-The key row is the first one:
+The hold row is what makes the SR latch memory:
 
 ```text
 S = 0 and R = 0 -> keep old Q
 ```
 
-That is memory. When the latch is not being told to set or reset, it holds its previous value.
+When neither input is asking for a change, the latch maintains its previous state through feedback.
 
-### Why The Invalid Case Exists
+### How An SR Latch Is Implemented
 
-The `S = 1, R = 1` case is invalid because it asks the latch to do two contradictory things at once:
+A common SR latch implementation uses two NOR gates connected in a loop.
+
+![SR latch implemented from two cross-coupled NOR gates](media/sr-nor-latch.svg)
+
+The two NOR gates are cross-coupled:
+
+- the output of the top NOR gate feeds the bottom NOR gate
+- the output of the bottom NOR gate feeds the top NOR gate
+
+That cross-coupling is the feedback that creates memory.
+
+Using NOR gates, the latch equations are:
+
+```text
+Q     = NOR(R, not Q)
+not Q = NOR(S, Q)
+```
+
+Remember the NOR rule:
+
+```text
+NOR(a, b) = 1 only when a = 0 and b = 0
+```
+
+Now walk through the useful cases.
+
+### Set
+
+To set the latch:
+
+```text
+S = 1
+R = 0
+```
+
+Since `S = 1`, the lower NOR gate is forced to output `0`:
+
+```text
+not Q = NOR(1, Q) = 0
+```
+
+That `0` feeds into the top NOR gate. Since `R = 0`, the top NOR gate sees two zeros:
+
+```text
+Q = NOR(0, 0) = 1
+```
+
+So the latch stores `1`.
+
+### Reset
+
+To reset the latch:
+
+```text
+S = 0
+R = 1
+```
+
+Since `R = 1`, the top NOR gate is forced to output `0`:
+
+```text
+Q = NOR(1, not Q) = 0
+```
+
+That `0` feeds into the lower NOR gate. Since `S = 0`, the lower NOR gate sees two zeros:
+
+```text
+not Q = NOR(0, 0) = 1
+```
+
+So the latch stores `0`.
+
+### Hold
+
+To hold the latch:
+
+```text
+S = 0
+R = 0
+```
+
+If the latch is currently storing `1`, then `Q = 1` and `not Q = 0`.
+
+Substitute those values into the equations:
+
+```text
+Q     = NOR(0, 0) = 1
+not Q = NOR(0, 1) = 0
+```
+
+The state reproduces itself.
+
+If the latch is currently storing `0`, then `Q = 0` and `not Q = 1`.
+
+```text
+Q     = NOR(0, 1) = 0
+not Q = NOR(0, 0) = 1
+```
+
+Again, the state reproduces itself.
+
+This is the precise mechanism of memory: the feedback loop settles into one of two stable states and stays there until `S` or `R` forces it to change.
+
+### The Invalid Case
+
+The input `S = 1, R = 1` is invalid for this abstraction because it asks for both commands at once:
 
 ```text
 set Q to 1
 reset Q to 0
 ```
 
-Real latch implementations differ in the exact electrical result, but as a logical abstraction this input combination should be avoided.
+In the NOR implementation, both outputs are forced to `0` while both inputs are `1`. That breaks the usual relationship where `not Q` is the opposite of `Q`. When the inputs return to `0`, the final state may depend on tiny timing differences.
 
-So the SR latch gives us memory, but the interface is awkward. The caller must carefully avoid activating set and reset at the same time.
+That is why higher-level memory elements avoid exposing raw `S` and `R` as independent public inputs.
 
-## 3. Gated Latch: Add A Write Enable
+## 4. The Gated D Latch
 
-A raw SR latch changes whenever its control inputs tell it to change. A computer memory cell needs stronger control.
-
-Usually we want this behavior:
+A raw SR latch is useful, but awkward. Whoever uses it must avoid the invalid input combination. A computer memory cell should have a cleaner interface:
 
 ```text
-if write is active:
-    store the new value
-else:
-    keep the old value
+D      = the data bit to store
+enable = whether writing is allowed
+Q      = the stored output
 ```
 
-This is where a gated latch comes in.
+This is the D latch.
 
-A gated latch adds a control input usually called one of these:
+![Gated D latch built from enable logic and an SR latch](media/gated-d-latch.svg)
 
-- `enable`
-- `write`
-- `load`
-
-They mean the same basic thing: allow the stored value to change.
-
-```text
-               +-------------+
-data --------->|             |----> Q
-enable ------->| gated latch |
-               +-------------+
-```
-
-![Gated latch circuit](media/06-gated-latch-circuit.png)
-
-The behavior is:
-
-| enable | data | Next Q |
-|--------|------|--------|
-| 0 | 0 | keep old Q |
-| 0 | 1 | keep old Q |
-| 1 | 0 | 0 |
-| 1 | 1 | 1 |
-
-The enable input separates two questions:
-
-- What value would I like to store? That is `data`.
-- Am I allowed to store it now? That is `enable`.
-
-This is already very close to Nand2Tetris's `Bit` chip idea:
-
-```text
-if load:
-    out becomes in
-else:
-    out stays the same
-```
-
-But a basic gated latch is still level-sensitive. That means it can keep changing while `enable` is active. We will return to this problem in step 5.
-
-## 4. D Latch: One Safe Data Input
-
-A `D latch` is a safer and cleaner version of a gated latch.
-
-`D` means data.
-
-Instead of giving the outside world separate `S` and `R` inputs, the D latch exposes one data input:
-
-```text
-D = the bit I want to store
-```
-
-It also exposes one enable input:
-
-```text
-enable = whether the latch is allowed to copy D
-```
-
-The output is:
-
-```text
-Q = the currently stored bit
-```
-
-![Gated D latch based on an SR NAND latch](media/d-type-transparent-latch-wikimedia.png)
-
-Source: Wikimedia Commons, `D-Type_Transparent_Latch.svg`, rendered locally as PNG.
-
-Internally, the D latch converts `D` into safe set/reset signals:
+The D latch hides the raw `S` and `R` inputs. Internally, it generates safe set and reset signals from `D` and `enable`:
 
 ```text
 S = enable AND D
 R = enable AND NOT(D)
 ```
 
-That gives this behavior:
+This removes the invalid case.
+
+If `D = 1`, then `NOT(D) = 0`, so:
+
+```text
+S = enable AND 1
+R = enable AND 0 = 0
+```
+
+The latch can set, but it cannot reset at the same time.
+
+If `D = 0`, then `NOT(D) = 1`, so:
+
+```text
+S = enable AND 0 = 0
+R = enable AND 1
+```
+
+The latch can reset, but it cannot set at the same time.
+
+The behavior is:
 
 | enable | D | S | R | Next Q |
 |--------|---|---|---|--------|
-| 0 | 0 | 0 | 0 | keep old Q |
-| 0 | 1 | 0 | 0 | keep old Q |
+| 0 | 0 | 0 | 0 | old Q |
+| 0 | 1 | 0 | 0 | old Q |
 | 1 | 0 | 0 | 1 | 0 |
 | 1 | 1 | 1 | 0 | 1 |
 
-Notice what disappeared: the invalid `S = 1, R = 1` case.
-
-Why?
-
-Because `D` and `NOT(D)` cannot both be `1` at the same time.
+So the D latch has a simple rule:
 
 ```text
-if D = 1, then NOT(D) = 0
-if D = 0, then NOT(D) = 1
+if enable = 0:
+    hold the old value
+else:
+    copy D into Q
 ```
 
-So the D latch gives us a clean one-bit storage interface:
+This looks very close to the Nand2Tetris `Bit` chip, whose behavior is controlled by `load`.
 
-```text
-enable = 0 -> hold old value
-enable = 1 -> copy D into Q
-```
+But a D latch still has an important timing problem.
 
-### The Important Problem: Transparency
+### Transparency
 
-A D latch is normally level-sensitive.
+A D latch is level-sensitive.
 
 That means:
 
@@ -365,9 +368,7 @@ while enable = 0:
     Q holds its previous value
 ```
 
-When `enable = 1`, the latch is called transparent.
-
-Transparent means changes on `D` pass through to `Q`.
+When `enable = 1`, the latch is called transparent because changes on `D` pass through to `Q`.
 
 Example:
 
@@ -377,70 +378,65 @@ D changes 0 -> 1 -> 0 -> 1
 Q changes 0 -> 1 -> 0 -> 1
 ```
 
-That is fine for some circuits. But it is dangerous in a whole computer, because many memory elements and logic gates are connected together. If too many latches are transparent at the same time, values can race through several layers during one clock period.
+Transparency is not automatically bad. But it is dangerous if many latches are connected through layers of logic. A value may race through several latches during the same interval, making the machine difficult to reason about.
 
-This is why we need clocked behavior.
+This motivates the clocked abstraction used by Nand2Tetris.
 
-## 5. Clocking: Coordinate When State Changes
+## 5. Clocked Time
 
-A computer is not just one latch. It is many memory elements connected through many combinational circuits.
-
-At a high level, one machine cycle looks like this:
+A computer contains many memory elements connected through combinational logic. A typical cycle looks like this:
 
 ```text
 old state -> combinational logic computes -> new state is stored
 ```
 
-For this to be reliable, the machine needs agreement about when storage updates happen.
+The machine needs a shared rule for when state is allowed to change. That rule is provided by a clock.
 
-That agreement is provided by a clock.
-
-The clock divides time into discrete cycles:
-
-```text
-cycle 0 | cycle 1 | cycle 2 | cycle 3 | cycle 4
-```
-
-Nand2Tetris models time as a sequence of clock cycles. During a cycle, combinational chips compute. At the boundary between cycles, sequential chips update their stored state.
+The clock divides time into discrete cycles. Nand2Tetris uses this model throughout Chapter 3:
 
 ![Discrete time in Nand2Tetris](media/figure_3.2.png)
 
-The point of the clock is not only speed. The point is coordination.
+The important idea is coordination, not speed.
 
-Without a clock discipline, different parts of the circuit may update at different moments, and then it becomes hard to say what the machine's state actually is.
-
-With a clock discipline, we can reason like this:
+During a cycle, memory outputs are treated as stable old state. Combinational chips compute from that old state. At the clock boundary, memory elements capture the new state.
 
 ```text
 At time t:
     memory outputs the old state
 
 During the cycle:
-    combinational logic computes from that old state
+    combinational logic computes a new value
 
 At time t + 1:
-    memory captures the new state
+    memory exposes the captured value
 ```
 
-This is the central idea of sequential logic.
+This is sequential logic.
 
-### Why A Plain D Latch Is Not Enough
-
-If a latch is transparent for a whole interval, then `Q` can change any time during that interval.
-
-For a small circuit this can be okay. For a CPU, this is harder to reason about.
-
-We usually want a sharper abstraction:
+The sharper abstraction we want is:
 
 ```text
-The memory updates once, at a precise clock edge.
+State changes once per cycle, at the clock edge.
 ```
 
-That sharper abstraction is the D flip-flop.
+That is what the D flip-flop provides.
 
-## 6. D Flip-Flop: Sample On The Clock Edge
+## 6. The D Flip-Flop
 
-A `D flip-flop`, or `DFF`, stores one bit like a D latch, but it updates only at a clock edge.
+A D flip-flop, or `DFF`, stores one bit like a D latch. The difference is timing.
+
+A D latch is controlled by an enable level:
+
+```text
+while enable is active, Q may follow D
+```
+
+A D flip-flop is controlled by a clock edge:
+
+```text
+at the clock edge, Q samples D
+between clock edges, Q holds its value
+```
 
 An edge is the instant when the clock changes:
 
@@ -449,19 +445,7 @@ low -> high   rising edge
 high -> low   falling edge
 ```
 
-Most simplified explanations use the rising edge, but the idea is the same for either edge.
-
-The DFF behavior is:
-
-```text
-at the clock edge:
-    Q becomes D
-
-between clock edges:
-    Q stays unchanged
-```
-
-Nand2Tetris describes this with a one-cycle delay:
+Nand2Tetris abstracts away the internal construction and gives this behavior:
 
 ```text
 out(t) = in(t - 1)
@@ -470,46 +454,26 @@ out(t) = in(t - 1)
 Meaning:
 
 ```text
-The input seen in the previous cycle becomes the output in the current cycle.
+The input from the previous time step becomes the output now.
 ```
 
 ![DFF behavior in Nand2Tetris](media/figure_3.3.png)
 
-This is the abstraction that Chapter 3 needs.
+This one-cycle delay is exactly what lets the rest of the computer be built cleanly. Combinational logic can compute during the current cycle, and the `DFF` exposes the result only in the next cycle.
 
-The DFF turns a changing input signal into a stable stored output signal for the next cycle.
+The conceptual comparison is:
 
-### D Latch Versus DFF
-
-| Device | Control | When Q can change | Mental model |
+| Device | Control | When Q Can Change | Mental Model |
 |--------|---------|-------------------|--------------|
-| D latch | enable level | while enable is active | transparent storage |
-| DFF | clock edge | only at the edge | sampled storage |
+| SR latch | set/reset inputs | whenever `S` or `R` changes | raw one-bit memory |
+| D latch | enable level | while enable is active | transparent controlled storage |
+| DFF | clock edge | only at the clock edge | sampled storage |
 
-The difference is not the value being stored. Both store a bit.
+This is why Chapter 3 starts from `DFF`. It gives the book a clean unit of state: one bit that updates in discrete time.
 
-The difference is timing.
+## 7. From DFF To Memory
 
-```text
-D latch:
-    Q may follow D for as long as enable = 1
-
-DFF:
-    Q samples D once at the clock edge, then holds
-```
-
-That timing difference is why Nand2Tetris uses `DFF` as the primitive for memory.
-
-## How This Maps To Nand2Tetris Chapter 3
-
-Nand2Tetris Chapter 3 starts with this primitive:
-
-```text
-DFF(in, out)
-out(t) = in(t - 1)
-```
-
-Then it builds the memory hierarchy upward.
+Once `DFF` exists, Nand2Tetris builds larger memory devices by adding control and structure.
 
 ![Nand2Tetris memory hierarchy](media/figure_3.1.png)
 
@@ -519,22 +483,20 @@ The hierarchy is:
 DFF -> Bit -> Register -> RAM8 -> RAM64 -> RAM512 -> RAM4K -> RAM16K -> PC
 ```
 
-Each layer adds structure or control around the previous layer.
+Each layer uses the previous layer.
 
 ### DFF To Bit
 
-A raw `DFF` always captures its input every cycle.
-
-But a useful memory bit needs a `load` control:
+A raw `DFF` captures its input every cycle. A useful memory bit needs a `load` signal:
 
 ```text
 if load = 1:
     store the new input
 else:
-    keep the old stored value
+    keep the old value
 ```
 
-Nand2Tetris builds this by putting a `Mux` before the `DFF`.
+Nand2Tetris implements this by placing a `Mux` before the `DFF`:
 
 ```text
                     +-----+
@@ -544,51 +506,38 @@ load -------------->|     |
                     +-----+
 ```
 
-If `load = 0`, the mux feeds the old output back into the `DFF`.
+If `load = 0`, the mux sends the old output back into the `DFF`:
 
 ```text
-next input to DFF = old output
+next DFF input = old output
 ```
 
-So the bit keeps its value.
+The bit keeps its value.
 
-If `load = 1`, the mux feeds the external input into the `DFF`.
+If `load = 1`, the mux sends the external input into the `DFF`:
 
 ```text
-next input to DFF = new input
+next DFF input = new input
 ```
 
-So the bit updates at the next clock transition.
-
-This is the Nand2Tetris version of controlled storage.
+The bit updates on the next clock transition.
 
 ### Bit To Register
 
-A `Bit` stores one bit.
+A `Bit` stores one bit. A 16-bit `Register` stores sixteen `Bit` chips side by side.
 
-A 16-bit `Register` stores sixteen bits side by side:
+All sixteen bits share the same `load` signal:
 
 ```text
-Bit 0
-Bit 1
-Bit 2
-...
-Bit 15
+load = 1 -> all sixteen bits update
+load = 0 -> all sixteen bits hold
 ```
 
-![Register built from latches](media/06-register-from-latches-course.png)
-
-All sixteen bits share the same `load` signal.
-
-So when `load = 1`, the whole 16-bit word updates.
-
-When `load = 0`, the whole 16-bit word holds its old value.
+The register is not a new kind of memory. It is sixteen controlled one-bit memories treated as one 16-bit word.
 
 ### Register To RAM
 
 RAM is many registers plus addressing.
-
-The address tells the RAM which register you want.
 
 For example, `RAM8` contains eight registers. A 3-bit address selects one of them:
 
@@ -603,23 +552,17 @@ For example, `RAM8` contains eight registers. A 3-bit address selects one of the
 111 -> register 7
 ```
 
-Loading RAM requires two ideas:
+Writing RAM requires routing the input value to the register bank and using the address to decide which register receives `load = 1`.
 
-- route the input value to all registers
-- use the address to decide which register receives `load = 1`
+Reading RAM uses the address in the opposite direction: all registers contain values, and the address selects which stored value appears at the output.
 
-Reading RAM also uses the address:
-
-- all registers have stored values
-- the address selects which stored value appears at the output
-
-So RAM is not a totally new kind of memory. It is organized registers.
+So RAM is organized registers. The addressing logic is new, but the memory idea is still the same DFF-based state.
 
 ### RAM To PC
 
 The `PC`, or Program Counter, is a special register used by the CPU to remember which instruction should run next.
 
-It needs more behavior than a plain register:
+It needs several behaviors:
 
 ```text
 reset to 0
@@ -628,76 +571,70 @@ increment by 1
 hold current value
 ```
 
-But underneath, it is still built from the same sequential idea: store state across clock cycles.
+But underneath, it is still built from the same idea: preserve state across clock cycles, and update that state only under controlled conditions.
 
-## Timing Details Worth Knowing
+## 8. Timing Details
 
-Nand2Tetris abstracts away the electrical timing details. For the projects, this is enough:
-
-```text
-DFF output in this cycle equals DFF input from the previous cycle.
-```
-
-For deeper understanding, these real hardware concepts matter.
+Nand2Tetris gives an ideal `DFF`, so the projects do not require transistor-level timing. Still, these concepts explain why real hardware must be disciplined.
 
 ### Propagation Delay
 
-Logic gates do not update instantly.
-
-If an input changes, the output changes slightly later.
-
-That delay is called propagation delay.
+Logic gates do not update instantly. After an input changes, the output changes slightly later.
 
 ```text
 input changes -> tiny delay -> output changes
 ```
 
+That tiny delay is propagation delay.
+
 ### Setup Time
 
 A flip-flop needs its `D` input to be stable shortly before the clock edge.
-
-That required stable period is setup time.
 
 ```text
 D must already be valid before the edge arrives
 ```
 
+That required stable period is setup time.
+
 ### Hold Time
 
 A flip-flop also needs its `D` input to remain stable briefly after the clock edge.
-
-That required stable period is hold time.
 
 ```text
 D must not change immediately after the edge
 ```
 
+That required stable period is hold time.
+
 ### Metastability
 
-If setup or hold rules are violated, a flip-flop can enter a temporary undecided state.
+If setup or hold rules are violated, a flip-flop can temporarily fail to settle into a clean `0` or `1`.
 
-It may not immediately settle into a clean `0` or `1`.
+That temporary undecided condition is metastability.
 
-That condition is called metastability.
-
-Nand2Tetris does not make you deal with metastability. It gives you an ideal `DFF` so you can focus on architecture.
-
-## The Essential Mental Model
-
-Keep these four sentences:
+Nand2Tetris hides these electrical details so the focus can stay on architecture. The abstraction is:
 
 ```text
-A latch remembers because feedback preserves a previous output.
-A D latch copies D while enable is active and holds when enable is inactive.
-A DFF copies D only at a clock edge and holds between edges.
-Nand2Tetris uses DFF as the primitive so all memory updates cleanly once per cycle.
+DFF output in this cycle equals DFF input from the previous cycle.
 ```
 
-And keep this hierarchy in mind:
+## Essential Model
+
+The whole chapter can be compressed into four ideas:
+
+```text
+Feedback lets a circuit preserve a previous output.
+An SR latch turns feedback into set, reset, and hold behavior.
+A D latch gives that memory cell one data input and one enable input.
+A DFF samples the data only at a clock edge, giving Nand2Tetris clean discrete-time memory.
+```
+
+And the construction ladder is:
 
 ```text
 feedback
-  -> latch
+  -> SR latch
   -> D latch
   -> DFF
   -> Bit
@@ -706,4 +643,4 @@ feedback
   -> computer state
 ```
 
-That is the conceptual bridge from gates to memory.
+That is the bridge from ordinary gates to the memory devices used in Chapter 3.
