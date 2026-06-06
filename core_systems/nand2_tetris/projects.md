@@ -665,6 +665,54 @@ CHIP ALU {
     And(a=signBit, b=true, out=ng);
 
     // Publish the final internal result to the chip output bus
-    Mux16(a=finalResult, b[0..15]=false, sel=false, out=out);
+Mux16(a=finalResult, b[0..15]=false, sel=false, out=out);
 }
 ```
+
+## Project 3
+
+### Bit
+
+```hdl
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/3/a/Bit.hdl
+/**
+ * 1-bit register:
+ * If load is asserted, the register's value is set to in;
+ * Otherwise, the register maintains its current value:
+ * if (load(t)) out(t+1) = in(t), else out(t+1) = out(t)
+ *
+ * Method:
+ * A DFF always stores whatever reaches its input at the clock edge.
+ * So we put a Mux before the DFF to choose the next value:
+ * - if load = 0: feed back the stored value (hold)
+ * - if load = 1: feed in the external input (store)
+ */
+CHIP Bit {
+    IN in, load;
+    OUT out;
+
+    PARTS:
+    Mux(a=stored, b=in, sel=load, out=next);
+    DFF(in=next, out=out, out=stored);
+}
+```
+
+Why this works:
+
+```text
+load = 0 -> next = stored -> DFF re-stores old value -> hold
+load = 1 -> next = in     -> DFF stores new input    -> update
+```
+
+Important detail:
+
+```text
+Mux(a, b, sel):
+  if sel = 0 -> out = a
+  if sel = 1 -> out = b
+```
+
+So feedback (`stored`) must be on `a`, and new input (`in`) must be on `b`.

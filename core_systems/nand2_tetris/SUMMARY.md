@@ -1,182 +1,587 @@
 ## Preface
 
-The Preface frames computing as the part of the modern BANG quartet that can be fully understood by construction. The authors argue that modern computer systems hide their essential ideas under many specialized layers, and that the best way to recover a coherent understanding is to build a complete system from first principles.
+The book's promise is simple:
 
-Nand to Tetris is presented as that construction path: start with the primitive Nand gate, build a hardware platform and software hierarchy, and end with a general-purpose computer capable of running Tetris and other programs. The second edition exists to close gaps between the original book and the evolving online materials, improve clarity, and make the two-part hardware/software structure explicit.
+```text
+Start with one primitive logic gate.
+Build a complete computer system.
+Run real programs on it.
+```
+
+The point is not only to learn hardware or software separately. The point is to understand how the whole stack fits together.
+
+Modern computers feel mysterious because each layer hides the layer below it. The book reverses that experience. Instead of accepting the machine as magic, we build each layer from the previous one.
+
+The construction path is:
+
+```text
+Nand gate
+  -> logic gates
+  -> arithmetic chips
+  -> memory chips
+  -> CPU and computer architecture
+  -> assembler
+  -> virtual machine
+  -> compiler
+  -> operating system
+  -> applications
+```
+
+The second edition clarifies this path and aligns the book more closely with the online course materials.
 
 ### Scope
 
-The book covers a compact but broad slice of applied computer science through hands-on projects. Its scope includes hardware, architecture, low-level languages, virtual machines, high-level languages, compilers, operating systems, algorithms, data structures, and software engineering.
+The book covers the minimal set of ideas needed to build a working general-purpose computer.
 
-The unifying constraint is practical: include the minimal set of concepts needed to build a working general-purpose computer that can run programs written in a high-level object-based language. This keeps the material cohesive instead of presenting isolated subfields.
+That includes:
+
+- Boolean logic
+- Boolean arithmetic
+- memory
+- machine language
+- computer architecture
+- assemblers
+- virtual machines
+- high-level languages
+- compilers
+- operating systems
+- algorithms, data structures, and software engineering ideas
+
+The key word is minimal. The book does not try to cover every industrial detail. It keeps only what is needed to make the whole system understandable and buildable.
 
 ### Courses
 
-Nand to Tetris can fit several course shapes: an early systems-oriented course, a late synthesis course, a combined architecture/compiler course, a short standalone hardware or software course, or a full semester-long experience.
+The material can serve different kinds of courses.
 
-The hardware part requires no prior background, while the software part assumes introductory programming. The course is also positioned as useful beyond computer science majors, especially for learners and developers who want to understand what sits beneath high-level programming.
+It can be used as:
+
+- an early systems course
+- a late synthesis course
+- a hardware-focused course
+- a software-focused course
+- a full semester-long build-the-computer experience
+
+The hardware half assumes almost no background. The software half assumes basic programming.
+
+The reason the course works for many audiences is that the main skill is systems thinking:
+
+```text
+understand an abstraction
+implement it from simpler parts
+use it as a building block for the next layer
+```
 
 ### Resources
 
-The book is supported by the freely available Nand to Tetris software suite and website. These provide the simulators, emulators, executable tools, tutorials, project materials, test programs, and test scripts needed to build and test the system incrementally on common operating systems.
+The book is supported by the Nand to Tetris software suite and website.
+
+These provide:
+
+- hardware simulator
+- CPU emulator
+- VM emulator
+- assembler and compiler tools
+- tutorials
+- project files
+- test scripts
+- comparison files
+
+The tools matter because they make construction concrete. You do not only read that a chip should work. You implement it, run the supplied tests, and see whether it behaves correctly.
 
 ### Structure
 
 [Part I](#i-hardware) covers hardware in chapters [1](#1-boolean-logic)–[6](The_Elements_of_Computing_Systems_2021.md#6-assembler): Boolean logic, Boolean arithmetic, memory, machine language, computer architecture, and assemblers. Part [II](The_Elements_of_Computing_Systems_2021.md#ii-software) covers software in chapters [7](The_Elements_of_Computing_Systems_2021.md#7-virtual-machine-i-processing)–[12](The_Elements_of_Computing_Systems_2021.md#12-operating-system): virtual machines, a high-level language, compiler construction, and an operating system. Chapter [13](The_Elements_of_Computing_Systems_2021.md#13-more-fun-to-go) and the appendices extend the journey and supply supporting technical material.
 
-Each chapter follows the same abstraction-implementation pattern: introduce the concept, specify the abstraction, discuss an implementation, assign a project, and close with perspective. This makes every layer understandable both as a black-box service and as something that can be built.
+Each chapter follows the same pattern:
+
+```text
+concept
+  -> abstraction
+  -> implementation
+  -> project
+  -> perspective
+```
+
+That pattern is important. Every layer is first treated as a black box that has a clear public behavior. Then the chapter opens the box and shows how to build it.
 
 ### Projects
 
-The projects are the core of the learning method: the computer is meant to be built, not merely read about. Learners implement chips in HDL, write an assembler, virtual machine, and compiler in a language of their choice, write machine-language and Jack programs, and complete a small operating system.
+The projects are the main learning method.
 
-The projects are designed to be focused and manageable. They rely on supplied tools and tests, assume clean inputs where appropriate, and deliberately avoid optimization except where it is central to the lesson.
+The book is not asking you to memorize the computer stack. It is asking you to construct it.
+
+The work includes:
+
+- implementing chips in HDL
+- building arithmetic and memory devices
+- writing an assembler
+- writing a virtual machine translator
+- writing a compiler
+- writing parts of an operating system
+- running programs on the completed machine
+
+The projects are intentionally constrained. Inputs are usually clean. Optimization is usually ignored. The goal is correctness and understanding, not industrial performance.
 
 ### The Second Edition
 
-The second edition clarifies the book's two independent arcs: Hardware and Software. It adds new introductions, appendices, figures, examples, and sections that respond to learner questions accumulated from years of course use.
+The second edition makes the two arcs clearer:
 
-The revision also strengthens the abstraction-versus-implementation theme, making the distinction explicit throughout the chapters and project materials.
+```text
+Part I  -> hardware
+Part II -> software
+```
+
+It also improves explanations, figures, examples, appendices, and project alignment with the online materials.
+
+The main improvement is conceptual clarity: the book keeps returning to the difference between abstraction and implementation.
 
 ### Acknowledgments
 
-The authors credit the students, teaching assistants, editors, course-material contributors, and global Nand to Tetris community who helped build and sustain the book, tools, projects, and forums.
+The authors credit the students, teaching assistants, editors, tool builders, and course-material contributors who shaped the project over many years.
 
-Special attention is given to Mark Armbrust, who supported learners for years through the Q&A forum, fixed bugs, wrote scripts, and became a central figure in the community. The Preface closes by emphasizing the authors' gratitude for the open educational ecosystem that formed around the freely available materials.
+Special attention is given to Mark Armbrust, who supported learners through the Q&A forum, fixed bugs, wrote scripts, and became central to the community.
+
+The larger point is that Nand to Tetris became more than a book. It became an open educational ecosystem around the idea that the computer can be understood by building it.
 
 ## I Hardware
 
 ### Introduction
 
-[Part I](#i-hardware) is introduced as a hands-on voyage into how computer systems work, how complex systems are decomposed into modules, and how large hardware and software systems are built. The point is not merely to end with a computer, but to learn systems thinking by constructing one layer at a time.
+Part I begins the bottom-up hardware path.
+
+The goal is to build a working hardware platform from simple logic gates.
+
+The deeper goal is to learn how complex systems are made from modules:
+
+```text
+small parts
+  -> named interfaces
+  -> tested implementations
+  -> larger parts
+```
 
 #### Hello, World Below
 
-The familiar `Hello` `World` program hides a deep stack of abstractions. A high-level text program must be parsed, understood, compiled into machine language, executed by a hardware architecture, implemented by chips, reduced to logic gates, and eventually grounded in physical switching devices.
+A simple program like `Hello World` hides a large machine underneath it.
+
+At the top, you see text in a high-level language.
+
+Below that, many transformations happen:
+
+```text
+high-level program
+  -> parsed and compiled
+  -> translated into machine language
+  -> executed by a CPU
+  -> implemented by chips
+  -> built from logic gates
+  -> grounded in physical switching devices
+```
 
 ![](media/figure_wo_caption_I.1.png)
 
-The section argues that most programmers see only the top of the iceberg. Nand to Tetris is about going below that surface and understanding the hidden machinery by building a complete computer system from the ground up.
+The important idea is that programmers usually see only the top layer. This book goes below the surface and rebuilds the hidden layers one by one.
 
 #### Nand to Tetris
 
-Every general-purpose computer can be understood as a Nand-to-Tetris machine: it is ultimately built from elementary logic gates and can run arbitrary programs. The specific Hack hardware platform and Jack language are chosen because they are small, stable, understandable, and extensible, not because they are industrial standards.
+The phrase Nand to Tetris means:
+
+```text
+from the primitive Nand gate
+to a computer that can run an application like Tetris
+```
+
+The specific computer is called Hack. The specific high-level language is called Jack.
+
+They are not meant to be industrial standards. They are small enough to understand completely.
 
 ![](media/figure_I.1.png)
 
-The roadmap shows a hardware platform and software hierarchy connected through abstraction and implementation. High-level software is progressively translated downward; hardware is progressively built upward. The same ideas and techniques apply to real hardware and software engineering.
+The roadmap has two directions:
+
+```text
+hardware builds upward
+software translates downward
+```
+
+Hardware starts with gates and rises toward a machine. Software starts with high-level programs and is translated down into machine instructions.
 
 #### Abstraction and Implementation
 
-The central method is modular design. Each module has an abstraction, which describes what it does, and an implementation, which describes how it does it. When using a module, the engineer should depend only on its interface and ignore its internal construction.
+Every module has two views.
 
-This discipline makes large systems manageable. It allows chips, translators, and software services to be built, tested, and reasoned about independently. Good abstractions localize complexity; poor modular design makes the whole system difficult to build and maintain.
+The abstraction is:
+
+```text
+what the module does
+```
+
+The implementation is:
+
+```text
+how the module does it
+```
+
+Example:
+
+```text
+Abstraction: Xor outputs 1 when its inputs differ.
+Implementation: Xor can be built from Not, And, and Or gates.
+```
+
+When you use a module, you should depend on its abstraction. When you build a module, you must understand its implementation.
+
+This separation is how large systems stay manageable.
 
 #### Methodology
 
-[Part I](#i-hardware) builds roughly thirty gates and chips using HDL and tests them in a software-based hardware simulator. This mirrors real hardware engineering practice, where chip specifications are designed and validated in software before being fabricated.
+Part I builds about thirty gates and chips using HDL.
 
-Part [II](The_Elements_of_Computing_Systems_2021.md#ii-software) later builds the software stack: assembler, virtual machine, compiler, and a small operating system. The projects are made feasible through scaffolding: APIs, skeletons, test scripts, staged guidance, and supplied tools from the Nand to Tetris software suite.
+HDL is not a programming language in the usual sense. It describes hardware structure:
+
+```text
+which lower-level chips exist
+how their pins are connected
+```
+
+The hardware simulator then tests the design before any physical hardware exists.
+
+Part II later uses the completed hardware platform to build the software stack: assembler, virtual machine, compiler, and operating system.
 
 #### The Road Ahead
 
-The full journey contains twelve construction projects. Across projects, the path is bottom-up, starting from Nand gates and rising toward high-level programs. Within each project, the work is top-down: first understand the abstraction, then implement it using lower-level building blocks.
+The full journey contains twelve construction projects.
 
-[Part I](#i-hardware) builds elementary gates, an ALU, memory devices, machine language, the CPU/RAM-based hardware platform, and an assembler. That completed Hack platform becomes the starting point for Part [II](The_Elements_of_Computing_Systems_2021.md#ii-software), where the system is extended with a virtual machine, compiler, and operating system.
+The course has two directions at once:
+
+```text
+Across projects: bottom-up
+Within each project: top-down
+```
+
+Across projects, we start from Nand and build toward applications.
+
+Within each project, we first understand the desired abstraction, then implement it using already available parts.
+
+Part I builds:
+
+```text
+logic gates
+  -> ALU
+  -> memory
+  -> machine language
+  -> CPU and computer architecture
+  -> assembler
+```
+
+That completed hardware/software boundary becomes the foundation for the higher-level software stack in Part II.
 
 ### 1 Boolean Logic
 
-Digital systems are built from chips that store and process binary information. This chapter begins with one primitive gate, Nand, and uses it to construct the standard logic gates needed later for the Hack computer: basic gates, 16-bit variants, multiplexers, demultiplexers, and multi-way versions.
+Digital hardware stores and processes binary values.
 
-The main idea is that hardware design separates abstraction from implementation. Boolean algebra specifies what a gate does, HDL describes how gates are composed, and the hardware simulator tests whether the implementation behaves as promised.
+Chapter 1 builds the basic vocabulary of hardware:
+
+```text
+Nand
+  -> Not, And, Or, Xor
+  -> multiplexers and demultiplexers
+  -> 16-bit versions
+  -> multi-way versions
+```
+
+The main idea is:
+
+```text
+Boolean algebra specifies behavior.
+Logic gates implement behavior.
+HDL wires gates together.
+Tests verify the implementation.
+```
 
 #### 1.1 Boolean Algebra
 
-Boolean algebra works with two values, represented here as `0` and `1`. Boolean functions map binary inputs to binary outputs, making them the natural language for specifying hardware behavior.
+Boolean algebra works with two values:
 
-The familiar operators And, Or, and Not are only one convenient basis for expressing Boolean functions. Their symbolic forms include $x \cdot y$, $x + y$, $\bar{x}$, and $x \land y$, $x \lor y$. More importantly, every Boolean function can be built from Nand alone, which is why Nand can serve as the primitive gate for the whole computer.
+```text
+0
+1
+```
+
+A Boolean function maps binary inputs to a binary output.
+
+Example:
+
+```text
+And(0, 0) = 0
+And(0, 1) = 0
+And(1, 0) = 0
+And(1, 1) = 1
+```
+
+The common Boolean operators are:
+
+```text
+And
+Or
+Not
+```
+
+They can be written mathematically as $x \cdot y$, $x + y$, and $\bar{x}$, or as $x \land y$, $x \lor y$, and Not(`x`).
 
 ![](media/figure_1.1.png)
 
 ![](media/figure_1.2.png)
 
-The space of Boolean functions grows quickly: for two variables, the book enumerates all possible functions, and for *n* variables the count is described using $n = 2$ and $2^{2^n}$.
+The key theoretical fact is that every Boolean function can be built from Nand alone.
+
+That is why Nand can be the primitive starting point for the whole computer.
+
+The number of possible Boolean functions grows very quickly. With *n* input variables, there are $2^{2^n}$ possible Boolean functions.
 
 ##### Boolean Functions
 
-A Boolean function can be represented either by a truth table or by a Boolean expression. A truth table lists every possible input tuple and the corresponding output; an expression gives a symbolic rule for computing the same result.
+A Boolean function can be represented in two main ways.
 
-The chapter illustrates this equivalence with a three-variable function involving $(x, y, z)$, $2^3 = 8$, $f(x, y, z)$, and an expression like $(x \lor y)$ And Not (`z`).
+Truth table:
+
+```text
+list every possible input
+show the output for each input
+```
+
+Boolean expression:
+
+```text
+write a formula that computes the output
+```
+
+For three inputs `(x, y, z)`, there are `2^3 = 8` possible input combinations.
 
 ![](media/figure_1.3.png)
 
+The figure shows that the same function can be described by a table or by an expression such as:
+
+```text
+(x OR y) AND NOT(z)
+```
+
 ##### Truth Tables and Boolean Expressions
 
-Expressions can always be evaluated into truth tables, and truth tables can also be synthesized into expressions. This translation matters because real design requirements may arrive as truth-table behavior, while implementation typically proceeds through expressions and gates.
+Truth tables and expressions are two views of the same thing.
 
-Different expressions can represent the same function, so simplification is the first form of hardware optimization: fewer or simpler expressions can lead to fewer gates, lower cost, and faster circuits.
+You can go from expression to truth table by evaluating the expression for every input combination.
+
+You can go from truth table to expression by finding the rows where the output is `1` and writing logic that detects those rows.
+
+This matters because hardware design often starts with desired behavior and ends with gates.
+
+The practical path is:
+
+```text
+desired behavior
+  -> truth table
+  -> Boolean expression
+  -> simpler expression
+  -> gate implementation
+```
+
+Simplification matters because simpler expressions usually mean fewer gates.
 
 #### 1.2 Logic Gates
 
-A logic gate is a physical realization of a Boolean function. The physical technology can vary, but the abstract behavior remains the same, which lets computer scientists reason in terms of Boolean algebra without depending on transistor-level details.
+A logic gate is a physical or simulated device that implements a Boolean function.
+
+The physical details can vary, but the abstraction stays the same.
+
+For example, an And gate means:
+
+```text
+out = 1 only when both inputs are 1
+```
 
 ![](media/figure_1.4.png)
 
+This lets us reason at the gate level without thinking about transistors every time.
+
 ##### Primitive and Composite Gates
 
-Because all gates consume and produce binary values, they can be composed. A three-input And can be built by connecting two two-input And gates, using a result such as $And(a, b, c) = And(And(a, b), c)$.
+A primitive gate is given to us.
+
+A composite gate is built from other gates.
+
+Example:
+
+```text
+And(a, b, c) = And(And(a, b), c)
+```
 
 ![](media/figure_1.5.png)
 
-The key distinction is between a gate's interface and its implementation. The interface says what the gate exposes to users; the implementation describes the internal arrangement of lower-level gates.
+The interface says what the gate looks like from the outside:
 
-Xor demonstrates the same idea: its interface is fixed, but it can be implemented in multiple ways. One construction uses Not, And, and Or with the relation $Xor(a, b) = Or(And(a, Not(b)), And(Not(a), b))$.
+```text
+inputs
+outputs
+behavior
+```
+
+The implementation says what is inside:
+
+```text
+which smaller gates are used
+how they are connected
+```
+
+Xor is a good example. Its behavior is:
+
+```text
+out = 1 when a and b are different
+```
+
+One implementation is:
+
+```text
+Xor(a, b) = Or(And(a, Not(b)), And(Not(a), b))
+```
 
 ![](media/figure_1.6.png)
 
-Logic design is therefore the practice of taking a gate specification and finding an efficient implementation from already available gates.
+So logic design means:
+
+```text
+given a desired behavior
+build it from gates that already exist
+```
 
 #### 1.3 Hardware Construction
 
-Physical chip construction by hand is impractical: it is hard to verify, hard to debug, and hard to reproduce. Modern hardware construction instead uses formal descriptions and simulation before any physical manufacturing happens.
+Building physical chips by hand would be too slow and error-prone.
+
+Modern hardware design therefore uses descriptions and simulations first.
+
+The workflow is:
+
+```text
+write HDL
+run simulator
+compare against expected behavior
+fix the design
+```
+
+Only after the design is correct would real manufacturing matter.
 
 ##### 1.3.1 Hardware Description Language
 
-Hardware Description Language lets designers specify chip architecture as text. An HDL program declares a chip interface and lists the lower-level parts and pin connections that implement it.
+HDL describes chip structure.
+
+It says:
+
+```text
+this chip has these inputs and outputs
+this chip is built from these parts
+these pins are connected to those pins
+```
 
 ![](media/figure_1.7.png)
 
-The Xor example shows how the chip header names the inputs and outputs, while the `PARTS` section wires together existing gates. Internal pins are created by naming intermediate connections, and fan-out is expressed by reusing the same signal in multiple places. The figure also contains the function notation $Xor(a, b) = Or(And(a, Not(b)), And(Not(a), b))$.
+For Xor, the HDL header defines the public interface. The `PARTS` section builds the implementation from lower-level gates.
+
+Internal pins name intermediate values.
+
+Example mental model:
+
+```text
+notA = Not(a)
+notB = Not(b)
+aAndNotB = And(a, notB)
+notAAndB = And(notA, b)
+out = Or(aAndNotB, notAAndB)
+```
 
 ##### Testing
 
-Hardware designs are tested with repeatable scripts. A test script loads the HDL file, sets input combinations, evaluates outputs, and compares the results against expected values.
+Testing checks whether the implementation matches the specification.
 
-For simple gates, exhaustive testing is possible because all inputs can be enumerated. For larger chips, testing still provides disciplined empirical confidence even when exhaustive proof is unrealistic.
+A test script usually does this:
+
+```text
+load chip
+set inputs
+evaluate output
+compare with expected output
+repeat
+```
+
+For small gates, every input combination can be tested.
+
+For larger chips, tests still provide strong confidence even when exhaustive testing is too large.
 
 ##### 1.3.2 Hardware Simulation
 
-The hardware simulator parses HDL programs and runs them against test scripts. It supports the book's full hardware path, from simple gates to the complete computer.
+The hardware simulator executes HDL designs.
+
+It lets you inspect:
+
+```text
+current input values
+internal behavior
+actual output
+expected output
+```
 
 ![](media/figure_1.8.png)
 
-The simulator state, expected compare file, and generated output together make chip behavior inspectable and reproducible. The example also references a simulation step with $(a, b, out) = (1, 1, 0)$.
+This makes hardware design feel like programming with tests, but the thing being described is a circuit, not a sequence of instructions.
 
 #### 1.4 Specification
 
-This section specifies the family of gates required to build the later chips. The emphasis is on the interface: what each gate should do, independent of how it will be built.
+This section specifies the chips needed for Project 1.
+
+The specification answers:
+
+```text
+What should each chip do?
+```
+
+It does not yet answer:
+
+```text
+How should each chip be built?
+```
+
+That separation is the core discipline of the course.
 
 ##### 1.4.1 Nand
 
-Nand is the primitive starting point of the architecture. Its behavior is given externally, and all later gates can be constructed from it.
+Nand is the primitive gate.
+
+Its behavior is:
+
+```text
+Nand(a, b) = NOT(a AND b)
+```
+
+So it outputs `0` only when both inputs are `1`.
 
 ![](media/figure_wo_caption_1.1.png)
 
 ![](media/figure_wo_caption_1.2.png)
 
+Everything else in Chapter 1 can be built from this gate.
+
 ##### 1.4.2 Basic Logic Gates
 
-The basic gates include Not, And, Or, Xor, Multiplexer, and Demultiplexer. These become the reusable vocabulary for building more complex chips.
+The basic gates are:
+
+```text
+Not
+And
+Or
+Xor
+Mux
+DMux
+```
 
 ![](media/figure_wo_caption_1.3.png)
 
@@ -186,15 +591,46 @@ The basic gates include Not, And, Or, Xor, Multiplexer, and Demultiplexer. These
 
 ![](media/figure_wo_caption_1.6.png)
 
-A multiplexer selects one of two data inputs according to a selector bit, while a demultiplexer routes one input to one of two outputs and sets the other output to `0`.
+The multiplexer chooses one of two inputs:
 
-![](media/figure_1.9.png)
+```text
+if sel = 0: out = a
+if sel = 1: out = b
+```
+![[figure_1.9.png]]
+
+The demultiplexer routes one input to one of two outputs:
+
+```text
+if sel = 0: a = in, b = 0
+if sel = 1: a = 0,  b = in
+```
 
 ![](media/figure_1.10.png)
 
+Mental model:
+
+```text
+Mux chooses a value.
+DMux chooses a destination.
+```
+
 ##### 1.4.3 Multi-Bit Versions of Basic Gates
 
-Computer hardware often processes words rather than single bits, so the basic gates are generalized to *n*-bit versions. These apply the same operation independently across corresponding bits. Bit indexing is also introduced, with examples like `out[3] = in[5]`.
+Computers usually process words, not isolated bits.
+
+A 16-bit gate applies the same operation to each bit position.
+
+Example:
+
+```text
+And16(a[16], b[16], out[16])
+
+out[0]  = And(a[0],  b[0])
+out[1]  = And(a[1],  b[1])
+...
+out[15] = And(a[15], b[15])
+```
 
 ![](media/figure_wo_caption_1.7.png)
 
@@ -204,19 +640,40 @@ Computer hardware often processes words rather than single bits, so the basic ga
 
 ![](media/figure_wo_caption_1.10.png)
 
+The operation is not new. Only the width changes.
+
 ##### 1.4.4 Multi-Way Versions of Basic Gates
 
-Multi-way gates generalize basic gates across more than two inputs or outputs. The chapter introduces multi-way Or, multi-way multi-bit multiplexers, and multi-way demultiplexers.
+Multi-way gates generalize selection to more inputs or outputs.
+
+Examples:
+
+```text
+Or8Way    -> OR together 8 inputs
+Mux4Way16 -> choose 1 of 4 16-bit inputs
+DMux8Way  -> route input to 1 of 8 outputs
+```
 
 ![](media/figure_wo_caption_1.11.png)
 
-Selection among multiple inputs is controlled by selector bits, with the number of selector bits expressed using $k = \log_2 m$.
+To choose among `m` inputs, you need enough selector bits to name each choice:
+
+```text
+number of selector bits = log2(m)
+```
+
+For example:
+
+```text
+4 choices -> 2 selector bits
+8 choices -> 3 selector bits
+```
 
 ![](media/figure_wo_caption_1.12.png)
 
 ![](media/figure_wo_caption_1.13.png)
 
-Demultiplexers apply the same selection idea in the opposite direction, using selector bits as indicated by $k = \log_2 m$.
+Demultiplexers use the same idea in reverse: the selector chooses where the input goes.
 
 ![](media/figure_wo_caption_1.14.png)
 
@@ -224,33 +681,79 @@ Demultiplexers apply the same selection idea in the opposite direction, using se
 
 #### 1.5 Implementation
 
-After specifying what the gates do, the chapter turns to how they can be implemented. It distinguishes between behavioral simulation, which helps experiment with interfaces, and HDL implementation, which builds the actual hardware logic.
+After specifying the chips, the chapter explains how to build them.
+
+The practical rule is:
+
+```text
+build small gates first
+test them
+reuse them to build larger gates
+```
 
 ##### 1.5.1 Behavioral Simulation
 
-Behavioral simulation models chip behavior in software without requiring the chip to be implemented in HDL. This is useful for exploration and for allowing progress when lower-level implementations are not yet complete.
+Behavioral simulation means the simulator provides a chip's behavior directly.
 
-The Nand to Tetris simulator includes built-in versions of the project chips. A built-in chip has the same interface as the real HDL version, but its behavior is supplied by the simulator.
+This is useful when:
+
+```text
+you want to test a higher-level design
+but a lower-level chip is not implemented yet
+```
 
 ![](media/figure_wo_caption_1.16.png)
 
+The built-in chip has the same interface as the HDL chip. The difference is only where the behavior comes from.
+
 ##### 1.5.2 Hardware Implementation
 
-The implementation path starts from primitive Nand and gradually builds every required gate. Not can be made from one Nand; And, Or, Xor, multiplexers, demultiplexers, multi-bit gates, and multi-way gates are then built from previously completed gates.
+The implementation path starts from Nand.
 
-The recommended style is incremental: once a gate is implemented, use it as a building block for the next gate instead of repeatedly dropping down to raw Nand.
+Example ladder:
+
+```text
+Nand
+  -> Not
+  -> And
+  -> Or
+  -> Xor
+  -> Mux and DMux
+  -> 16-bit and multi-way chips
+```
+
+Once a chip works, use it as a building block. Do not keep rebuilding everything from raw Nand unless the project requires it.
 
 ##### 1.5.3 Built-In Chips
 
-The simulator resolves chip-parts by looking first in the current folder and then in the built-in tools folder. This makes built-ins a safety net: if a chip implementation is missing or temporarily renamed, the simulator can use the built-in version instead.
+The simulator looks for chip implementations in two places:
 
-This behavior is useful during project work because it lets learners continue building higher-level chips even if a lower-level chip is incomplete.
+```text
+current project folder
+built-in tools folder
+```
+
+If your HDL file is missing, the simulator may use a built-in version.
+
+This is useful as a fallback, but the project goal is still to implement the specified chips yourself.
 
 #### 1.6 Project
 
-Project 1 asks the learner to implement the logic gates from the chapter using only primitive Nand and the composite gates built along the way. The required work happens in `nand2tetris/projects/01`, using supplied `.hdl` stubs, `.tst` test scripts, and `.cmp` compare files.
+Project 1 asks you to implement the chapter's logic gates using HDL.
 
-The contract is simple: each completed HDL chip must produce the expected output when run through the supplied test. The recommended workflow is to consult the HDL appendix, use the hardware simulator tutorial as needed, and build/test the chapter's chips in order.
+The work happens in `nand2tetris/projects/01`.
+
+The pattern for every chip is:
+
+```text
+read the specification
+write the HDL implementation
+run the supplied test script
+compare against the expected output
+fix until it passes
+```
+
+The important constraint is that you should build the chips from Nand and from previously completed chips.
 
 ##### General Implementation Tips
 
@@ -261,268 +764,961 @@ The contract is simple: each completed HDL chip must produce the expected output
 
 #### 1.7 Perspective
 
-Chapter [1](#1-boolean-logic) establishes the elementary logic gate toolbox used by later processing and memory chips. Although this book uses Nand as the primitive foundation, other complete bases such as Nor or combinations of And, Or, and Not are theoretically equivalent.
+Chapter [1](#1-boolean-logic) builds the elementary logic toolbox.
 
-The chapter intentionally avoids physical engineering details and low-level efficiency concerns. Its goal is to teach the abstract logic-design layer that sits between Boolean functions and the larger chips built in the next chapters.
+The book uses Nand as the primitive, but Nand is not magical. Nor can also serve as a complete basis, and combinations like And/Or/Not are also complete.
+
+The chapter intentionally ignores transistor-level physics and optimization.
+
+The goal is to understand this layer:
+
+```text
+Boolean functions
+  -> logic gates
+  -> HDL implementations
+```
+
+That toolbox is enough to build arithmetic in the next chapter.
 
 ### 2 Boolean Arithmetic
 
-Chapter 2 moves from Boolean logic gates to arithmetic chips. The chapter starts with binary number representation, develops adders, and culminates in the Hack Arithmetic Logic Unit, which later becomes the computational core of the CPU.
+Chapter 2 moves from logic to arithmetic.
 
-The main theme is reduction: many machine-level arithmetic and logical operations can be built from binary addition, bitwise operations, and carefully chosen control signals. Two's complement representation is especially important because it lets the same addition hardware handle both nonnegative and signed integers.
+The construction path is:
+
+```text
+binary numbers
+  -> binary addition
+  -> half-adder
+  -> full-adder
+  -> 16-bit adder
+  -> incrementer
+  -> ALU
+```
+
+The main idea is that many computer operations reduce to simple bit-level operations controlled by a small number of signals.
 
 #### 2.1 Arithmetic Operations
 
-General-purpose computers need arithmetic operations such as addition, sign conversion, subtraction, comparison, multiplication, and division. This chapter focuses first on addition and sign conversion, because later operations can be implemented from these simpler building blocks.
+Computers need operations such as:
 
-Addition is treated as a foundational operation. Understanding binary addition explains not only arithmetic circuits but also a large part of how digital hardware reduces complex behavior to simple bit-level processing.
+```text
+addition
+subtraction
+negation
+comparison
+multiplication
+division
+```
+
+This chapter focuses on the operations needed to build the Hack ALU.
+
+The most important operation is addition.
+
+Why addition first?
+
+```text
+subtraction can be reduced to addition
+incrementing is addition by 1
+many higher operations can be built in software from simpler arithmetic
+```
 
 #### 2.2 Binary Numbers
 
-Binary representation works like decimal representation, but with base 2 instead of base 10. Each bit's contribution depends on its position, and a binary code represents the weighted sum of powers of two.
+Binary numbers use base 2.
+
+Decimal uses powers of 10:
+
+```text
+345 = 3*100 + 4*10 + 5*1
+```
+
+Binary uses powers of 2:
+
+```text
+1011 = 1*8 + 0*4 + 1*2 + 1*1 = 11
+```
 
 ![](media/2-1.png)
 
 ![](media/2-2.png)
 
-Computers represent everything internally with binary codes, even when users interact with decimal numbers or screen characters. Decimal notation is a human-facing convention; the machine must convert between human-readable decimal forms and internal binary forms when necessary.
+Computers store fixed-width binary words.
 
-Because computers are finite machines, integer values are represented using a fixed word size. An `n`-bit word can represent `2^n` distinct values. If all values are nonnegative, the range is `0` through `2^n - 1`; representing values outside the fixed range requires larger or multi-word representations.
+With `n` bits, there are:
+
+```text
+2^n possible bit patterns
+```
+
+If all values are nonnegative, the range is:
+
+```text
+0 through 2^n - 1
+```
+
+Example:
+
+```text
+4 bits -> 16 values -> 0 through 15
+```
 
 #### 2.3 Binary Addition
 
-Binary numbers are added from right to left, just like decimal numbers. The least significant bits are added first, and each addition may produce a carry that feeds into the next more significant bit.
+Binary addition works like decimal addition, but each digit is a bit.
+
+You add from right to left:
+
+```text
+add current bit pair
+include carry from previous position
+produce sum bit
+send carry to next position
+```
 
 ![](media/figure_wo_caption_2.1.png)
 
-If the most significant addition produces a carry beyond the fixed word size, the result overflows. The Hack hardware ignores overflow and guarantees only the low `n` bits of an `n`-bit addition result.
+The basic cases are:
+
+```text
+0 + 0 = 0
+0 + 1 = 1
+1 + 0 = 1
+1 + 1 = 10  meaning sum 0, carry 1
+```
+
+In fixed-width hardware, overflow is ignored.
+
+For Hack:
+
+```text
+16-bit addition returns the low 16 bits
+extra carry beyond bit 15 is discarded
+```
 
 #### 2.4 Signed Binary Numbers
 
-Signed binary numbers divide the available code space between nonnegative and negative values. The dominant representation is two's complement, where the `n`-bit representation of `-x` is the code for `2^n - x`.
+To represent negative numbers, the computer must assign meanings to bit patterns.
+
+The standard representation used here is two's complement.
 
 ![](media/figure_2.1.png)
 
 **Figure 2.1** Two's complement representation of signed numbers, in a 4-bit binary system.
 
-In two's complement, an `n`-bit system represents values from `-2^(n-1)` through `2^(n-1) - 1`. Nonnegative numbers begin with `0`, negative numbers begin with `1`, and negating a number can be done by flipping all bits and adding `1`.
+In an `n`-bit two's complement system, the range is:
 
-The key hardware payoff is that subtraction becomes addition: `x - y` can be computed as `x + (-y)`. This means the same binary adder can handle signed addition and subtraction without special signed-number hardware.
+```text
+-2^(n-1) through 2^(n-1) - 1
+```
+
+Example with 4 bits:
+
+```text
+1000 -> -8
+1001 -> -7
+...
+1111 -> -1
+0000 -> 0
+0001 -> 1
+...
+0111 -> 7
+```
+
+The most significant bit indicates the sign:
+
+```text
+0 at the left -> nonnegative
+1 at the left -> negative
+```
+
+To negate a number:
+
+```text
+flip all bits
+add 1
+```
+
+The hardware payoff is huge:
+
+```text
+x - y = x + (-y)
+```
+
+So the same adder can support both addition and subtraction.
 
 #### 2.5 Specification
 
-The chapter specifies a hierarchy of arithmetic chips. As usual, the specification describes what each chip does before discussing how to build it.
+The chapter specifies the arithmetic chips before building them.
+
+The desired ladder is:
+
+```text
+HalfAdder
+  -> FullAdder
+  -> Add16
+  -> Inc16
+  -> ALU
+```
 
 ##### 2.5.1 Adders
 
-The adder hierarchy starts with a half-adder, which adds two bits and produces a `sum` and `carry`. A full-adder adds three bits, allowing it to include an incoming carry from a less significant bit.
+A half-adder adds two bits.
+
+Interface:
+
+```text
+HalfAdder(a, b, sum, carry)
+```
+
+Behavior:
+
+```text
+sum   = low bit of a + b
+carry = high bit of a + b
+```
 
 ![](media/figure_2.2.png)
 
 **Figure 2.2** Half-adder, designed to add 2 bits.
 
+A full-adder adds three bits: two data bits plus an incoming carry.
+
+Interface:
+
+```text
+FullAdder(a, b, c, sum, carry)
+```
+
 ![](media/figure_2.3.png)
 
 **Figure 2.3** Full-adder, designed to add 3 bits.
 
-A multi-bit adder chains this idea across a fixed-width word. For Hack, the important version is a 16-bit adder that adds two 16-bit inputs and outputs the low 16 bits of the result.
+A 16-bit adder chains full-adders across all bit positions.
 
 ![](media/figure_2.4.png)
 
 **Figure 2.4** 16-bit adder, designed to add two 16-bit numbers, with an example of addition action (on the left).
 
-The chapter also specifies an incrementer, a special-purpose chip that adds `1` to a 16-bit input. This will later support advancing to the next instruction address.
+Mental model:
+
+```text
+bit 0 produces carry into bit 1
+bit 1 produces carry into bit 2
+...
+bit 15 produces overflow, which Hack ignores
+```
+
+The incrementer is a special adder:
+
+```text
+Inc16(in) = in + 1
+```
 
 ![](media/figure_wo_caption_2.2.png)
 
+It will later help the program counter move to the next instruction.
+
 ##### 2.5.2 The Arithmetic Logic Unit
 
-The Hack ALU computes a selected arithmetic or logical function over two 16-bit inputs, `x` and `y`. It is controlled by six 1-bit control inputs: `zx`, `nx`, `zy`, `ny`, `f`, and `no`.
+The ALU is the main computation chip of the Hack computer.
+
+Inputs:
+
+```text
+x[16]
+y[16]
+```
+
+Control bits:
+
+```text
+zx nx zy ny f no
+```
+
+Outputs:
+
+```text
+out[16]
+zr
+ng
+```
 
 ![](media/figure_2.5a.png)
 
 **Figure 2.5a** The Hack ALU, designed to compute the eighteen arithmetic-logical functions shown on the right. The symbols `!`, `&`, and `|` represent the 16-bit operations `Not`, `And`, and `Or`. For now, ignore the `zr` and `ng` output bits.
 
-The control bits are interpreted as a sequence of simple micro-actions. The ALU may zero and/or negate each input, then choose between bitwise And and addition, then optionally negate the final output.
+The six control bits describe a small processing pipeline:
+
+```text
+maybe zero x
+maybe negate x
+maybe zero y
+maybe negate y
+choose Add or And
+maybe negate output
+```
 
 ![](media/figure_2.5b.png)
 
 **Figure 2.5b** Taken together, the values of the six control bits `zx`, `nx`, `zy`, `ny`, `f`, and `no` cause the ALU to compute one of the functions listed in the rightmost column.
 
-This small control scheme is enough to produce the eighteen documented Hack ALU functions, including constants, identity operations, negation, increment/decrement, addition, subtraction, And, and Or. The six control bits actually encode sixty-four possible operations, but Hack uses only the subset needed by its instruction set.
+This tiny control scheme can produce the Hack machine's needed arithmetic and logical functions:
 
-The ALU also outputs `zr` and `ng`. `zr` reports whether the result is zero, and `ng` reports whether the result is negative. These status bits will later drive CPU branching decisions.
+```text
+0, 1, -1
+x, y
+!x, !y
+-x, -y
+x+1, y+1
+x-1, y-1
+x+y
+x-y, y-x
+x&y
+x|y
+```
+
+The status outputs summarize the result:
+
+```text
+zr = 1 if out is zero
+ng = 1 if out is negative
+```
 
 ![](media/figure_2.5c.png)
 
 **Figure 2.5c** The Hack ALU API.
 
+These flags later help the CPU decide whether to jump.
+
 #### 2.6 Implementation
 
-The implementation guidance is intentionally sparse. The learner is expected to derive a logic design, write HDL, and test it with the supplied hardware simulator.
+The chapter gives sparse implementation guidance on purpose.
 
-The half-adder can be built directly from logic gates already seen in Project 1. The full-adder can be built from two half-adders plus an additional gate. The 16-bit adder is a ripple-style design: each bit position uses the carry from the previous position.
+The learner must derive the HDL designs.
 
-Although the HDL describes all bit positions at once, the carry values conceptually propagate from least significant bit to most significant bit. Timing and synchronization are deferred until the memory chapter.
+The adder path is:
 
-The ALU implementation follows the pseudocode implied by the control bits. The main work is building reusable patterns for zeroing, negating, selecting between And and Add, optionally negating the output, and deriving the `zr` and `ng` flags.
+```text
+HalfAdder from basic gates
+FullAdder from HalfAdders
+Add16 from FullAdders
+Inc16 from Add16 or equivalent logic
+```
+
+The 16-bit adder is a ripple-carry design:
+
+```text
+carry ripples from low bit to high bit
+```
+
+Conceptually the bits depend on each other in order, even though HDL describes the chip structurally.
+
+The ALU implementation follows the control-bit pipeline:
+
+```text
+preprocess x
+preprocess y
+compute x+y or x&y
+optionally negate output
+compute zr and ng
+```
 
 #### 2.7 Project
 
-Project 2 asks the learner to implement the arithmetic chips from the chapter: adders, incrementer, and ALU. The required building blocks are the Chapter 1 gates and the chips built progressively during the project.
+Project 2 asks you to implement:
 
-The book recommends using built-in versions of Chapter 1 chips rather than copying Project 1 HDL files into the Project 2 folder. Built-ins are guaranteed to match the specification and make the simulator faster.
+```text
+HalfAdder
+FullAdder
+Add16
+Inc16
+ALU
+```
 
-The same constraints from Project 1 still apply: use only specified chips, prefer simple correct HDL, and avoid inventing extra helper chips.
+The building blocks are Chapter 1 gates and the chips completed earlier in the project.
+
+The book recommends using built-in versions of Chapter 1 chips instead of copying Project 1 HDL files. This makes Project 2 faster and keeps the focus on arithmetic.
+
+The same rules still apply:
+
+- use only specified chips
+- prefer simple correct HDL
+- do not invent unnecessary helper chips
+- test each chip with the supplied scripts
 
 #### 2.8 Perspective
 
-The chapter's adder design prioritizes clarity over efficiency. A ripple-carry adder is easy to understand, but it can be slow because each carry must propagate through the word. Faster hardware can use carry-lookahead techniques, but those optimizations are outside this course's main path.
+The adder design prioritizes clarity.
 
-The Hack ALU deliberately provides only a small hardware feature set. Operations like multiplication, division, and square root are left to the operating system, where they can be implemented in software using lower-level ALU operations.
+A ripple-carry adder is easy to understand:
 
-This division of labor is a recurring systems trade-off: hardware implementations are faster but more expensive, while software implementations keep the hardware simple and shift complexity upward into system services.
+```text
+each bit waits for carry from the previous bit
+```
+
+But it can be slow because carry may need to travel through many positions.
+
+Real hardware can use faster designs such as carry-lookahead adders, but those optimizations are outside the book's main path.
+
+The Hack ALU is also intentionally small. Expensive operations like multiplication, division, and square root are not built directly into the hardware.
+
+Instead:
+
+```text
+simple hardware
+more work in software
+```
+
+This is a recurring systems trade-off.
 
 ### 3 Memory
 
-Chapter 3 moves from combinational chips to sequential chips. The core problem is persistence over time: arithmetic chips can transform values, but a computer also needs devices that can remember state across clock cycles.
+Chapter 3 moves from combinational logic to sequential logic.
 
-The chapter introduces discrete time, the clocked Data Flip-Flop, registers, RAM hierarchies, and the program counter. The main systems idea is that memory emerges from feedback plus controlled delay, and that fast random access emerges from putting combinational selection logic on top of large banks of registers.
+Combinational chips compute outputs from current inputs:
+
+```text
+current inputs -> logic -> current output
+```
+
+Memory chips must also remember previous values:
+
+```text
+current inputs + previous state -> next state/output
+```
+
+The construction ladder is:
+
+```text
+DFF
+  -> Bit
+  -> Register
+  -> RAM8
+  -> RAM64
+  -> RAM512
+  -> RAM4K
+  -> RAM16K
+  -> PC
+```
+
+The main idea is:
+
+```text
+DFF gives one bit of time-delayed state.
+Registers group bits into words.
+RAM groups registers and adds addressing.
+PC is a controlled register for instruction flow.
+```
 
 #### 3.1 Memory Devices
 
-Programs rely on variables, arrays, and objects that persist over time, so the hardware platform must offer stateful memory devices. Classical combinational logic cannot do this by itself because it has no notion of past versus present state.
+Programs need values that persist.
 
-The chapter therefore introduces the Data Flip-Flop (`DFF`) as the primitive sequential building block. Larger devices like `Bit`, `Register`, RAM, and `PC` are all built on top of it.
+Examples:
+
+```text
+variables
+arrays
+objects
+current instruction address
+temporary computation results
+```
+
+Combinational logic cannot store these values because it has no memory. If its inputs disappear or change, its output changes too.
+
+The chapter introduces a primitive sequential chip:
+
+```text
+DFF = Data Flip-Flop
+```
+
+The book treats `DFF` as a built-in building block.
+
+From that one primitive, the chapter builds the useful memory hierarchy:
 
 ![](media/figure_3.1.png)
 
 **Figure 3.1** The memory hierarchy built in this chapter.
 
+Mental model:
+
+```text
+DFF stores one delayed bit.
+Everything else is structure and control around many DFFs.
+```
+
 #### 3.2 Sequential Logic
 
-Sequential logic extends the earlier Boolean logic model with time. Combinational chips depend only on current inputs; sequential chips depend on current inputs plus state that was committed in previous cycles.
+Sequential logic adds time to Boolean logic.
+
+Combinational logic:
+
+```text
+out = function(current inputs)
+```
+
+Sequential logic:
+
+```text
+out = function(current inputs, stored state)
+```
+
+That stored state comes from earlier clock cycles.
 
 ##### 3.2.1 Time Matters
 
-Real chips are not instantaneous: signals take time to travel and gate networks take time to stabilize. The book handles this complexity by modeling time discretely as cycles instead of continuously.
+Real gates do not update instantly.
+
+Signals need time to travel, and gate outputs need time to stabilize.
+
+Instead of modeling every tiny delay, the book uses discrete time:
+
+```text
+cycle 0
+cycle 1
+cycle 2
+...
+```
 
 ![](media/figure_3.2.png)
 
 **Figure 3.2** Discrete time representation: state changes are observed only during cycle transitions, while within-cycle fluctuations are ignored.
 
-This abstraction solves two problems at once. First, it hides transient propagation delays as long as the clock cycle is longer than the slowest computation. Second, it synchronizes the entire machine so that all stateful elements commit their updates together at cycle boundaries.
+The clock gives the machine a shared rhythm.
+
+During a cycle:
+
+```text
+combinational logic computes
+```
+
+At the cycle boundary:
+
+```text
+stateful chips commit their next values
+```
+
+This works as long as the clock cycle is long enough for the slowest needed computation to settle.
 
 ##### 3.2.2 Flip-Flops
 
-The `DFF` is the primitive memory element used throughout the chapter. Its behavior is `out(t) = in(t - 1)`: at the end of each cycle, it emits the input from the previous cycle.
+The `DFF` is the primitive one-bit memory device.
+
+Its behavior is:
+
+```text
+out(t) = in(t - 1)
+```
+
+Meaning:
+
+```text
+the input from the previous time step becomes the output now
+```
 
 ![](media/figure_3.3.png)
 
 **Figure 3.3** The data flip-flop and its behavior over time.
 
-This one-cycle delay is what makes memory possible. Because all `DFF`s in the system share the same clock, they act like a synchronized substrate on which higher-level memory chips can be built.
+This one-cycle delay is the key.
+
+It lets the computer separate:
+
+```text
+old state used during this cycle
+new state committed for the next cycle
+```
 
 ##### 3.2.3 Combinational and Sequential Logic
 
-Combinational chips ignore time and respond only to present input combinations. Sequential chips, by contrast, contain `DFF`s directly or indirectly, which lets them respond to previously stored values.
+Combinational chips contain no memory.
+
+Sequential chips contain `DFF`s directly or indirectly.
 
 ![](media/figure_3.4.png)
 
 **Figure 3.4** Sequential logic design typically combines `DFF`s with combinational chips and feedback paths.
 
-The crucial design rule is that feedback without delay is problematic in combinational logic, but feedback through a `DFF` is safe because the delay breaks circular self-dependence within the same cycle. This also explains how a whole computer can be synchronized despite different signal travel times across the hardware.
+The safe pattern is:
+
+```text
+old state -> combinational logic -> DFF -> next state
+```
+
+Feedback without delay can create circular dependency inside the same moment.
+
+Feedback through a `DFF` is safe because the `DFF` delays the value until the next cycle.
 
 #### 3.3 Specification
 
-The chapter specifies the memory abstractions needed by the Hack platform: `DFF`, `Bit`, `Register`, RAM families, and `PC`. As usual, the focus is first on interface and behavior rather than implementation.
+The chapter specifies the memory chips needed by the Hack platform.
+
+The abstractions are:
+
+```text
+DFF       -> primitive one-bit delay
+Bit       -> controlled 1-bit register
+Register  -> controlled 16-bit register
+RAM       -> addressable collection of registers
+PC        -> register with reset/load/increment behavior
+```
 
 ##### 3.3.1 Data Flip-Flop
 
-The `DFF` is specified as the most elementary sequential device. It has one data input, one data output, a clock input, and the behavior `out(t) = in(t - 1)`.
+The `DFF` has one data input and one data output.
 
-Its importance is architectural rather than glamorous: every memory device later in the chapter relies on this primitive time-delayed state transition.
+Its rule is:
+
+```text
+out(t) = in(t - 1)
+```
+
+In plain language:
+
+```text
+whatever was at input last cycle appears at output this cycle
+```
+
+The `DFF` is small, but architecturally important. It is the source of all persistent state in the chapter.
 
 ##### 3.3.2 Registers
 
-The chapter specifies a 1-bit register named `Bit` and a 16-bit `Register`. Both have an `in` input, a `load` control bit, and an `out` output that continuously emits the currently stored value.
+The chapter defines two register abstractions:
+
+```text
+Bit       -> stores 1 bit
+Register  -> stores 16 bits
+```
+
+Both use a `load` control bit.
+
+For the 1-bit register:
+
+```text
+Bit(in, load, out)
+```
 
 ![](media/figure_3.5.png)
 
 **Figure 3.5** 1-bit register (`Bit`).
 
+Behavior:
+
+```text
+if load = 0:
+    keep old value
+
+if load = 1:
+    store in on the next clock cycle
+```
+
+For the 16-bit register:
+
+```text
+Register(in[16], load, out[16])
+```
+
 ![](media/figure_3.6.png)
 
 **Figure 3.6** 16-bit `Register`.
 
-The behavior is the same in both cases: when `load` is `1`, the device commits the input value and emits it from the next cycle onward; when `load` is `0`, it preserves the previous value.
+Behavior:
+
+```text
+if load = 0:
+    keep the old 16-bit word
+
+if load = 1:
+    store the new 16-bit input on the next clock cycle
+```
+
+Mental model:
+
+```text
+Bit stores one bit.
+Register is sixteen Bit chips in parallel.
+```
 
 ##### 3.3.3 Random Access Memory
 
-RAM is specified as an addressable collection of `Register` chips. The address selects one register, the output exposes the selected register's current contents, and the `load` bit determines whether the selected register should be updated on the next cycle.
+RAM is many registers plus addressing.
+
+The address chooses which register you are talking to.
+
+Generic RAM behavior:
+
+```text
+in      = value you may want to store
+load    = whether to write
+address = where to read/write
+out     = value currently stored at that address
+```
 
 ![](media/figure_3.7.png)
 
 **Figure 3.7** A RAM chip as a collection of addressable `Register` chips.
 
-The key property is random access: selection time should be effectively independent of which register is chosen. The abstraction therefore behaves like a direct-access bank of memory words, even though it is implemented from many smaller chips.
+Reading:
+
+```text
+address selects which stored word appears at out
+```
+
+Writing:
+
+```text
+if load = 1:
+    store in into the selected address on the next clock cycle
+```
+
+Random access means the address can select any location directly. You do not have to scan through earlier locations first.
 
 ##### 3.3.4 Counter
 
-The `PC` chip is a specialized register that can do more than hold a value. It can preserve its value, load a new value, increment by `1`, or reset to `0`.
+The `PC`, or Program Counter, is a special register.
+
+It stores the address of the instruction that should run next.
+
+It must support four behaviors:
+
+```text
+reset to 0
+load a specific value
+increment by 1
+hold current value
+```
 
 ![](media/figure_3.8.png)
 
 **Figure 3.8** Program Counter (`PC`).
 
-This chip later becomes the program counter in the CPU. Its interface is register-like, but with extra `inc` and `reset` control bits layered on top of ordinary load behavior.
+The `PC` is still a register underneath. The extra control bits decide what value should be stored next.
 
 #### 3.4 Implementation
 
-The implementation section explains how to realize the chapter's abstractions from lower-level sequential and combinational building blocks. The recurring strategy is to store state in registers and use selection logic to decide when and where new values should flow.
+The implementation strategy is the same throughout the chapter:
+
+```text
+store state in DFFs/registers
+use combinational logic to choose the next value
+commit the chosen value on the next clock cycle
+```
 
 ##### 3.4.1 Data Flip-Flop
 
-Although `DFF`s can be built from feedback loops of primitive logic gates, the chapter treats them as built-in primitives. The simulator supplies a `DFF` implementation directly, which lets the learner focus on higher-level memory design.
+The book does not ask you to build `DFF` from gates.
+
+It treats `DFF` as primitive.
+
+Reason:
+
+```text
+DFF implementation requires lower-level timing details
+Chapter 3 wants to focus on memory architecture
+```
+
+So the simulator provides `DFF` as a built-in chip.
 
 ##### 3.4.2 Registers
 
-The `Bit` register is built by combining a `DFF` with a multiplexer. The design goal is: if `load` is asserted, feed the new input into the `DFF`; otherwise, feed back the previously stored output.
+A raw `DFF` stores its input every cycle.
+
+A useful 1-bit register needs a choice:
+
+```text
+store the new input
+or
+keep the old value
+```
+
+The `Bit` chip gets this behavior by placing a `Mux` before the `DFF`.
 
 ![](media/figure_3.9.png)
 
 **Figure 3.9** Invalid and correct implementations of the `Bit` register.
 
-The invalid design exposes why the multiplexer is necessary: a register needs both state preservation and conditional overwrite. The correct solution uses the `load` bit as the mux selector, routing either the new `in` value or the old stored value back into the `DFF`. A 16-bit `Register` then follows by instantiating sixteen `Bit` chips in parallel.
+Conceptually:
+
+```text
+                 +-----+
+old out -------->|     |
+in ------------->| Mux |----> DFF ----> out
+load ----------->|     |
+                 +-----+
+```
+
+If `load = 0`:
+
+```text
+Mux selects old out
+DFF receives old out
+Bit keeps its value
+```
+
+If `load = 1`:
+
+```text
+Mux selects in
+DFF receives in
+Bit updates on the next clock cycle
+```
+
+A 16-bit `Register` is then built from sixteen `Bit` chips:
+
+```text
+Bit 0  stores in[0]
+Bit 1  stores in[1]
+...
+Bit 15 stores in[15]
+```
+
+All sixteen share the same `load` signal, so the whole word updates together.
 
 ##### 3.4.3 RAM
 
-The Hack RAM hierarchy is built recursively. The roadmap begins with `RAM8`, then grows to `RAM64`, `RAM512`, `RAM4K`, and `RAM16K`.
+RAM is built recursively.
+
+The hierarchy is:
+
+```text
+RAM8
+  -> RAM64
+  -> RAM512
+  -> RAM4K
+  -> RAM16K
+```
 
 ![](media/figure_wo_caption_3.1.png)
 
-To read from RAM, combinational selection logic routes the chosen register's output to the chip's output. To write, the input bus is broadcast to all child registers, while address decoding plus the `load` signal ensures that only the selected register accepts the new value.
+The basic idea for `RAM8` is:
 
-The important systems insight is that RAM gets its random-access property from combinational addressing logic. Hierarchical composition scales the memory size, while multiplexers and demultiplexers keep selection fast and direct.
+```text
+8 registers
+one address selects one register
+```
+
+Reading uses a multiplexer:
+
+```text
+all register outputs go into a Mux
+address chooses which output appears at RAM out
+```
+
+Writing uses a demultiplexer:
+
+```text
+global load goes into a DMux
+address chooses which register receives load = 1
+```
+
+All registers can receive the same input bus, but only the selected register is told to load it.
+
+For larger RAM, the same pattern repeats.
+
+Example:
+
+```text
+RAM64 = 8 RAM8 chips
+```
+
+The address is split conceptually:
+
+```text
+low bits  -> select inside a small block
+high bits -> select which block
+```
+
+Mental model:
+
+```text
+RAM = registers + read selection + write selection
+```
 
 ##### 3.4.4 Counter
 
-The counter is implemented by combining a `Register`, an incrementer from Chapter 2, and multiplexing logic that prioritizes `reset`, `load`, and `inc` behaviors.
+The counter is implemented from:
 
-The same pattern appears again: persistent storage comes from the register, while control flow comes from combinational logic deciding which next-state value should be written back on the next cycle.
+```text
+Register
+Incrementer
+Mux/control logic
+```
+
+The combinational logic chooses the next value.
+
+Possible next values:
+
+```text
+0              for reset
+in             for load
+current + 1    for increment
+current        for hold
+```
+
+The register stores whichever value the control logic selects.
+
+The general pattern is:
+
+```text
+current state -> combinational next-state logic -> register -> next state
+```
 
 #### 3.5 Project
 
-Project 3 asks the learner to implement the memory chips of the chapter using the supplied HDL stubs, tests, and compare files. The permitted building blocks are the primitive `DFF`, the chips built earlier in the project, and gates from previous chapters.
+Project 3 asks you to implement the memory chips.
 
-The project uses two RAM subfolders for practical simulator reasons. Lower-level RAM chips live in `projects/03/a`, while higher-level ones live in `projects/03/b`, which encourages the simulator to use built-in versions of certain lower-level parts and prevents huge recursive in-memory constructions.
+The chips include:
 
-The recommended path is to consult the HDL appendix and hardware simulator tutorial as needed, then build the chips in the `projects/03` folder in order.
+```text
+Bit
+Register
+RAM8
+RAM64
+RAM512
+RAM4K
+RAM16K
+PC
+```
+
+The allowed building blocks are:
+
+```text
+DFF
+chips built earlier in Project 3
+gates from Chapters 1 and 2
+```
+
+The project is split into two folders for simulator performance:
+
+```text
+projects/03/a -> smaller memory chips
+projects/03/b -> larger memory chips
+```
+
+The recommended workflow is the same as before:
+
+```text
+read specification
+implement in HDL
+run supplied test
+fix until the compare file matches
+```
 
 #### 3.6 Perspective
 
-The perspective section notes that real flip-flops are usually built from lower-level combinational gates in carefully designed feedback configurations, but that this physical detail is intentionally abstracted away here.
+Real flip-flops can be built from lower-level gates using carefully designed feedback circuits.
 
-The chapter also emphasizes that modern memory technologies are not necessarily implemented literally as textbook flip-flops, and that the recursive RAM constructions used in the course are elegant teaching designs rather than guaranteed optimal industrial ones.
+The book hides that detail because Chapter 3 is about the architectural use of memory, not transistor-level timing.
 
-Still, the abstractions are fundamental: registers, RAM, and counters are standard building blocks across computer systems. Combined with the ALU from Chapter 2, they provide the remaining hardware pieces needed to build the CPU and the larger machine architecture introduced in Chapter 5.
+Modern memory technologies are also not always built literally as textbook flip-flops. Real systems use many optimized memory technologies.
+
+But the abstractions remain fundamental:
+
+```text
+registers store words
+RAM stores addressable words
+counters store and update control positions
+```
+
+Together with the ALU from Chapter 2, these memory devices provide the remaining hardware pieces needed to build the CPU and the larger Hack computer.
