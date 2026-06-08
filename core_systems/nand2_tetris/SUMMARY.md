@@ -180,6 +180,18 @@ high-level program
 
 ![](media/figure_wo_caption_I.1.png)
 
+Read this figure as a vertical stack.
+
+The higher you are in the figure, the more the work looks like software and human intent.
+
+The lower you go, the more the work becomes precise machine-level mechanism.
+
+So the figure is really making one big promise:
+
+```text
+everything above is realized by something below
+```
+
 The important idea is that programmers usually see only the top layer. This book goes below the surface and rebuilds the hidden layers one by one.
 
 #### Nand to Tetris
@@ -196,6 +208,21 @@ The specific computer is called Hack. The specific high-level language is called
 They are not meant to be industrial standards. They are small enough to understand completely.
 
 ![](media/figure_I.1.png)
+
+Figure `I.1` should be read in both directions.
+
+Going upward:
+
+```text
+simple hardware blocks combine into a machine
+```
+
+Going downward:
+
+```text
+high-level software is translated into simpler and simpler representations
+until it becomes machine instructions executed by that hardware
+```
 
 The roadmap has two directions:
 
@@ -308,6 +335,21 @@ Boolean algebra works with two values:
 1
 ```
 
+The course adds a practical motivation for this choice.
+
+Real hardware settles on two states because two stable values are the simplest to maintain reliably.
+
+The names can change:
+
+```text
+0 / 1
+off / on
+false / true
+no / yes
+```
+
+But they all refer to the same abstraction: a signal is in one of two distinguishable states.
+
 A Boolean function maps binary inputs to a binary output.
 
 Example:
@@ -332,6 +374,28 @@ They can be written mathematically as $x \cdot y$, $x + y$, and $\bar{x}$, or as
 ![](media/figure_1.1.png)
 
 ![](media/figure_1.2.png)
+
+These two figures do complementary jobs.
+
+`Figure 1.1` introduces the three basic Boolean operators.
+
+You should read it as the small algebraic vocabulary from which larger logical statements are built.
+
+`Figure 1.2` then shows the corresponding truth tables.
+
+Each row answers the question:
+
+```text
+if the inputs are exactly this combination,
+what must the output be?
+```
+
+That is the first key move of the whole chapter:
+
+```text
+behavior first
+implementation later
+```
 
 The key theoretical fact is that every Boolean function can be built from Nand alone.
 
@@ -365,6 +429,16 @@ The figure shows that the same function can be described by a table or by an exp
 ```text
 (x OR y) AND NOT(z)
 ```
+
+When reading figure `1.3`, do not think of the expression and the truth table as two different functions.
+
+They are two descriptions of the same mapping.
+
+The truth table is explicit and complete.
+
+The expression is compact and compositional.
+
+Hardware designers constantly move between these two views.
 
 ##### Truth Tables and Boolean Expressions
 
@@ -402,7 +476,27 @@ out = 1 only when both inputs are 1
 
 ![](media/figure_1.4.png)
 
+Figure `1.4` is the first clear example of abstraction.
+
+The gate symbol hides all physical implementation details and preserves only what matters at this level:
+
+```text
+which pins go in
+which pin comes out
+what logical behavior the box guarantees
+```
+
 This lets us reason at the gate level without thinking about transistors every time.
+
+The course makes one more practical point here: a gate can be specified in several equivalent ways.
+
+```text
+gate symbol
+truth table
+short verbal rule
+```
+
+If all three describe the same input/output behavior, they are just different presentations of the same functional specification.
 
 ##### Primitive and Composite Gates
 
@@ -417,6 +511,19 @@ And(a, b, c) = And(And(a, b), c)
 ```
 
 ![](media/figure_1.5.png)
+
+Figure `1.5` shows the difference between a black-box interface and an internal construction.
+
+From the outside, the composite gate behaves like one logical unit.
+
+Inside, it is a small network of simpler gates.
+
+That is the same pattern the whole book will reuse:
+
+```text
+clean outside behavior
+built from smaller inside parts
+```
 
 The interface says what the gate looks like from the outside:
 
@@ -446,6 +553,26 @@ Xor(a, b) = Or(And(a, Not(b)), And(Not(a), b))
 ```
 
 ![](media/figure_1.6.png)
+
+Figure `1.6` is worth reading left to right.
+
+One branch detects:
+
+```text
+a = 1 and b = 0
+```
+
+The other branch detects:
+
+```text
+a = 0 and b = 1
+```
+
+Then the final `Or` says:
+
+```text
+output 1 if either of those mismatch cases happens
+```
 
 So logic design means:
 
@@ -485,7 +612,28 @@ these pins are connected to those pins
 
 ![](media/figure_1.7.png)
 
+Figure `1.7` should be read in two passes.
+
+First read only the chip header:
+
+```text
+what are the public inputs and outputs?
+```
+
+Then read the `PARTS` section:
+
+```text
+which previously built gates are being instantiated?
+which internal wires connect them?
+```
+
+That is the basic rhythm of HDL throughout the course.
+
 For Xor, the HDL header defines the public interface. The `PARTS` section builds the implementation from lower-level gates.
+
+The course adds one more design rule here: the interface is fixed, but the implementation is not.
+
+Many different internal designs can satisfy the same input/output contract. Later on, engineering concerns like part count, wiring complexity, and energy use help decide which implementation is better.
 
 Internal pins name intermediate values.
 
@@ -517,6 +665,15 @@ For small gates, every input combination can be tested.
 
 For larger chips, tests still provide strong confidence even when exhaustive testing is too large.
 
+The videos also distinguish two testing modes:
+
+```text
+interactive probing
+script-based verification
+```
+
+Interactive simulation is useful for quick experiments. But once you need to rerun the same checks repeatedly, test scripts are the practical default because they can generate an output file and compare it automatically against a compare file.
+
 ##### 1.3.2 Hardware Simulation
 
 The hardware simulator executes HDL designs.
@@ -531,6 +688,16 @@ expected output
 ```
 
 ![](media/figure_1.8.png)
+
+Figure `1.8` shows why the simulator is so helpful pedagogically.
+
+It places the intended behavior and the actual behavior side by side.
+
+So instead of guessing whether a circuit is correct, you can ask a precise question:
+
+```text
+for this input, did my chip produce the specified output?
+```
 
 This makes hardware design feel like programming with tests, but the thing being described is a circuit, not a sequence of instructions.
 
@@ -568,6 +735,20 @@ So it outputs `0` only when both inputs are `1`.
 
 ![](media/figure_wo_caption_1.2.png)
 
+These two small figures give the two standard views of `Nand`:
+
+```text
+symbol / gate icon
+truth table / exact behavior
+```
+
+The truth table is especially important because it shows the complete rule in one sentence:
+
+```text
+Nand outputs 0 only in the case 1,1
+and 1 everywhere else
+```
+
 Everything else in Chapter 1 can be built from this gate.
 
 ##### 1.4.2 Basic Logic Gates
@@ -591,13 +772,34 @@ DMux
 
 ![](media/figure_wo_caption_1.6.png)
 
+These figures collect the basic chip APIs of the chapter.
+
+For `Not`, `And`, `Or`, and `Xor`, the important point is that each chip has a tiny, exact contract.
+
+For `Mux` and `DMux`, the new idea is control.
+
+The selector does not carry data.
+
+It tells the circuit how to route data.
+
+That is why these chips become so important later in memory chips and CPUs.
+
 The multiplexer chooses one of two inputs:
 
 ```text
 if sel = 0: out = a
 if sel = 1: out = b
 ```
-![[figure_1.9.png]]
+
+The figure should be read as a controlled choice:
+
+```text
+two possible data sources
+one selector bit
+one chosen output
+```
+
+![](media/figure_1.9.png)
 
 The demultiplexer routes one input to one of two outputs:
 
@@ -607,6 +809,10 @@ if sel = 1: a = 0,  b = in
 ```
 
 ![](media/figure_1.10.png)
+
+This is the mirror image of the `Mux` idea.
+
+Instead of many inputs competing for one output, one input is routed toward one chosen destination.
 
 Mental model:
 
@@ -640,7 +846,19 @@ out[15] = And(a[15], b[15])
 
 ![](media/figure_wo_caption_1.10.png)
 
+These figures show the same interface ideas from earlier, but widened from one bit to sixteen bits.
+
+The important thing to notice is that the selector is still only one control value.
+
+For example, a `Mux16` does not choose separately for each bit.
+
+It chooses one entire 16-bit input word or the other.
+
 The operation is not new. Only the width changes.
+
+The course adds a useful abstraction reminder: a bus is still just a bundle of wires, but HDL lets us treat that bundle as one meaningful object. That is mostly a design convenience, not a new physical idea.
+
+It also shows the practical consequence of that support: you can slice a bus into sub-buses or combine smaller buses into a larger one without naming every wire separately.
 
 ##### 1.4.4 Multi-Way Versions of Basic Gates
 
@@ -655,6 +873,16 @@ DMux8Way  -> route input to 1 of 8 outputs
 ```
 
 ![](media/figure_wo_caption_1.11.png)
+
+`Or8Way` is a reduction operation.
+
+It answers one question:
+
+```text
+is any one of these inputs equal to 1?
+```
+
+You can picture it as a small tree of `Or` gates collapsing eight wires into one result.
 
 To choose among `m` inputs, you need enough selector bits to name each choice:
 
@@ -673,11 +901,21 @@ For example:
 
 ![](media/figure_wo_caption_1.13.png)
 
+These multi-way mux figures are useful because they show selection as a hierarchy.
+
+You do not need a magical new primitive.
+
+You can build a 4-way or 8-way choice by combining simpler 2-way choices in stages.
+
 Demultiplexers use the same idea in reverse: the selector chooses where the input goes.
 
 ![](media/figure_wo_caption_1.14.png)
 
 ![](media/figure_wo_caption_1.15.png)
+
+Again, the multi-way `DMux` should be read as staged routing.
+
+One control value picks one branch, then possibly another, until exactly one output line receives the input signal.
 
 #### 1.5 Implementation
 
@@ -703,6 +941,12 @@ but a lower-level chip is not implemented yet
 ```
 
 ![](media/figure_wo_caption_1.16.png)
+
+Figure `1.16` explains why built-in chips are useful during development.
+
+They let you test the current chip as if all lower layers were already correct.
+
+So behavioral simulation is really a way to isolate the design problem you are working on right now.
 
 The built-in chip has the same interface as the HDL chip. The difference is only where the behavior comes from.
 
@@ -741,6 +985,10 @@ This is useful as a fallback, but the project goal is still to implement the spe
 
 Project 1 asks you to implement the chapter's logic gates using HDL.
 
+The course gives two extra reasons for this exact chip set: these gates are widely useful in digital design, and together they form the elementary toolkit needed for the later computer-building projects.
+
+Implementation links: [`Not`](projects/project-01-boolean-logic.md#not), [`And`](projects/project-01-boolean-logic.md#and), [`Or`](projects/project-01-boolean-logic.md#or), [`Xor`](projects/project-01-boolean-logic.md#xor), [`Mux`](projects/project-01-boolean-logic.md#mux), [`DMux`](projects/project-01-boolean-logic.md#dmux), [`Not16`](projects/project-01-boolean-logic.md#not16), [`And16`](projects/project-01-boolean-logic.md#and16), [`Or16`](projects/project-01-boolean-logic.md#or16), [`Mux16`](projects/project-01-boolean-logic.md#mux16), [`Or8Way`](projects/project-01-boolean-logic.md#or8way), [`Mux4Way16`](projects/project-01-boolean-logic.md#mux4way16), [`Mux8Way16`](projects/project-01-boolean-logic.md#mux8way16), [`DMux4Way`](projects/project-01-boolean-logic.md#dmux4way), and [`DMux8Way`](projects/project-01-boolean-logic.md#dmux8way).
+
 The work happens in `nand2tetris/projects/01`.
 
 The pattern for every chip is:
@@ -765,6 +1013,8 @@ The important constraint is that you should build the chips from Nand and from p
 #### 1.7 Perspective
 
 Chapter [1](#1-boolean-logic) builds the elementary logic toolbox.
+
+In the course, the final unit is framed as a perspective-style Q&A section. So this part briefly opens the black box just enough to show that physical implementations exist beneath the logic symbols, and then returns to the abstraction level the course actually cares about.
 
 The book uses Nand as the primitive, but Nand is not magical. Nor can also serve as a complete basis, and combinations like And/Or/Not are also complete.
 
@@ -843,6 +1093,20 @@ Binary uses powers of 2:
 
 ![](media/2-2.png)
 
+These figures do for binary what the earlier Boolean figures did for logic: they connect notation to meaning.
+
+The key thing to notice is positional value.
+
+Moving one place to the left in binary does not multiply by 10.
+
+It multiplies by 2.
+
+So each bit position has a fixed weight:
+
+```text
+1, 2, 4, 8, 16, ...
+```
+
 Computers store fixed-width binary words.
 
 With `n` bits, there are:
@@ -850,6 +1114,12 @@ With `n` bits, there are:
 ```text
 2^n possible bit patterns
 ```
+
+The course adds one useful interpretation point: these `2^n` patterns do not have to mean numbers.
+
+They can represent any `2^n` distinct things.
+
+In this chapter, we choose to interpret them as integers.
 
 If all values are nonnegative, the range is:
 
@@ -877,6 +1147,23 @@ send carry to next position
 ```
 
 ![](media/figure_wo_caption_2.1.png)
+
+Figure `2.1` without the caption should be read exactly like hand addition in decimal, but with a smaller digit set.
+
+At each column you combine:
+
+```text
+the left input bit
+the right input bit
+the incoming carry
+```
+
+and produce:
+
+```text
+one sum bit
+one outgoing carry
+```
 
 The basic cases are:
 
@@ -906,6 +1193,25 @@ The standard representation used here is two's complement.
 
 **Figure 2.1** Two's complement representation of signed numbers, in a 4-bit binary system.
 
+This figure is best read as a circular numbering system rather than as two unrelated halves.
+
+The nonnegative values rise normally:
+
+```text
+0000, 0001, 0010, ...
+```
+
+Then the bit patterns continue into the negative range:
+
+```text
+1111 = -1
+1110 = -2
+...
+1000 = -8
+```
+
+That wraparound property is exactly what makes ordinary binary addition usable for signed arithmetic too.
+
 In an `n`-bit two's complement system, the range is:
 
 ```text
@@ -931,6 +1237,12 @@ The most significant bit indicates the sign:
 0 at the left -> nonnegative
 1 at the left -> negative
 ```
+
+The course also explains why a simple `sign bit + magnitude` scheme is not used here.
+
+It creates two representations of zero and forces the hardware to treat positive and negative cases separately.
+
+Two's complement is better because the arithmetic stays uniform.
 
 To negate a number:
 
@@ -982,6 +1294,24 @@ carry = high bit of a + b
 
 **Figure 2.2** Half-adder, designed to add 2 bits.
 
+The figure shows that adding two 1-bit numbers can produce a 2-bit result.
+
+That is why the outputs split into:
+
+```text
+sum   -> low-order bit
+carry -> high-order bit
+```
+
+The course points out a neat shortcut here: the half-adder truth table is just repackaging two familiar gate behaviors.
+
+```text
+sum   = XOR(a, b)
+carry = AND(a, b)
+```
+
+So arithmetic starts by recognizing that a small addition problem can already be expressed with ordinary logic gates.
+
 A full-adder adds three bits: two data bits plus an incoming carry.
 
 Interface:
@@ -994,11 +1324,23 @@ FullAdder(a, b, c, sum, carry)
 
 **Figure 2.3** Full-adder, designed to add 3 bits.
 
+The extra input `c` is the carry arriving from the previous bit position.
+
+So the full-adder is the real workhorse of multi-bit addition.
+
 A 16-bit adder chains full-adders across all bit positions.
 
 ![](media/figure_2.4.png)
 
 **Figure 2.4** 16-bit adder, designed to add two 16-bit numbers, with an example of addition action (on the left).
+
+Read this figure from right to left across the bit positions.
+
+The least significant bit is added first.
+
+Its carry travels into the next position, and so on.
+
+That is why the design is called ripple-carry: the carry ripples through the word.
 
 Mental model:
 
@@ -1016,6 +1358,10 @@ Inc16(in) = in + 1
 ```
 
 ![](media/figure_wo_caption_2.2.png)
+
+This figure emphasizes that incrementing is just a special case of addition.
+
+You are adding a constant value of `1`, so most of the structure can be simpler than a fully general adder.
 
 It will later help the program counter move to the next instruction.
 
@@ -1048,6 +1394,13 @@ ng
 
 **Figure 2.5a** The Hack ALU, designed to compute the eighteen arithmetic-logical functions shown on the right. The symbols `!`, `&`, and `|` represent the 16-bit operations `Not`, `And`, and `Or`. For now, ignore the `zr` and `ng` output bits.
 
+This figure is dense, but the main idea is simple:
+
+```text
+the ALU is one reusable data path
+the control bits decide which computation that path performs
+```
+
 The six control bits describe a small processing pipeline:
 
 ```text
@@ -1062,6 +1415,14 @@ maybe negate output
 ![](media/figure_2.5b.png)
 
 **Figure 2.5b** Taken together, the values of the six control bits `zx`, `nx`, `zy`, `ny`, `f`, and `no` cause the ALU to compute one of the functions listed in the rightmost column.
+
+Figure `2.5b` is best read as a recipe.
+
+You start with `x` and `y`, then pass them through several possible transformations, and only at the end do you get `out`.
+
+So the ALU is not eighteen unrelated circuits.
+
+It is one circuit whose behavior is steered by control bits.
 
 This tiny control scheme can produce the Hack machine's needed arithmetic and logical functions:
 
@@ -1088,6 +1449,8 @@ ng = 1 if out is negative
 ![](media/figure_2.5c.png)
 
 **Figure 2.5c** The Hack ALU API.
+
+This compact API becomes critical later because the CPU will control the ALU only through these inputs and interpret the result only through these outputs.
 
 These flags later help the CPU decide whether to jump.
 
@@ -1128,6 +1491,8 @@ compute zr and ng
 
 Project 2 asks you to implement:
 
+Implementation links: [`HalfAdder`](projects/project-02-boolean-arithmetic.md#halfadder), [`FullAdder`](projects/project-02-boolean-arithmetic.md#fulladder), [`Add16`](projects/project-02-boolean-arithmetic.md#add16), [`Inc16 using HalfAdders`](projects/project-02-boolean-arithmetic.md#inc16-using-halfadders), [`Inc16 using Add16`](projects/project-02-boolean-arithmetic.md#inc16-using-add16), and [`ALU`](projects/project-02-boolean-arithmetic.md#alu).
+
 ```text
 HalfAdder
 FullAdder
@@ -1139,6 +1504,10 @@ ALU
 The building blocks are Chapter 1 gates and the chips completed earlier in the project.
 
 The book recommends using built-in versions of Chapter 1 chips instead of copying Project 1 HDL files. This makes Project 2 faster and keeps the focus on arithmetic.
+
+The course adds a software-engineering reason: using built-in earlier chips helps localize bugs to the current project.
+
+That supports a unit-testing style workflow, where you debug the new arithmetic chip rather than re-debugging the layers below it.
 
 The same rules still apply:
 
@@ -1160,6 +1529,10 @@ each bit waits for carry from the previous bit
 But it can be slow because carry may need to travel through many positions.
 
 Real hardware can use faster designs such as carry-lookahead adders, but those optimizations are outside the book's main path.
+
+The course also makes a distinction between what is standard and what is course-specific.
+
+Chips like half-adders, full-adders, and ripple-carry adders are standard building blocks in digital design, while the Hack ALU is intentionally simplified for teaching.
 
 The Hack ALU is also intentionally small. Expensive operations like multiplication, division, and square root are not built directly into the hardware.
 
@@ -1215,6 +1588,8 @@ PC is a controlled register for instruction flow.
 
 Programs need values that persist.
 
+The course makes one useful framing point before getting technical: in hardware, the word `memory` can refer to several storage technologies. This chapter narrows the discussion to the clocked memory devices that become registers and RAM inside the computer itself.
+
 Examples:
 
 ```text
@@ -1240,6 +1615,18 @@ From that one primitive, the chapter builds the useful memory hierarchy:
 ![](media/figure_3.1.png)
 
 **Figure 3.1** The memory hierarchy built in this chapter.
+
+This figure is the whole chapter in one ladder.
+
+Read it as repeated wrapping:
+
+```text
+start with a 1-bit time-delayed element
+add control to make a useful bit register
+group bits into words
+group words into addressed memory blocks
+add special next-state logic to get a program counter
+```
 
 Mental model:
 
@@ -1285,6 +1672,17 @@ cycle 2
 
 **Figure 3.2** Discrete time representation: state changes are observed only during cycle transitions, while within-cycle fluctuations are ignored.
 
+The figure matters because it tells you what the book is choosing not to model.
+
+Inside a clock cycle, signals may wiggle and settle.
+
+The abstraction says:
+
+```text
+ignore the internal analog mess
+observe only stable values at clock boundaries
+```
+
 The clock gives the machine a shared rhythm.
 
 During a cycle:
@@ -1321,6 +1719,14 @@ the input from the previous time step becomes the output now
 
 **Figure 3.3** The data flip-flop and its behavior over time.
 
+When you read the timing part of the figure, track one value mentally.
+
+If the input changes during cycle `t`, that new value does not appear immediately at the output.
+
+It appears at the next observation point.
+
+That single-step delay is what turns feedback from a paradox into usable memory.
+
 This one-cycle delay is the key.
 
 It lets the computer separate:
@@ -1339,6 +1745,14 @@ Sequential chips contain `DFF`s directly or indirectly.
 ![](media/figure_3.4.png)
 
 **Figure 3.4** Sequential logic design typically combines `DFF`s with combinational chips and feedback paths.
+
+This figure is the template for almost every stateful digital system:
+
+```text
+current state goes into logic
+logic computes a candidate next state
+DFF stores that next state for the following cycle
+```
 
 The safe pattern is:
 
@@ -1403,6 +1817,12 @@ Bit(in, load, out)
 
 **Figure 3.5** 1-bit register (`Bit`).
 
+The figure introduces an important pattern: data input plus control input.
+
+`in` is the value that may be stored.
+
+`load` decides whether storing actually happens.
+
 Behavior:
 
 ```text
@@ -1423,6 +1843,8 @@ Register(in[16], load, out[16])
 
 **Figure 3.6** 16-bit `Register`.
 
+Read this figure as sixteen identical 1-bit storage decisions happening in parallel under one shared `load` signal.
+
 Behavior:
 
 ```text
@@ -1432,6 +1854,8 @@ if load = 0:
 if load = 1:
     store the new 16-bit input on the next clock cycle
 ```
+
+The course adds one simple user-view rule: to read a register, just probe `out`. At any moment, `out` is the register's currently stored state.
 
 Mental model:
 
@@ -1458,6 +1882,13 @@ out     = value currently stored at that address
 ![](media/figure_3.7.png)
 
 **Figure 3.7** A RAM chip as a collection of addressable `Register` chips.
+
+The visual idea is:
+
+```text
+many storage words exist all the time
+the address chooses which one is visible / writable right now
+```
 
 Reading:
 
@@ -1489,9 +1920,22 @@ increment by 1
 hold current value
 ```
 
+The course also makes the control priority explicit:
+
+```text
+reset overrides everything
+load overrides increment
+increment is the default active update
+otherwise the counter holds
+```
+
 ![](media/figure_3.8.png)
 
 **Figure 3.8** Program Counter (`PC`).
+
+This figure is useful because it shows that `PC` is not a completely different kind of hardware.
+
+It is still a register, but wrapped with control logic that can choose among several candidate next values.
 
 The `PC` is still a register underneath. The extra control bits decide what value should be stored next.
 
@@ -1537,6 +1981,17 @@ The `Bit` chip gets this behavior by placing a `Mux` before the `DFF`.
 ![](media/figure_3.9.png)
 
 **Figure 3.9** Invalid and correct implementations of the `Bit` register.
+
+The contrast in the figure is crucial.
+
+The invalid design tries to feed state back without the right control structure.
+
+The correct design inserts a `Mux` so the circuit can explicitly choose between:
+
+```text
+the old stored value
+the new external input
+```
 
 Conceptually:
 
@@ -1590,6 +2045,14 @@ RAM8
 ```
 
 ![](media/figure_wo_caption_3.1.png)
+
+This recursive RAM figure is easier to understand if you read it as repeated address splitting.
+
+Some address bits choose the large block.
+
+The remaining bits choose a smaller location inside that block.
+
+That same idea repeats until you reach one concrete register.
 
 The basic idea for `RAM8` is:
 
@@ -1668,6 +2131,8 @@ current state -> combinational next-state logic -> register -> next state
 
 Project 3 asks you to implement the memory chips.
 
+Implementation links: [`Bit`](projects/project-03-memory.md#bit), [`Register`](projects/project-03-memory.md#register), [`RAM8`](projects/project-03-memory.md#ram8), [`RAM64`](projects/project-03-memory.md#ram64), [`RAM512`](projects/project-03-memory.md#ram512), [`RAM4K`](projects/project-03-memory.md#ram4k), [`RAM16K`](projects/project-03-memory.md#ram16k), and [`PC`](projects/project-03-memory.md#pc).
+
 The chips include:
 
 ```text
@@ -1696,6 +2161,8 @@ projects/03/a -> smaller memory chips
 projects/03/b -> larger memory chips
 ```
 
+The course explains the reason a bit more concretely: large RAM chips expand recursively into many smaller parts, so the split helps the hardware simulator stop descending through HDL at some level and switch to built-in implementations for faster, smoother simulation.
+
 The recommended workflow is the same as before:
 
 ```text
@@ -1713,6 +2180,8 @@ The book hides that detail because Chapter 3 is about the architectural use of m
 
 Modern memory technologies are also not always built literally as textbook flip-flops. Real systems use many optimized memory technologies.
 
+The course gives two concrete examples here: `ROM` is used for code that must survive power loss and be available at boot time, and flash memory is another non-volatile storage technology with different engineering trade-offs.
+
 But the abstractions remain fundamental:
 
 ```text
@@ -1722,3 +2191,1293 @@ counters store and update control positions
 ```
 
 Together with the ALU from Chapter 2, these memory devices provide the remaining hardware pieces needed to build the CPU and the larger Hack computer.
+
+### 4 Machine Language
+
+Chapters 1-3 built the hardware pieces of a computer.
+
+Chapter 4 pauses before building the CPU and asks a practical question:
+
+```text
+what is this hardware supposed to execute?
+```
+
+The answer is machine language.
+
+Machine language is the interface between hardware and software.
+
+At this level, programs tell the computer exactly what to do:
+
+```text
+compute a value
+move a value
+read or write memory
+test a condition
+jump to another instruction
+```
+
+High-level languages hide these details.
+
+Machine language exposes them directly.
+
+That is why this chapter matters so much:
+
+```text
+hardware becomes useful only when it can execute instructions
+```
+
+#### 4.1 Machine Language: Overview
+
+This section explains what a machine language must talk about.
+
+The focus is not on all the circuitry inside the machine.
+
+The focus is on the hardware elements that a programmer must control explicitly.
+
+The course adds one teaching motivation for doing Chapter 4 before Chapter 5: before building the full Hack computer, it helps to see what kind of machine the hardware is supposed to support from the programmer's point of view.
+
+##### 4.1.1 Hardware Elements
+
+Any machine language assumes three basic ingredients:
+
+```text
+memory
+processor
+registers
+```
+
+**Memory** is a sequence of addressable storage locations.
+
+Mental model:
+
+```text
+address 0 -> some 16-bit value
+address 1 -> some 16-bit value
+address 2 -> some 16-bit value
+...
+```
+
+To use memory, the program supplies an address and then reads or writes the value stored there.
+
+**Processor** means the CPU.
+
+The CPU performs primitive operations such as:
+
+```text
+add
+subtract
+and
+or
+not
+test conditions
+branch
+```
+
+The CPU does not invent its own work.
+
+It follows instructions.
+
+**Registers** are small storage locations inside the CPU itself.
+
+They are much closer to the ALU than main memory, so they are used as fast working storage.
+
+The chapter distinguishes two useful roles:
+
+```text
+data registers    -> hold values being processed
+address registers -> hold memory addresses
+```
+
+This distinction matters because memory access is indirect.
+
+You normally do not say "change memory cell 123" in one magical step.
+
+Instead, you first place `123` in an address register, which selects that memory cell, and then you act on the selected cell.
+
+##### 4.1.2 Languages
+
+Machine language can be written in two equivalent forms:
+
+```text
+binary
+symbolic
+```
+
+The binary form is what the hardware executes.
+
+The symbolic form is what humans prefer to read and write.
+
+The basic pattern is:
+
+```text
+symbolic instruction -> assembler -> binary instruction
+```
+
+Why is symbolic form better for humans?
+
+Because raw binary hides meaning.
+
+For example, a 16-bit pattern like `1010110001000001` is hard to remember, hard to debug, and hard to reason about.
+
+A symbolic instruction like `add R2,R1` is not pleasant either, but at least you can see the intended operation.
+
+This is the key bridge:
+
+```text
+assembly language = symbolic machine language
+assembler         = translator to binary
+```
+
+Unlike high-level languages, assembly language is tightly tied to a specific hardware platform.
+
+The available operations, registers, and addressing rules all depend on the actual machine.
+
+##### 4.1.3 Instructions
+
+Every machine language must support a few broad kinds of actions.
+
+This subsection groups instructions by purpose.
+
+The book is not yet giving the exact Hack instruction set.
+
+It is first answering a simpler question:
+
+```text
+what kinds of things must any machine language be able to do?
+```
+
+The answer is:
+
+```text
+compute on values
+access memory
+change control flow
+use symbolic names instead of raw addresses when possible
+```
+
+**Arithmetic and logical operations** let the computer transform data that is already inside the machine.
+
+Examples:
+
+```text
+add two values
+subtract one value from another
+and/or/not values
+```
+
+These instructions are the programming view of the ALU.
+
+At the hardware level, the ALU computes.
+
+At the machine-language level, the programmer asks for those computations using instruction mnemonics.
+
+![](media/figure_wo_caption_4.1.png)
+
+Figure `4.1` without the caption shows two tiny examples.
+
+The first sequence is arithmetic:
+
+```text
+load R1,17
+load R2,4
+add R1,R1,R2
+```
+
+Read it step by step:
+
+```text
+put 17 in R1
+put 4 in R2
+replace R1 with R1 + R2
+```
+
+So after the third instruction, `R1 = 21`.
+
+The second sequence is logical:
+
+```text
+load R1,true
+load R2,false
+and R1,R1,R2
+```
+
+Meaning:
+
+```text
+put true in R1
+put false in R2
+replace R1 with R1 And R2
+```
+
+Since `true And false = false`, the final value in `R1` is false.
+
+The important point is not these particular mnemonics.
+
+The important point is that machine language must expose primitive computations directly.
+
+There is no expression parser, no rich type system, and no hidden runtime here.
+
+There are just small instructions that tell the processor exactly which low-level operation to perform.
+
+The course adds a design perspective here: an instruction set is always a cost/performance trade-off.
+
+If you add richer operations, larger data types, or more elaborate addressing features, the language becomes more convenient for programmers, but the hardware becomes more expensive in chip area and execution time.
+
+**Memory access** lets the computer read from or write to selected memory locations.
+
+Registers are small, fast storage cells inside the CPU.
+
+Memory is the larger storage outside the CPU.
+
+So machine language needs a way to move between:
+
+```text
+values in registers
+values in memory
+```
+
+The usual pattern is:
+
+```text
+put an address in an address register
+then operate on the selected memory cell
+```
+
+This section is still speaking in general machine-language terms, not yet in exact Hack syntax.
+
+So when the book uses instructions like:
+
+```text
+load A,17
+load M,1
+```
+
+it is illustrating the access pattern, not yet giving the final Hack spelling.
+
+The idea is:
+
+```text
+A = address register
+M = the memory word currently selected by A
+```
+
+So if `A = 17`, then `M` means memory location `17`.
+
+Then:
+
+```text
+load M,1
+```
+
+means:
+
+```text
+store 1 into memory[17]
+```
+
+The bigger example follows the same logic.
+
+To set memory locations `200..249` to `1`, the machine first selects the start address and then repeatedly writes through the selected memory word while advancing the address:
+
+```text
+load A,200
+loop:
+  load M,1
+  add A,A,1
+```
+
+Mental model:
+
+```text
+start with A = 200
+write 1 into memory[A]
+increment A
+write 1 into memory[A]
+increment A
+repeat
+```
+
+So the main lesson is:
+
+```text
+first select an address
+then read or write the selected memory word
+```
+
+In actual Hack assembly, the same idea later appears in a more concrete form such as:
+
+```text
+@17
+M=1
+```
+
+Meaning:
+
+```text
+put 17 in A
+now M means RAM[17]
+store 1 there
+```
+
+This is why address registers matter so much in low-level programming.
+
+They let the CPU focus on one memory word at a time.
+
+**Flow control** lets a program avoid strict one-line-after-another execution.
+
+Without flow control, a program would be trapped in straight-line execution:
+
+```text
+instruction 1
+instruction 2
+instruction 3
+instruction 4
+...
+```
+
+That would make loops, decisions, and repeated work impossible.
+
+With jumps and tests, machine language can express higher-level patterns like:
+
+```text
+if
+while
+for
+goto
+```
+
+At the machine-language level, these are not separate magical features.
+
+They are built from instructions that change which instruction executes next.
+
+![](media/figure_4.1.png)
+
+**Figure 4.1** Two versions of the same low-level code (it is assumed that the code includes some loop termination logic, not shown here).
+
+Read the left side first.
+
+It uses physical instruction addresses:
+
+```text
+12: load R1,0
+13: add R1,R1,1
+...
+27: goto 13
+```
+
+Meaning:
+
+```text
+initialize R1 to 0
+keep incrementing R1
+when execution reaches instruction 27, jump back to instruction 13
+```
+
+So the loop is controlled by a raw number.
+
+This works, but it is fragile.
+
+If you insert or remove instructions earlier in the program, the jump destination may change.
+
+Now read the right side.
+
+It expresses the same loop using a symbolic label:
+
+```text
+load R1,0
+(LOOP)
+  add R1,R1,1
+...
+  goto LOOP
+```
+
+The logic is the same, but the meaning is clearer:
+
+```text
+jump back to the place named LOOP
+```
+
+This is much easier for humans to read and maintain.
+
+**Symbols** are the last major idea in this subsection.
+
+The book uses figure 4.1 to show that symbolic names are not just pretty labels.
+
+They solve a real low-level programming problem.
+
+When code uses symbolic references instead of hard-coded physical addresses, the code becomes:
+
+```text
+easier to write
+easier to debug
+easier to maintain
+easier to move in memory
+```
+
+That last point is especially important.
+
+If code says `goto 13`, then it assumes the target instruction really is at address 13.
+
+If the whole program gets shifted in memory, that assumption can break.
+
+If code says `goto LOOP`, an assembler can translate `LOOP` to whichever physical address is correct in the final loaded program.
+
+This is what the book means by *relocatable* code.
+
+So the full message of `4.1.3` is:
+
+```text
+machine language needs instructions for computation
+machine language needs instructions for memory access
+machine language needs instructions for jumps and tests
+machine language benefits enormously from symbolic references
+```
+
+The next section, `4.2`, takes these general ideas and shows exactly how the Hack computer realizes them.
+
+#### 4.2 The Hack Machine Language
+
+After the general overview, the chapter narrows to one specific machine language:
+
+```text
+the Hack machine language
+```
+
+This is the language the Hack computer will execute in Chapter 5.
+
+##### 4.2.1 Background
+
+Hack follows the von Neumann style.
+
+It is a 16-bit computer.
+
+That means values typically move around the system in 16-bit chunks.
+
+The chapter begins with the memory model.
+
+Hack uses two memories:
+
+```text
+data memory        -> RAM
+instruction memory -> ROM
+```
+
+Each memory is 16 bits wide and has a 15-bit address space.
+
+So each one can hold:
+
+```text
+2^15 = 32K words
+```
+
+![](media/figure_4.2.png)
+
+**Figure 4.2** Conceptual model of the Hack memory system. Although the actual architecture is wired somewhat differently (as described in chapter [5](#5-computer-architecture)), this model helps understand the semantics of Hack programs.
+
+The key purpose of this figure is semantic, not electrical.
+
+It tells you what Hack assembly language is allowed to talk about:
+
+```text
+instruction memory
+data memory
+A register
+D register
+selected memory word M
+```
+
+The conceptual picture is:
+
+```text
+ROM stores instructions
+RAM stores data
+```
+
+Hack machine language manipulates three named storage targets:
+
+```text
+A
+D
+M
+```
+
+`D` is a plain data register.
+
+`A` is the hard-working mixed-purpose register.
+
+`M` is not a separate physical register inside the CPU.
+
+Instead:
+
+```text
+M means RAM[A]
+```
+
+So when `A = 100`, the symbol `M` refers to `RAM[100]`.
+
+This single idea explains a huge part of the Hack language.
+
+The `@xxx` instruction sets `A` to `xxx`.
+
+Once that happens, two things become selected at the same time:
+
+```text
+RAM[xxx]
+ROM[xxx]
+```
+
+Then the next instruction decides which of those selections matters.
+
+If the next instruction talks about `M`, we are using `A` as a data-memory address.
+
+If the next instruction performs a jump, we are using `A` as an instruction-memory address.
+
+Examples:
+
+```text
+@17
+D=A
+```
+
+means "put the constant 17 into `D`".
+
+And:
+
+```text
+@100
+M=D
+```
+
+means "store `D` into RAM address 100".
+
+Branching uses the same register:
+
+```text
+@29
+0;JMP
+```
+
+means "jump to instruction 29".
+
+This dual use of `A` may feel strange at first, but it keeps the architecture small and economical.
+
+Variables are handled symbolically.
+
+Instead of remembering physical addresses yourself, you can write:
+
+```text
+@count
+M=M+1
+```
+
+and let the assembler decide where `count` lives in RAM.
+
+The language also includes built-in symbols `R0` through `R15`, bound to addresses `0` through `15`.
+
+These act like convenient pre-named working slots.
+
+![](media/figure_4.3.png)
+
+**Figure 4.3** Hack assembly code examples.
+
+These examples are worth scanning slowly because each one highlights a different role of `A`:
+
+```text
+as a place to hold a constant
+as a way to select RAM
+as a way to select a jump destination
+```
+
+Figure 4.3 is worth reading slowly because it shows the same few ideas recurring again and again:
+
+```text
+set A
+use D
+operate on M
+jump via A
+use symbols instead of raw addresses when possible
+```
+
+##### 4.2.2 Program Example
+
+Before giving the formal instruction format, the chapter shows a full Hack program.
+
+The example computes:
+
+```text
+1 + 2 + 3 + ... + n
+```
+
+with input stored in `RAM[0]` and output written to `RAM[1]`.
+
+![](media/figure_4.4.png)
+
+**Figure 4.4** A Hack assembly program (example). Note that `RAM[0]` and `RAM[1]` can be referred to as `R0` and `R1.`
+
+If the full listing feels intimidating, read it structurally instead of line by line.
+
+Look for these blocks:
+
+```text
+initialization
+loop condition / stop condition
+loop body
+jump back to loop
+termination loop
+```
+
+That is the low-level version of ordinary structured programming.
+
+At this point in the chapter, the details still look dense.
+
+That is normal.
+
+The important pattern to notice is this:
+
+```text
+Hack programs are mostly built from two instruction types:
+A-instructions
+C-instructions
+```
+
+And many memory operations have a two-step rhythm:
+
+```text
+step 1: select address with @xxx
+step 2: do something with that address
+```
+
+This simple rhythm is one of the defining traits of Hack.
+
+##### 4.2.3 The Hack Language Specification
+
+Now the chapter turns from examples to a formal contract.
+
+Hack has exactly two instruction families:
+
+```text
+A-instruction
+C-instruction
+```
+
+![](media/figure_4.5.png)
+
+**Figure 4.5** The Hack instruction set, showing symbolic mnemonics and their corresponding binary codes.
+
+This figure works like a dictionary.
+
+When reading any Hack instruction, you can decompose it into fields and then look up what each field is allowed to mean.
+
+So the figure is less about memorization and more about exact legal forms.
+
+This figure is the chapter's central reference table.
+
+It tells you exactly which symbolic spellings are legal and which binary bit patterns they mean.
+
+##### The A-instruction
+
+The `A`-instruction loads a 15-bit value into the `A` register.
+
+Binary shape:
+
+```text
+0vvvvvvvvvvvvvvv
+```
+
+Meaning:
+
+```text
+leftmost 0  -> this is an A-instruction
+remaining 15 bits -> value to load into A
+```
+
+Example:
+
+```text
+@5  -> 0000000000000101
+```
+
+This instruction has three main uses:
+
+```text
+load a constant into A
+select a RAM address for a later memory operation
+select a ROM address for a later jump
+```
+
+So `@n` does not by itself add, store, or jump.
+
+It prepares the stage.
+
+##### The C-instruction
+
+The `C`-instruction performs actual work.
+
+Its job is to answer three questions:
+
+```text
+what to compute?
+where to store the result?
+what to do next?
+```
+
+Binary shape:
+
+```text
+111accccccdddjjj
+```
+
+The fields mean:
+
+```text
+comp -> ALU computation
+dest -> destination(s)
+jump -> next-instruction rule
+```
+
+The `comp` field chooses an ALU function.
+
+The two possible data sources are:
+
+```text
+D
+A or M
+```
+
+The `a` bit decides whether the second source is `A` or `M`.
+
+So this is the core idea:
+
+```text
+same ALU machinery
+different source selection
+```
+
+Examples:
+
+```text
+D-1
+D|M
+0
+-1
+```
+
+The `dest` field tells where the ALU result goes.
+
+Possible destinations are:
+
+```text
+A
+D
+M
+```
+
+One, several, or none can be selected at once.
+
+So a single instruction can store the same computed value into multiple places.
+
+![](media/figure_wo_caption_4.2.png)
+
+This small example matters because it shows that destination bits can describe several writes at once.
+
+The ALU computes one value, and the control logic can choose to copy that value into more than one target in the same instruction.
+
+The `jump` field decides whether execution continues with the next sequential instruction or jumps to the instruction whose address is currently in `A`.
+
+The decision is based on the ALU output.
+
+The three jump bits test whether that output is:
+
+```text
+negative
+zero
+positive
+```
+
+That is why the ALU flags from Chapter 2 matter.
+
+The CPU will use them to decide whether a jump condition is satisfied.
+
+The standard unconditional jump is:
+
+```text
+0;JMP
+```
+
+One subtle best practice appears here.
+
+Since `A` selects both `RAM[A]` and `ROM[A]`, the book advises:
+
+```text
+if a C-instruction uses M, do not also use it for jumping
+if a C-instruction jumps, do not also use M in it
+```
+
+That discipline avoids conflicting uses of the `A` register in one step.
+
+##### 4.2.4 Symbols
+
+Symbols keep Hack programs readable.
+
+The chapter groups them into three classes:
+
+```text
+predefined symbols
+label symbols
+variable symbols
+```
+
+**Predefined symbols** include:
+
+```text
+R0 ... R15
+SP LCL ARG THIS THAT
+SCREEN KBD
+```
+
+![](media/figure_wo_caption_4.3.png)
+
+This figure exists to show that symbolic naming is layered.
+
+Some names are predefined by the platform.
+
+Some are introduced by the programmer as labels.
+
+Some are introduced by the programmer as variables.
+
+The assembler keeps those roles straight.
+
+`R0` through `R15` are especially useful because they read like named working registers even though they are really RAM addresses 0 through 15.
+
+`SCREEN` and `KBD` are special because they refer to memory-mapped I/O.
+
+**Label symbols** are declared like this:
+
+```text
+(LOOP)
+```
+
+This means:
+
+```text
+bind LOOP to the address of the next instruction
+```
+
+Then a later or earlier jump can use `@LOOP`.
+
+**Variable symbols** are any ordinary symbolic names that are not predefined and are not labels.
+
+The assembler assigns them RAM addresses starting at 16.
+
+This is how names like `i`, `sum`, or `count` become real storage locations without the programmer manually assigning addresses.
+
+##### 4.2.5 Input/Output Handling
+
+Hack handles screen and keyboard through memory maps.
+
+This is a powerful systems idea:
+
+```text
+I/O devices look like memory regions
+```
+
+That means the CPU can interact with devices using ordinary read and write instructions.
+
+**Screen**:
+
+The Hack screen is a black-and-white grid with:
+
+```text
+256 rows
+512 columns
+```
+
+Its state is stored in an 8K block of RAM starting at address `16384`, also named `SCREEN`.
+
+Each 16-bit word controls 16 horizontal pixels.
+
+So the mapping rule is:
+
+```text
+screen word address = SCREEN + row * 32 + col / 16
+bit inside word     = col % 16
+```
+
+![](media/figure_wo_caption_4.4.png)
+
+This screen-memory figure is best read as a mapping table from a 2D picture to a 1D memory region.
+
+It explains why graphics at this level feel awkward:
+
+```text
+the user sees rows and columns of pixels
+the program sees word addresses and bit positions
+```
+
+This is the first place where you clearly see why word-level memory access is lower level than pixel-level graphics.
+
+To manipulate one pixel, the program often has to:
+
+```text
+read a 16-bit word
+change one bit inside it
+write the whole word back
+```
+
+**Keyboard**:
+
+The keyboard is even simpler.
+
+It is mapped to one RAM location:
+
+```text
+KBD = 24576
+```
+
+When no key is pressed, `RAM[KBD] = 0`.
+
+When a key is pressed, that location contains the key's code.
+
+This is why the `Fill.asm` project can poll the keyboard in a loop.
+
+##### 4.2.7 Syntax Conventions and File Formats
+
+The language definition also includes the file-level rules.
+
+**Binary files** use the `.hack` extension.
+
+Each line contains one 16-bit binary instruction.
+
+The position of the line in the file is the instruction address loaded into ROM.
+
+**Assembly files** use the `.asm` extension.
+
+Each line is one of:
+
+```text
+A-instruction
+C-instruction
+label declaration
+comment
+```
+
+Important syntax rules:
+
+```text
+labels look like (X)
+comments start with //
+leading spaces and blank lines are ignored
+mnemonics are uppercase
+labels are conventionally uppercase
+variables are conventionally lowercase
+```
+
+The chapter also defines what counts as a valid symbol name.
+
+This seems minor, but it matters because assemblers need exact lexical rules.
+
+#### 4.3 Hack Programming
+
+After defining the language, the chapter returns to programming examples.
+
+The goal is not to memorize each line.
+
+The goal is to internalize the low-level programming style.
+
+**Example 1** computes a simple arithmetic expression.
+
+It reads from `R0` and `R1`, adds the values, adds `17`, and stores the result in `R2`.
+
+![](media/figure_4.6.png)
+
+**Figure 4.6** A Hack assembly program that computes a simple arithmetic expression.
+
+This figure is a good first full-program example because every line has an obvious role.
+
+It is mostly just:
+
+```text
+read value
+read another value
+compute
+store result
+stop safely
+```
+
+This example also teaches an important discipline:
+
+```text
+end programs with an intentional infinite loop
+```
+
+Otherwise the CPU keeps fetching whatever bits happen to come after the program.
+
+The course makes this even more explicit as a best practice: Hack has no real "stop" instruction here, so ending in a deliberate infinite loop keeps execution under control instead of falling into unintended instructions.
+
+**Example 2** revisits the summation program from figure 4.4.
+
+Now the point is not just what it computes, but how to design such code.
+
+The recommended workflow is:
+
+```text
+write goto-style pseudocode
+trace it on paper
+make sure the logic is right
+translate it into assembly
+```
+
+This is one of the most important learning habits in the chapter.
+
+Assembly is too error-prone to improvise comfortably.
+
+It is far safer to derive it from a clearer intermediate plan.
+
+**Example 3** explains array processing using pointers.
+
+High-level code like:
+
+```text
+for (i = 0; i < n; i++) {
+    do something with arr[i];
+}
+```
+
+has no direct array abstraction in machine language.
+
+Instead, the program works with addresses.
+
+The crucial idea is:
+
+```text
+a variable can hold an address
+```
+
+If `x = 523`, then:
+
+```text
+x = 17   -> change x itself
+*x = 17  -> change RAM[523]
+```
+
+In Hack style, pointer work is typically expressed by first computing an address into `A` and then acting on `M`.
+
+![](media/figure_4.7.png)
+
+**Figure 4.7** Array processing example, using pointer-based access to array elements.
+
+The heart of the figure is address computation.
+
+The program does not ask for `arr[i]` directly.
+
+It computes the address of that element, puts that address into `A`, and then uses `M` to access the selected memory word.
+
+This small pattern is the seed of much richer high-level behavior.
+
+Later, compilers will reduce array indexing, field access, and many variable manipulations to exactly this sort of address arithmetic plus `M` access.
+
+#### 4.4 Project
+
+Project 4 is different from the first three projects.
+
+You do not build HDL chips here.
+
+You write programs.
+
+The objective is to get direct experience with low-level programming on the Hack platform.
+
+The resources are:
+
+```text
+the CPU emulator in nand2tetris/tools
+the supplied test scripts in projects/04
+```
+
+The project has two programs.
+
+**Mult.asm**:
+
+```text
+inputs  -> R0 and R1
+output  -> R2
+task    -> compute R0 * R1
+```
+
+The assumptions are:
+
+```text
+R0 >= 0
+R1 >= 0
+R0 * R1 < 32768
+```
+
+The educational point is that multiplication is not a primitive Hack instruction.
+
+So you must realize it in software, typically using repeated addition and a loop.
+
+**Fill.asm**:
+
+```text
+if a key is pressed     -> blacken the screen
+if no key is pressed    -> clear the screen
+```
+
+This program combines two machine-language ideas at once:
+
+```text
+poll KBD
+write across the SCREEN memory map
+```
+
+It also teaches that visible graphics can emerge from plain RAM writes.
+
+The chapter introduces the CPU emulator used for this work:
+
+![](media/figure_4.8.png)
+
+**Figure 4.8** The CPU emulator, with a program loaded in the instruction memory (ROM) and some data in the data memory (RAM). The figure shows a snapshot taken during the program’s execution.
+
+This figure is important because it makes Chapter 4 concrete.
+
+You are no longer just describing instructions abstractly.
+
+You can watch those instructions change machine state in real time.
+
+The emulator shows the state of:
+
+```text
+ROM
+RAM
+A
+D
+PC
+ALU
+screen
+keyboard input
+```
+
+One especially useful convenience is that the emulator can load both:
+
+```text
+.hack files
+.asm files
+```
+
+When given `.asm`, it assembles on the fly.
+
+So for this project, you do not need a separate assembler yet.
+
+Recommended workflow:
+
+```text
+write program
+load it into the CPU emulator
+run the supplied test
+fix errors
+repeat
+```
+
+The course also states some quality expectations for these programs: they should be short, efficient, elegant, and self-describing rather than merely correct.
+
+Practical warning:
+
+```text
+Hack assembly is case-sensitive
+```
+
+So `@foo` and `@Foo` are different symbols.
+
+#### 4.5 Perspective
+
+Hack machine language is intentionally small.
+
+Real machine languages often have:
+
+```text
+more instruction formats
+more registers
+more addressing modes
+more operations
+more data types
+```
+
+Hack keeps only what the course needs.
+
+Its surface syntax is also friendlier than many industrial assembly languages.
+
+For example:
+
+```text
+D=D+M
+```
+
+looks algebraic and readable.
+
+But the important mental correction is this:
+
+```text
+D+M is not parsed as algebra by the machine
+it is a mnemonic naming one allowed ALU operation
+```
+
+The deeper architectural limitation is instruction width.
+
+Hack uses 16-bit instructions, and a full memory address already needs 15 bits.
+
+So one instruction cannot conveniently hold both:
+
+```text
+a rich operation code
+a full memory address
+```
+
+That is why Hack behaves like a kind of:
+
+```text
+half-address machine
+```
+
+Memory-oriented work usually needs two steps:
+
+```text
+use @xxx to choose an address
+use a C-instruction to act on it
+```
+
+This explains the characteristic Hack rhythm:
+
+```text
+A-instruction
+C-instruction
+A-instruction
+C-instruction
+...
+```
+
+If this feels repetitive, the chapter points out that a smarter assembler could support macro-instructions like:
+
+```text
+sum=0
+goto LOOP
+```
+
+and then expand them into ordinary Hack instructions.
+
+So the awkwardness is not a fundamental limit of computation.
+
+It is mostly a deliberate simplification of the language interface.
+
+The course closes with one more practical reminder: most programmers do not write machine-language programs directly.
+
+Usually they write high-level code and let a compiler generate machine code, only dropping closer to the machine in unusual cases like real-time or performance-critical work.
+
+Finally, the chapter closes by returning to the assembler.
+
+The assembler has two jobs:
+
+```text
+translate symbolic instructions into binary
+resolve symbols into real addresses
+```
+
+That translation process becomes the main subject of Chapter 6.

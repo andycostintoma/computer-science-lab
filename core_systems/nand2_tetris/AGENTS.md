@@ -5,14 +5,14 @@
 This folder tracks study progress through "The Elements of Computing Systems" (Nand2Tetris) using hand-maintained learning notes:
 
 - `SUMMARY.md`: chapter-by-chapter teaching summary of the book.
-- `projects.md`: implementation notes and HDL solutions by project.
+- `projects/`: one Markdown file per project containing HDL solutions and explanations.
 - `DFF_DEEP_DIVE.md`: supplemental explanation of feedback, latches, flip-flops, and the DFF abstraction.
 
 ## Current Progress
 
 - `SUMMARY.md` is intentionally stopped at Chapter 3 (`3.6 Perspective`).
 - Existing `SUMMARY.md` content through Chapter 3 has been rewritten into a step-by-step explanatory style; this is intentional.
-- `projects.md` includes Project 1 and Project 2 content.
+- `projects/` currently includes Project 1, Project 2, and Project 3 notes.
 - Do not jump ahead or bulk-append full-book indexes unless the user explicitly asks for that exact operation.
 
 ## `SUMMARY.md` Style
@@ -29,6 +29,7 @@ Use this style consistently:
 - Include mental models after technical details when helpful.
 - Preserve all headings and relevant image references from the source chapter being summarized.
 - Do not collapse explanations into vague prose; show how the mechanism works.
+- Put implementation links in each chapter's `Project` subsection, and link directly to the exact chip headings inside `projects/`.
 
 ## Working Rules For Future Agents
 
