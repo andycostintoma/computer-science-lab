@@ -35,8 +35,11 @@ When updating `NOTES.md`:
 - Preserve every book figure image reference from the source section.
 - Preserve figure captions near their figures.
 - Integrate the matching course transcript and slide material into the same section notes.
+- When slide visuals meaningfully help, extract the relevant slide images into a local `media/slides/...` folder and embed them directly in `NOTES.md` near the matching explanation.
+- Keep slide-image captions self-contained and descriptive; do not use source-referential labels like `Slide visual:`.
 - Treat the book as the structural spine unless the user asks for a different organization.
 - Summarize the prose in a friendlier teaching style, similar to `core_systems/nand2_tetris/NOTES.md`.
+- Keep the notes self-contained: do not write source-referential phrases like "the book says", "the lecture explains", or "the slides show".
 - Prefer short paragraphs, concrete examples, and simple mental models.
 - Explain mechanisms step by step instead of compressing them into vague prose.
 - Keep technical terms precise: do not oversimplify protocol names, layer names, measurements, or definitions.
@@ -62,6 +65,8 @@ When using course material for a section:
 - Fold course material into `NOTES.md`; do not create a separate course-notes stream unless the user asks.
 - Keep notes section-scoped; for now, only work on material corresponding to `1.1`.
 - Preserve useful diagrams, examples, and slide terminology when they clarify the section.
+- Prefer embedding a curated set of the most helpful slide visuals rather than dumping every slide page.
+- Verify local slide-image paths resolve after extraction and embedding.
 - Do not invent transcript content if the transcript cannot be retrieved; state the limitation and use only verified sources.
 
 ## Style

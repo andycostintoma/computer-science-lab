@@ -219,14 +219,11 @@
     - [8.7.5 IKE: Key Management in IPsec](#875-ike-key-management-in-ipsec)
   - [8.8 Securing Wireless LANs and 4G/5G Cellular Networks](#88-securing-wireless-lans-and-4g5g-cellular-networks)
     - [8.8.1 Authentication and Key Agreement in 802.11 Wireless LANs](#881-authentication-and-key-agreement-in-80211-wireless-lans)
-  - [802.11 Security Messaging Protocols](#80211-security-messaging-protocols)
     - [8.8.2 Authentication and Key Agreement in 5G Cellular Networks](#882-authentication-and-key-agreement-in-5g-cellular-networks)
   - [8.9 Operational Security: Firewalls and Intrusion Detection Systems](#89-operational-security-firewalls-and-intrusion-detection-systems)
     - [8.9.1 Firewalls](#891-firewalls)
     - [8.9.2 Intrusion Detection Systems](#892-intrusion-detection-systems)
   - [8.10 Summary](#810-summary)
-  - [29.512 version 17.6.0, 2022.](#29512-version-1760-2022)
-  - [38.214 version 17.1.0 Release 17). Available at [3GPP TS38.* specifications 2024].](#38214-version-1710-release-17-available-at-3gpp-ts38-specifications-2024)
 
 ## Chapter 1: Computer Networks and the Internet
 
@@ -254,7 +251,7 @@ Figure 1.1 Some pieces of the Internet
 
 End systems are connected together by a network of communication links and packet switches. We’ll see in Section 1.2 that there are many types of communication links, which are made up of different types of physical media, including coaxial cable, copper wire, optical fiber, and radio spectrum. Different links can transmit data at different rates, with the transmission rate of a link measured in bits/second. When one end system has data to send to another end system, the sending end system segments the data and adds header bytes to each segment. The resulting packages of information, known as packets in the jargon of computer networks, are then sent through the network to the destination end system, where they are reassembled into the original data.
 
-A packet switch takes a packet arriving on one of its incoming communication links and forwards that packet on one of its outgoing communication links. Packet switches come in many shapes and flavors, but the two most prominent types in today’s Internet are routers and link-layer switches. Both types of switches forward packets toward their ultimate destinations. Linklayer switches are typically used in access networks, while routers are typically used in the network core. The sequence of communication links and packet switches traversed by a packet from the sending end system to the receiving end system is known as a route or path through the network.
+A packet switch takes a packet arriving on one of its incoming communication links and forwards that packet on one of its outgoing communication links. Packet switches come in many shapes and flavors, but the two most prominent types in today’s Internet are routers and link-layer switches. Both types of switches forward packets toward their ultimate destinations. Link-layer switches are typically used in access networks, while routers are typically used in the network core. The sequence of communication links and packet switches traversed by a packet from the sending end system to the receiving end system is known as a route or path through the network.
 
 Packet-switched networks (which transport packets) are in many ways similar to transportation networks transporting vehicles over highways, roads and, intersections. Consider, for example, a factory that needs to move a large amount of cargo to some destination warehouse located thousands of kilometers away. At the factory, the cargo is segmented and loaded into a fleet of trucks. Each of the trucks then independently travels through the network of highways, roads, and intersections to the destination warehouse. At the destination warehouse, the cargo is unloaded and grouped with the rest of the cargo arriving from the same shipment. Thus, in many ways, packets are analogous to trucks, communication links are analogous to highways and roads, packet switches are analogous to intersections, and end systems are analogous to buildings. Just as a truck takes a path through the transportation network, a packet takes a path through a computer network.
 
@@ -362,17 +359,25 @@ The residential telephone line carries both data and traditional telephone signa
 
 • A medium-speed upstream channel, in the 4 kHz to 50 kHz band
 
-• An ordinary two-way telephone channel, in the 0 to 4 kHz band This approach makes the single DSL link appear as if there were three separate links, so that a telephone call and an Internet connection can share the DSL link at the same time. (We’ll describe this technique of frequency-division multiplexing in Section 1.3.1.) On the customer side, a splitter separates the data and telephone signals arriving to the home and forwards the data signal to the DSL modem. On the telco side, in the CO, the DSLAM separates the data and phone signals and sends the data into the Internet. Hundreds or even thousands of households connect to a single DSLAM.
+• An ordinary two-way telephone channel, in the 0 to 4 kHz band
+
+This approach makes the single DSL link appear as if there were three separate links, so that a telephone call and an Internet connection can share the DSL link at the same time. (We’ll describe this technique of frequency-division multiplexing in Section 1.3.1.) On the customer side, a splitter separates the data and telephone signals arriving to the home and forwards the data signal to the DSL modem. On the telco side, in the CO, the DSLAM separates the data and phone signals and sends the data into the Internet. Hundreds or even thousands of households connect to a single DSLAM.
 
 The most recent DSL standard [ITU DSL 2019] provide for up to 1 Gbps downstream over short distances and up to 500 Mbps upstream transmission rates. Because the downstream and upstream rates are different, the access is said to be asymmetric. The actual downstream and upstream transmission rates achieved may be less than the rates noted above, as the DSL provider may purposefully limit a residential rate when tiered service (different rates, available at different prices) are offered. The maximum rate is also limited by the distance between the home and the CO, the gauge of the twisted-pair line and the degree of electrical interference. Engineers have expressly designed DSL for short distances between the home and the CO; generally, if the residence is not located within 5 to 10 miles of the CO, the residence must resort to an alternative form of Internet access.
 
-While DSL makes use of the telco’s existing local telephone infrastructure, cable Internet access makes use of the cable television company’s existing often referred to as hybrid fiber coax (HFC).Cable internet access requires special modems, called cable modems. As with a DSL modem, the cable modem is typically an external device and connects to the home PC through an Ethernet port. (We will discuss Ethernet in great detail in Chapter 6.) At the cable head end, the cable modem termination system (CMTS) serves a similar function as the DSL network’s DSLAM—turning the analog signal sent from the cable modems in many downstream homes back into digital format. Cable modems divide the HFC network into two channels, a downstream and an upstream channel. As with DSL, access is typically asymmetric, with the downstream channel typically allocated a higher transmission rate than the upstream channel. The DOCSIS 2.0 and 3.0 standards define downstream bitrates of 40 Mbps and 1.2 Gbps, and upstream rates of 30 Mbps and 100 Mbps, respectively. As in the case of DSL networks, the maximum achievable rate may not be realized due to lower contracted data rates or media impairments. One important characteristic of cable Internet access is that it is a shared broadcast medium. In particular, every packet sent by the head end travels downstream on every link to every home and every packet sent by a home travels on the upstream channel to the head end. For this reason, if several users are simultaneously downloading a video file on the downstream channel, the actual rate at which each user receives its video file will be significantly lower than the aggregate cable downstream rate. On the other hand, if there are only a few active users and they are all Web surfing, then each of the users may actually receive Web pages at the full cable downstream rate, because the users will rarely request a Web page at exactly the same time. Because the upstream channel is also shared, a distributed multiple access protocol is
+While DSL makes use of the telco’s existing local telephone infrastructure, cable Internet access makes use of the cable television company’s existing cable television infrastructure. A residence obtains cable Internet access from the same company that provides its cable television. As illustrated in Figure 1.6, fiber optics connect the cable head end to neighborhood-level junctions, from which traditional coaxial cable is then used to reach individual houses and apartments. Each neighborhood junction typically supports 500 to 5,000 homes. Because both fiber and coaxial cable are employed in this system, it is often referred to as hybrid fiber coax (HFC).
 
-Figure 1.6 A hybrid fiber-coaxial access network cable television infrastructure. A residence obtains cable Internet access from the same company that provides its cable television. As illustrated in Figure 1.6, fiber optics connect the cable head end to neighborhood-level junctions, from which traditional coaxial cable is then used to reach individual houses and apartments. Each neighborhood junction typically supports 500 to 5, 000 homes. Because both fiber and coaxial cable are employed in this system, it is
+Cable Internet access requires special modems, called cable modems. As with a DSL modem, the cable modem is typically an external device and connects to the home PC through an Ethernet port. (We will discuss Ethernet in great detail in Chapter 6.) At the cable head end, the cable modem termination system (CMTS) serves a similar function as the DSL network’s DSLAM—turning the analog signal sent from the cable modems in many downstream homes back into digital format.
+
+Cable modems divide the HFC network into two channels, a downstream and an upstream channel. As with DSL, access is typically asymmetric, with the downstream channel typically allocated a higher transmission rate than the upstream channel. The DOCSIS 2.0 and 3.0 standards define downstream bitrates of 40 Mbps and 1.2 Gbps, and upstream rates of 30 Mbps and 100 Mbps, respectively. As in the case of DSL networks, the maximum achievable rate may not be realized due to lower contracted data rates or media impairments.
+
+One important characteristic of cable Internet access is that it is a shared broadcast medium. In particular, every packet sent by the head end travels downstream on every link to every home and every packet sent by a home travels on the upstream channel to the head end. For this reason, if several users are simultaneously downloading a video file on the downstream channel, the actual rate at which each user receives its video file will be significantly lower than the aggregate cable downstream rate. On the other hand, if there are only a few active users and they are all Web surfing, then each of the users may actually receive Web pages at the full cable downstream rate, because the users will rarely request a Web page at exactly the same time. Because the upstream channel is also shared, a distributed multiple access protocol is needed to coordinate transmissions and avoid collisions. (We’ll discuss this collision issue in some detail in Chapter 6.)
 
 ![](media/page-037-img-01.png)
 
-needed to coordinate transmissions and avoid collisions. (We’ll discuss this collision issue in some detail in Chapter 6.) Although DSL and cable networks currently represent the majority of residential broadband access in the United States, an up-and-coming technology that provides even higher speeds is fiber to the home (FTTH) [Fiber Broadband 2025]. As the name suggests, the FTTH concept is simple—provide an optical fiber path from the CO directly to the home. FTTH can potentially provide Internet access rates in the gigabits per second range.
+Figure 1.6 A hybrid fiber-coaxial access network
+
+Although DSL and cable networks currently represent the majority of residential broadband access in the United States, an up-and-coming technology that provides even higher speeds is fiber to the home (FTTH) [Fiber Broadband 2025]. As the name suggests, the FTTH concept is simple—provide an optical fiber path from the CO directly to the home. FTTH can potentially provide Internet access rates in the gigabits per second range.
 
 There are several competing technologies for optical distribution from the CO to the homes. The simplest optical distribution network is called direct fiber, with one fiber leaving the CO for each home. More commonly, each fiber leaving the central office is actually shared by many homes; it is not until the fiber gets relatively close to the homes that it is split into individual customerspecific fibers. There are two competing optical-distribution network architectures that perform this splitting: active optical networks (AONs) and passive optical networks (PONs). AON is essentially switched Ethernet, which is discussed in Chapter 6.
 
@@ -380,15 +385,13 @@ Here, we briefly discuss PON, which is used in Verizon’s FiOS service.
 
 Figure 1.7 shows FTTH using the PON distribution architecture. Each home has an optical network terminator (ONT), which is connected by dedicated optical fiber to a neighborhood splitter. The splitter combines a number of homes (typically less than 100) onto a single, shared optical fiber, which connects to an optical line terminator (OLT) in the telco’s CO. The OLT, providing conversion between optical and electrical signals, connects to the Internet via a telco router. At home, users connect a home router (typically a wireless router) to the ONT and access the Internet via this home router. In the PON architecture, all packets sent from OLT to the splitter are replicated at the splitter (similar to a cable head end).
 
-Fixed wireless Internet (FWI) has also become a popular Internet access technology.FWI not only provides high-speed residential access, but does so without installing costly and failure-prone cabling from the telco’s CO to the home.
+Fixed wireless Internet (FWI) has also become a popular Internet access technology. FWI not only provides high-speed residential access, but does so without installing costly and failure-prone cabling from the telco’s CO to the home.
 
-With 5G fixed wireless, using beam-forming technology, data is sent wirelessly from a provider’s base station to the a modem in the home. A WiFi wireless router is connected to the modem (possibly bundled together), similar to how a WiFi wireless router is connected to a cable or DSL modem. In addition to DSL, cable, FTTH and FWI, low-earth orbit (LEO) satellites are
+With 5G fixed wireless, using beam-forming technology, data is sent wirelessly from a provider’s base station to a modem in the home. A WiFi wireless router is connected to the modem (possibly bundled together), similar to how a WiFi wireless router is connected to a cable or DSL modem. In addition to DSL, cable, FTTH and FWI, low-earth orbit (LEO) satellites are increasingly being used for broadband Internet access, particularly in rural and remote areas. Companies such as SpaceX’s Starlink deploy large constellation of satellites, providing high-speed access with signal propagation delays much lower than with geostationary satellites.
 
 ![](media/page-038-img-01.png)
 
 Figure 1.7 FTTH Internet access
-
-increasingly being used for broadband Internet access, particularly in rural and remote areas. Companies such as SpaceX’s Starlink deploy large constellation of satellites, providing high-speed access with signal propagation delays much lower than with geostationary satellites.
 
 Ethernet and WiFi On corporate and university campuses, and increasingly in home settings, a local area network (LAN) is used to connect an end system to the edge router.
 
@@ -398,9 +401,9 @@ As shown in Figure 1.8, Ethernet users use twisted-pair copper wire to connect t
 
 Increasingly, however, people are accessing the Internet wirelessly from laptops, smartphones, tablets, and other “things”. In a wireless LAN setting, wireless users transmit/receive packets to/from an access point that is connected into the enterprise’s network (most likely using wired Ethernet), which in turn is connected to the wired Internet. A wireless LAN user must typically be within a few tens of meters of the access point. Wireless LAN access based on IEEE 802.11 technology, more colloquially known as WiFi, is now just about everywhere—universities, business offices, cafes, airports, homes, and even in airplanes. As discussed in detail in Chapter 7, 802.11 today provides a shared transmission rate of up to more than 100 Mbps.
 
-Even though Ethernet and WiFi access networks were initially deployed in enterprise (corporate, university) settings, they are also common components of home networks. Many homes combine broadband residential access (that is, cable modems or DSL) with these inexpensive wireless LAN technologies to create powerful home networks Figure 1.9 shows a typical home network.
+Even though Ethernet and WiFi access networks were initially deployed in enterprise (corporate, university) settings, they are also common components of home networks. Many homes combine broadband residential access (that is, cable modems or DSL) with these inexpensive wireless LAN technologies to create powerful home networks. Figure 1.9 shows a typical home network.
 
-This home network consists of a roaming laptop, multiple Internetconnected home appliances, as well as a wired PC; a base station (the wireless access point), which communicates with the wireless PC and other wireless devices in the home; and a home router that connects the wireless access point,
+This home network consists of a roaming laptop, multiple Internetconnected home appliances, as well as a wired PC; a base station (the wireless access point), which communicates with the wireless PC and other wireless devices in the home; and a home router that connects the wireless access point, and any other wired home devices, to the Internet. This network allows household members to have broadband access to the Internet with one member roaming from the kitchen to the backyard to the bedrooms.
 
 ![](media/page-039-img-01.png)
 
@@ -410,15 +413,9 @@ Figure 1.8 Ethernet Internet access
 
 Figure 1.9 A typical home network
 
-and any other wired home devices, to the Internet. This network allows household members to have broadband access to the Internet with one member roaming from the kitchen to the backyard to the bedrooms.
-
 Wide-Area Wireless Access: 4G and 5G Mobile devices such as iPhones and Android devices are being used to message, share photos and video in online social networks, make mobile payments, watch movies, stream music, video conference, and much more while on the run. These devices employ the same wireless infrastructure used for cellular telephony to send/receive packets through a base station that is operated by the cellular network provider. Unlike WiFi, a user need only be within a few tens of kilometers (as opposed to a few tens of meters) of the base station.
 
-Telecommunications companies have made enormous investments in socalled fourth-generation  4G wireless, which provides real-world download 
-
-speeds of up to 60 Mbps. But even higher-speed wide-area access technologies— a fifth-generation  5G of wide-area wireless networks—are already being 
-
-deployed. We’ll cover the basic principles of wireless networks and mobility, as well as WiFi, 4G and 5G technologies (and more!) in Chapter 7.
+Telecommunications companies have made enormous investments in so called fourth-generation  4G wireless, which provides real-world download  speeds of up to 60 Mbps. But even higher-speed wide-area access technologies— a fifth-generation  5G of wide-area wireless networks—are already being deployed. We’ll cover the basic principles of wireless networks and mobility, as well as WiFi, 4G and 5G technologies (and more!) in Chapter 7.
 
 ##### 1.2.2 Physical Media
 
@@ -444,11 +441,7 @@ Coaxial Cable Like twisted pair, coaxial cable consists of two copper conductors
 
 In cable television and cable Internet access, the transmitter shifts the digital signal to a specific frequency band, and the resulting analog signal is sent from the transmitter to one or more receivers. Coaxial cable can be used as a guided shared medium. Specifically, a number of end systems can be connected directly to the cable, with each of the end systems receiving whatever is sent by the other end systems.
 
-Fiber Optics An optical fiber is a thin, flexible medium that conducts pulses of light, with each pulse representing a bit. A single optical fiber can support tremendous bit rates, up to tens or even hundreds of gigabits per second. They are immune to electromagnetic interference, have very low signal attenuation up to 100 kilometers, and are very hard to tap. These characteristics have made fiber optics the preferred long-haul guided transmission media, particularly for overseas links. Many of the long-distance telephone networks in the United States and elsewhere now use fiber optics exclusively. Fiber optics is also prevalent in the backbone of the Internet. However, the high cost of optical devices—such as transmitters, receivers, and switches—has hindered their deployment for short-haul transport, such as in a LAN or into the home in a residential access network. The Optical Carrier (OC) standard link speeds range from 51.8 Mbps to 39.8 Gbps; these specifications are often referred to as OC- , where the link n
-
-speed equals n × 51.8 Mbps. Standards in use today include OC-1, OC-3,
-
-OC-12, OC-24, OC-48, OC-96, OC-192, OC-768.
+Fiber Optics An optical fiber is a thin, flexible medium that conducts pulses of light, with each pulse representing a bit. A single optical fiber can support tremendous bit rates, up to tens or even hundreds of gigabits per second. They are immune to electromagnetic interference, have very low signal attenuation up to 100 kilometers, and are very hard to tap. These characteristics have made fiber optics the preferred long-haul guided transmission media, particularly for overseas links. Many of the long-distance telephone networks in the United States and elsewhere now use fiber optics exclusively. Fiber optics is also prevalent in the backbone of the Internet. However, the high cost of optical devices—such as transmitters, receivers, and switches—has hindered their deployment for short-haul transport, such as in a LAN or into the home in a residential access network. The Optical Carrier (OC) standard link speeds range from 51.8 Mbps to 39.8 Gbps; these specifications are often referred to as OC-n, where the link speed equals n × 51.8 Mbps. Standards in use today include OC-1, OC-3, OC-12, OC-24, OC-48, OC-96, OC-192, and OC-768.
 
 Terrestrial Radio Channels Radio channels carry signals in the electromagnetic spectrum. They are an attractive medium because they require no physical wire to be installed, can penetrate walls, provide connectivity to a mobile user, and can potentially carry a signal for long distances. The characteristics of a radio channel depend significantly on the propagation environment and the distance over which a signal is to be carried. Environmental considerations determine path loss and shadow fading (which decrease the signal strength as the signal travels over a distance and around/through obstructing objects), multipath fading (due to signal reflection off of interfering objects), and interference (due to other transmissions and electromagnetic signals).
 
@@ -486,9 +479,9 @@ in this simple example, the router has the rather simple task of transferring a 
 
 In this example, the source has three packets, each consisting of L bits, to send to the destination. At the snapshot of time shown in Figure 1.11, the source has transmitted some of packet 1, and the front of packet 1 has already arrived at the router.
 
-Figure 1.11 Store-
+![](media/page-045-img-01.png)
 
-and-forward packet switching
+Figure 1.11 Store-and-forward packet switching
 
 Because the router employs store-and-forwarding, at this instant of time, the router cannot transmit the bits it has received; instead it must first buffer (i.e., “store”) the packet’s bits. Only after the router has received all of the packet’s bits can it begin to transmit (i.e., “forward”) the packet onto the outbound link.
 
@@ -526,7 +519,7 @@ Queuing Delays and Packet Loss Each packet switch has multiple links attached to
 
 In this case, packet loss will occur—either the arriving packet or one of the already-queued packets will be dropped.
 
-Figure 1.12 illustrates a simple packet-switched network. As in Figure 1.11, packets are represented by three-dimensional slabs. The width of a slab represents the number of bits in the packet. In this figure, all packets have the same width and hence the same length. Suppose Hosts A and B are sending packets to Host E. Hosts A and B first send their packets along 100 Mbps Ethernet links to the first router. The router then directs these packets to the 15 Mbps link. If, during a short interval of time, the arrival rate of packets to the router (when converted to bits per second) exceeds 15 Mbps, congestion will occur at the router as packets queue in the link’s output buffer before being transmitted onto the link. For example, if Host A and B each send a burst of five packets back-toback at the same time, then most of these packets will spend some time waiting in the queue. The situation is, in fact, entirely analogous to many common-day situations—for example, when we wait in line for a bank teller or wait in front of a tollbooth. We’ll examine this queuing delay in more detail in Section 1.4.
+Figure 1.12 illustrates a simple packet-switched network. As in Figure 1.11, packets are represented by three-dimensional slabs. The width of a slab represents the number of bits in the packet. In this figure, all packets have the same width and hence the same length. Suppose Hosts A and B are sending packets to Host E. Hosts A and B first send their packets along 100 Mbps Ethernet links to the first router. The router then directs these packets to the 15 Mbps link. If, during a short interval of time, the arrival rate of packets to the router (when converted to bits per second) exceeds 15 Mbps, congestion will occur at the router as packets queue in the link’s output buffer before being transmitted onto the link. For example, if Host A and B each send a burst of five packets back-to-back at the same time, then most of these packets will spend some time waiting in the queue. The situation is, in fact, entirely analogous to many common-day situations—for example, when we wait in line for a bank teller or wait in front of a tollbooth. We’ll examine this queuing delay in more detail in Section 1.4.
 
 Forwarding Tables and Routing Protocols Earlier, we said that a router takes a packet arriving on one of its attached communication links and forwards that packet onto another one of its attached communication links. But how does the router determine which link it should forward the packet onto? Packet forwarding is actually done in different ways
 
@@ -566,7 +559,9 @@ Figure 1.13 illustrates a circuit-switched network. In this network, the four ci
 
 ![](media/page-048-img-01.png)
 
-Figure 1.13 A simple circuit-switched network consisting of four switches and four links Because each link has four circuits, for each link used by the end-to-end connection, the connection gets one fourth of the link’s total transmission capacity for the duration of the connection. Thus, for example, if each link between adjacent switches has a transmission rate of 1 Mbps, then each end-to-end circuit-switch connection gets 250 kbps of dedicated transmission rate.
+Figure 1.13 A simple circuit-switched network consisting of four switches and four links
+
+Because each link has four circuits, for each link used by the end-to-end connection, the connection gets one fourth of the link’s total transmission capacity for the duration of the connection. Thus, for example, if each link between adjacent switches has a transmission rate of 1 Mbps, then each end-to-end circuit-switch connection gets 250 kbps of dedicated transmission rate.
 
 In contrast, consider what happens when one host wants to send a packet to another host over a packet-switched network, such as the Internet. As with circuit switching, the packet is transmitted over a series of communication links. But different from circuit switching, the packet is sent into the network without reserving any link resources whatsoever. If one of the links is congested because other packets need to be transmitted over the link at the same time, then the packet will have to wait in a buffer at the sending side of the transmission link and suffer a delay. The Internet makes its best effort to deliver packets in a timely manner, but it does not make any guarantees.
 
@@ -586,13 +581,9 @@ As another example of how these resources can be underutilized, consider a radio
 
 Figure 1.14 With FDM, each circuit continuously gets a fraction of the bandwidth. With TDM, each circuit gets all of the bandwidth periodically during brief intervals of time (that is, during slots)
 
-Proponents of packet switching also enjoy pointing out that establishing endto-end circuits and reserving end-to-end transmission capacity is complicated and requires complex signaling software to coordinate the operation of the switches along the end-to-end path.
+Proponents of packet switching also enjoy pointing out that establishing end-to-end circuits and reserving end-to-end transmission capacity is complicated and requires complex signaling software to coordinate the operation of the switches along the end-to-end path.
 
-Before we finish our discussion of circuit switching, let’s work through a numerical example that should shed further insight on the topic. Let us consider how long it takes to send a file of 640,000 bits from Host A to Host B over a circuitswitched network. Suppose that all links in the network use TDM with 24 slots and have a bit rate of 1.536 Mbps. Also suppose that it takes 500 msec to establish an end-to-end circuit before Host A can begin to transmit the file. How long does it take to send the file? Each circuit has a transmission rate of  1.536 Mbps 24  =
-
-kbps, so it takes  640,000 bits ( 64 kbps ) = 10 seconds to transmit the file. To 
-
-this 10 seconds we add the circuit establishment time, giving 10.5 seconds to send the file. Note that the transmission time is independent of the number of links:
+Before we finish our discussion of circuit switching, let’s work through a numerical example that should shed further insight on the topic. Let us consider how long it takes to send a file of 640,000 bits from Host A to Host B over a circuit-switched network. Suppose that all links in the network use TDM with 24 slots and have a bit rate of 1.536 Mbps. Also suppose that it takes 500 msec to establish an end-to-end circuit before Host A can begin to transmit the file. How long does it take to send the file? Each circuit has a transmission rate of (1.536 Mbps)/24 = 64 kbps, so it takes (640,000 bits)/(64 kbps) = 10 seconds to transmit the file. To this 10 seconds we add the circuit establishment time, giving 10.5 seconds to send the file. Note that the transmission time is independent of the number of links:
 
 The transmission time would be 10 seconds if the end-to-end circuit passed through one link or a hundred links. (The actual end-to-end delay also includes a propagation delay; see Section 1.4.)
 
@@ -602,9 +593,9 @@ Why is packet switching more efficient? Let’s look at a simple example.
 
 Suppose users share a 1 Mbps link. Also suppose that each user alternates between periods of activity, when a user generates data at a constant rate of 100 kbps, and periods of inactivity, when a user generates no data. Suppose further that a user is active only 10 percent of the time (and is idly drinking coffee during the remaining 90 percent of the time).
 
-With circuit switching, 100 kbps must be reserved for each user at all times. For example, with circuitswitched TDM, if a one-second frame is divided into 10 time slots of 100 ms each, then each user would be allocated one time slot per frame.
+With circuit switching, 100 kbps must be reserved for each user at all times. For example, with circuit-switched TDM, if a one-second frame is divided into 10 time slots of 100 ms each, then each user would be allocated one time slot per frame.
 
-Thus, the circuit-switched link can support only 10 ( = 1 Mbps 100 kbps )
+Thus, the circuit-switched link can support only 10 (= 1 Mbps / 100 kbps)
 
 simultaneous users. With packet switching, the probability that a specific user is active is 0.1 (that is, 10 percent). If there are 35 users, the probability that there are 11 or more simultaneously active users is approximately 0.0004.
 
@@ -618,7 +609,7 @@ Although packet switching and circuit switching are both prevalent in today’s 
 
 ##### 1.3.3 A Network of Networks
 
-We saw earlier that end systems (PCs, smartphones, Web servers, mail servers, and so on) connect into the Internet via an access ISP.The access ISP can provide either wired or wireless connectivity, using an array of access technologies including DSL, cable, FTTH, Wi-Fi, and cellular.
+We saw earlier that end systems (PCs, smartphones, Web servers, mail servers, and so on) connect into the Internet via an access ISP. The access ISP can provide either wired or wireless connectivity, using an array of access technologies including DSL, cable, FTTH, Wi-Fi, and cellular.
 
 Note that the access ISP does not have to be a telco or a cable company; instead it can be, for example, a university (providing Internet access to students, staff, and faculty), or a company (providing access for its employees). But connecting end users and content providers into an access ISP is only a small piece of solving the puzzle of connecting the billions of end systems that make up the Internet. To complete this puzzle, the access ISPs themselves must be interconnected. This is done by creating a network of networks—understanding this phrase is the key to understanding the Internet.
 
@@ -628,9 +619,9 @@ Our first network structure, Network Structure 1, interconnects all of the acces
 
 Now if some company builds and operates a global transit ISP that is profitable, then it is natural for other companies to build their own global transit ISPs and compete with the original global transit ISP. This leads to Network Structure 2, which consists of the hundreds of thousands of access ISPs and multiple global transit ISPs. The access ISPs certainly prefer Network Structure 2 over Network Structure 1 since they can now choose among the competing global transit providers as a function of their pricing and services. Note, however, that the global transit ISPs themselves must interconnect: Otherwise access ISPs connected to one of the global transit providers would not be able to communicate with access ISPs connected to the other global transit providers.
 
-Network Structure 2, just described, is a two-tier hierarchy with global transit providers residing at the top tier and access ISPs at the bottom tier. This assumes that global transit ISPs are not only capable of getting close to each and every access ISP, but also find it economically desirable to do so. In reality, although some ISPs do have impressive global coverage and do directly connect with many access ISPs, no ISP has presence in each and every city in the world. Instead, in any given region, there may be a regional ISP to which the access ISPs in the region connect. Each regional ISP then connects to tier 1 -
+Network Structure 2, just described, is a two-tier hierarchy with global transit providers residing at the top tier and access ISPs at the bottom tier. This assumes that global transit ISPs are not only capable of getting close to each and every access ISP, but also find it economically desirable to do so. In reality, although some ISPs do have impressive global coverage and do directly connect with many access ISPs, no ISP has presence in each and every city in the world. Instead, in any given region, there may be a regional ISP to which the access ISPs in the region connect. Each regional ISP then connects to tier-1 ISPs.
 
-ISPs. Tier-1 ISPs are similar to our (imaginary) global transit ISP; but tier-1 ISPs, which actually do exist, do not have a presence in every city in the world.
+Tier-1 ISPs are similar to our (imaginary) global transit ISP; but tier-1 ISPs, which actually do exist, do not have a presence in every city in the world.
 
 There are approximately a dozen tier-1 ISPs, including Level 3 Communications, AT&T, Sprint, and NTT. Interestingly, no group officially sanctions tier-1 status; as the saying goes—if you have to ask if you’re a member of a group, you’re probably not.
 
@@ -642,7 +633,11 @@ Thus, there is customer-provider relationship at each level of the hierarchy.
 
 Note that the tier-1 ISPs do not pay anyone as they are at the top of the hierarchy. To further complicate matters, in some regions, there may be a larger regional ISP (possibly spanning an entire country) to which the smaller regional ISPs in that region connect; the larger regional ISP then connects to a tier-1 ISP. For example, in China, there are access ISPs in each city, which connect to provincial ISPs, which in turn connect to national ISPs, which finally connect to tier-1 ISPs [Tian 2012]. We refer to this multi-tier hierarchy, which is still only a crude approximation of today’s Internet, as Network Structure 3.
 
-To build a network that more closely resembles today’s Internet, we must add points of presence (PoPs), multi-homing, peering, and Internet exchange points (IXPs) to the hierarchical Network Structure 3.PoPs exist in all levels of the hierarchy, except for the bottom (access ISP) level.A PoP is simply a group of one or more routers (at the same location) in the provider’s network where customer ISPs can connect into the provider ISP.For a customer network to connect to a provider’s PoP, it can lease a high-speed link from a third-party telecommunications provider to directly connect one of its routers to a router at the PoP.Any ISP (except for tier-1 ISPs) may choose to multi-home, that is, to connect to two or more provider ISPs. So, for example, an access ISP may multi-home with two regional ISPs, or it may multi-home with two regional ISPs and also with a tier-1 ISP.Similarly, a regional ISP may multi-home with multiple tier-1 ISPs.
+To build a network that more closely resembles today’s Internet, we must add points of presence (PoPs), multi-homing, peering, and Internet exchange points (IXPs) to the hierarchical Network Structure 3.
+
+PoPs exist in all levels of the hierarchy, except for the bottom (access ISP) level. A PoP is simply a group of one or more routers (at the same location) in the provider’s network where customer ISPs can connect into the provider ISP. For a customer network to connect to a provider’s PoP, it can lease a high-speed link from a third-party telecommunications provider to directly connect one of its routers to a router at the PoP.
+
+Any ISP (except for tier-1 ISPs) may choose to multi-home, that is, to connect to two or more provider ISPs. So, for example, an access ISP may multi-home with two regional ISPs, or it may multi-home with two regional ISPs and also with a tier-1 ISP. Similarly, a regional ISP may multi-home with multiple tier-1 ISPs.
 
 When an ISP multi-homes, it can continue to send and receive packets into the Internet even if one of its providers has a failure.
 
@@ -650,15 +645,15 @@ As we just learned, customer ISPs pay their provider ISPs to obtain global Inter
 
 We now finally arrive at Network Structure 5, which describes today’s Internet. Network Structure 5, illustrated in Figure 1.15, builds on top of Network Structure 4 by adding content-provider networks. Google is currently one of the leading examples of such a content-provider network. Google has over 20 major data centers distributed across North America, Europe, Asia, and South America, [Google datacenters 2024] with each data center having tens or hundreds of thousands of servers. Additionally, Google has smaller data centers, each with a few hundred servers; these smaller data centers are often located within IXPs. The Google data centers are all interconnected via Google’s private TCP/IP network, which spans the entire globe but is nevertheless separate from the public Internet. Importantly, the Google private network only carries traffic to/from Google servers. Figure 1.15 illustrates Google’s world-wide cloud network as of 2024 [Google Cloud 2025].
 
-As shown in Figure 1.16, the Google private network attempts to “bypass” the upper tiers of the Internet by peering (settlement free) with lower-tier ISPs, either by directly connecting with them or by connecting with them at IXPs [Labovitz 2010].However, because many access ISPs can still only be reached by transiting through tier-1 networks, the Google network also connects to tier-1 ISPs, and pays those ISPs for the traffic it exchanges with them. By creating its own network, a content provider not only reduces its payments to upper-tier ISPs, but also has greater control of how its services are ultimately delivered to end users.
+As shown in Figure 1.16, the Google private network attempts to “bypass” the upper tiers of the Internet by peering (settlement free) with lower-tier ISPs, either by directly connecting with them or by connecting with them at IXPs [Labovitz 2010]. However, because many access ISPs can still only be reached by transiting through tier-1 networks, the Google network also connects to tier-1 ISPs, and pays those ISPs for the traffic it exchanges with them. By creating its own network, a content provider not only reduces its payments to upper-tier ISPs, but also has greater control of how its services are ultimately delivered to end users.
 
 As of 2020, the cloud providers Amazon, Google, IBM, and Microsoft collectively are able to reach 76% of the Internet without passing through Tier-1 ISPs [Arnold 2020].
 
 In summary, today’s Internet—a network of networks—is complex, consisting of a dozen or so tier-1 ISPs and hundreds of thousands of lower-tier ISPs. The ISPs are diverse in their coverage, with some spanning multiple continents and oceans, and others limited to narrow geographic regions. The lower-tier ISPs connect to the higher-tier ISPs, and the higher-tier ISPs interconnect with one another. Users and content providers are customers of lower-tier ISPs, and lower-tier ISPs are customers of higher-tier ISPs. In recent years, major content providers have also created their own networks and connect directly into lower-tier ISPs where possible.
 
-Figure 1.15 Google cloud locations and network
-
 ![](media/page-055-img-01.png)
+
+Figure 1.15 Google cloud locations and network
 
 ![](media/page-056-img-01.png)
 
@@ -776,7 +771,9 @@ Packet Loss In our discussions above, we have assumed that the queue is capable 
 
 ![](media/page-061-img-01.png)
 
-Figure 1.19 Dependence of average queuing delay on traffic intensity capacity, although the queuing capacity greatly depends on the router design and cost. Because the queue capacity is finite, packet delays do not really approach infinity as the traffic intensity approaches 1. Instead, a packet can arrive to find a full queue. With no place to store such a packet, a router will drop that packet;
+Figure 1.19 Dependence of average queuing delay on traffic intensity
+
+capacity, although the queuing capacity greatly depends on the router design and cost. Because the queue capacity is finite, packet delays do not really approach infinity as the traffic intensity approaches 1. Instead, a packet can arrive to find a full queue. With no place to store such a packet, a router will drop that packet;
 
 that is, the packet will be lost. This overflow at a queue can again be seen in the interactive animation when the traffic intensity is greater than 1.
 
@@ -838,7 +835,9 @@ Figure 1.20(b) now shows a network with N links between the server and the clien
 
 ![](media/page-065-img-01.png)
 
-Figure 1.20 Throughput for a file transfer from server to client throughput for a file transfer from server to client is min  R R { , , . . . , R } , N which is once again the transmission rate of the bottleneck link along the path between server and client.
+Figure 1.20 Throughput for a file transfer from server to client
+
+throughput for a file transfer from server to client is min {R1, R2, ..., RN}, which is once again the transmission rate of the bottleneck link along the path between server and client.
 
 Now consider another example motivated by today’s Internet. Figure 1.21(a) shows two end systems, a server and a client, connected to a computer network. Consider the throughput for a file transfer from the server to the client. The server is connected to the network with an access link of rate R and the client is connected to the network with an access link of rate R . Now s c suppose that all the links in the core of the communication network have very high transmission rates, much higher than R and R . Indeed, today, the core of s c the Internet is over-provisioned with high speed links that experience little congestion. Also suppose that the only bits being sent in the entire network are those from the server to the client. Because the core of the computer network is like a wide pipe in this example, the rate at which bits can flow from source to destina-
 
@@ -850,7 +849,7 @@ Let’s suppose that all server access links have the same rate R , all client a
 
 ![](media/page-066-img-01.png)
 
-Figure 1.21 End-to- end throughput: (a) Client downloads a file from server; (b) 10 clients downloading with 10 servers
+Figure 1.21 End-to-end throughput: (a) Client downloads a file from server; (b) 10 clients downloading with 10 servers
 
 R —then the throughput for each download will once again be min { R R , } . s But what if the rate of the common link is of the same order as R and R ? What s will the throughput be in this case? Let’s take a look at a specific example. Sup- = = = pose R 2 Mbps ,  R 1 Mbps ,  R 5 Mbps, and the common link s c divides its transmission rate equally among the 10 downloads. Then the bottleneck for each download is no longer in the access network, but is now instead the shared link in the core, which only provides each download with 500 kbps of throughput. Thus, the end-to-end throughput for each download is now reduced to 500 kbps.
 
@@ -940,13 +939,13 @@ layers, reflecting their differences in functionality
 
 application-layer message and the transport-layer header information together constitute the transport-layer segment. The transport-layer segment thus encapsulates the application-layer message. The added information might include information allowing the receiver-side transport layer to deliver the message up to the appropriate application, and error-detection bits that allow the receiver to determine whether bits in the message have been changed in route. The transport layer then passes the segment to the network layer, which adds network-layer header information (H in Figure 1.25) such as source and n destination end system addresses, creating a network-layer datagram. The datagram is then passed to the link layer, which (of course!) will add its own link-layer header information and create a link-layer frame. Thus, we see that at each layer, a packet has two types of fields: header fields and a payload field. The payload is typically a packet from the layer above.
 
-A useful analogy here is the sending of an interoffice memo from one corporate branch office to another via the public postal service. Suppose Alice, who is in one branch office, wants to send a memo to Bob, who is in another branch office. The memo is analogous to the application-layer message. Alice puts the memo in an interoffice envelope with Bob’s name and department written on the front of the envelope. The interoffice envelope is analogous to a transportlayer segment—it contains header information (Bob’s name and department number) and it encapsulates the application-layer message (the memo).
+A useful analogy here is the sending of an interoffice memo from one corporate branch office to another via the public postal service. Suppose Alice, who is in one branch office, wants to send a memo to Bob, who is in another branch office. The memo is analogous to the application-layer message. Alice puts the memo in an interoffice envelope with Bob’s name and department written on the front of the envelope. The interoffice envelope is analogous to a transport-layer segment—it contains header information (Bob’s name and department number) and it encapsulates the application-layer message (the memo).
 
 When the sending branch-office mailroom receives the interoffice envelope, it puts the interoffice envelope inside yet another envelope, which is suitable for sending through the public postal service. The sending mailroom also writes the postal address of the sending and receiving branch offices on the postal envelope. Here, the postal envelope is analogous to the datagram—it encapsulates the transport-layer segment (the interoffice envelope), which encapsulates the original message (the memo). The postal service delivers the postal envelope to the receiving branch-office mailroom. There, the process of de-encapsulation is begun. The mailroom extracts the interoffice memo and forwards it to Bob.
 
 Finally, Bob opens the envelope and removes the memo.
 
-The process of encapsulation can be more complex than that described above. For example, a large message may be divided into multiple transportlayer segments (which might themselves each be divided into multiple network-layer datagrams). At the receiving end, such a segment must then be reconstructed from its constituent datagrams.
+The process of encapsulation can be more complex than that described above. For example, a large message may be divided into multiple transport-layer segments (which might themselves each be divided into multiple network-layer datagrams). At the receiving end, such a segment must then be reconstructed from its constituent datagrams.
 
 #### 1.6 Networks Under Attack
 
@@ -988,7 +987,7 @@ The Bad Guys Can Sniff Packets Many users today access the Internet via wireless
 
 ![](media/page-075-img-01.png)
 
-Figure 1.26 A distributed denial-of- service attack
+Figure 1.26 A distributed denial-of-service attack
 
 (covered in Chapter 7). While ubiquitous Internet access is extremely convenient and enables marvelous new applications for mobile users, it also creates a major security vulnerability—by placing a passive receiver in the vicinity of the wireless transmitter, that receiver can obtain a copy of every packet that is transmitted! These packets can contain all kinds of sensitive information, including passwords, social security numbers, trade secrets, and private personal messages. A passive receiver that records a copy of every packet that flies by is called a packet sniffer.
 
@@ -1392,7 +1391,7 @@ b.  Now suppose that the message is segmented into 100 packets, with each packet
 
 ![](media/page-092-img-01.png)
 
-Figure 1.28 End-to- end message transport: (a) without message segmentation; (b) with message segmentation
+Figure 1.28 End-to-end message transport: (a) without message segmentation; (b) with message segmentation
 
 c.  How long does it take to move the file from source host to destination host when message segmentation is used? Compare this result with your answer in part (a) and comment.
 
@@ -1576,19 +1575,21 @@ Any message sent from one process to another must go through the underlying netw
 
 ogy to help us understand processes and sockets. A process is analogous to a house and its socket is analogous to its door. When a process wants to send a message to another process on another host, it shoves the message out its door (socket). This sending process assumes that there is a transportation infrastructure on the other side of its door that will transport the message to the door of the destination process. Once the message arrives at the destination host, the message passes through the receiving process’s door (socket), and the receiving process then acts on the message.
 
-Figure 2.3 illustrates socket communication between two processes that communicate over the Internet. (Figure 2.3 assumes that the underlying sockets in some detail in Section 2.6. Addressing Processes In order to send postal mail to a particular destination, the destination needs to have an address. Similarly, in order for a process running on one host to send packets to a process running on another host, the receiving process needs to have an address. To identify the receiving process, two pieces of information need to be specified: (1) the address of the host and (2) an identifier that specifies the receiving process in the destination host. In the Internet, the host is identified by its IP address. We’ll discuss IP addresses in great detail in Chapter 4. For now, all we need to know is that an IP address is a 32-bit quantity that we can think of as uniquely identifying the host. In addition to knowing the address of the host to which a message is destined, the sending process must also identify the receiving process (more specifically, the receiving socket) running in the host. This information is needed because in general a host could be running many network applications. A destination port number serves this purpose. Popular applications
-
-Figure 2.3 Application processes, sockets, and underlying transport protocol transport protocol used by the processes is the Internet’s TCP protocol.) As shown in this figure, a socket is the interface between the application layer and the transport layer within a host. It is also referred to as the Application Programming Interface (API) between the application and the network, since the socket is the programming interface with which network applications are built. The application developer has control of everything on the application-layer side of the socket but has little control of the transport-layer side of the socket. The only control that the application developer has on the transportlayer side is (1) the choice of transport protocol and (2) perhaps the ability to fix a few transport-layer parameters such as maximum buffer and maximum segment sizes (to be covered in Chapter 3). Once the application developer chooses a transport protocol (if a choice is available), the application is built using the transport-layer services provided by that protocol. We’ll explore
+Figure 2.3 illustrates socket communication between two processes that communicate over the Internet. (Figure 2.3 assumes that the underlying transport protocol used by the processes is the Internet’s TCP protocol.)
 
 ![](media/page-103-img-01.png)
 
-have been assigned specific port numbers. For example, a Web server is identified by port number 80. A mail server process (using the SMTP protocol) is identified by port number 25. A list of well-known port numbers for all Internet standard protocols can be found at www.iana.org. We’ll examine port numbers in detail in Chapter 3.
+Figure 2.3 Application processes, sockets, and underlying transport protocol
+
+As shown in this figure, a socket is the interface between the application layer and the transport layer within a host. It is also referred to as the Application Programming Interface (API) between the application and the network, since the socket is the programming interface with which network applications are built. The application developer has control of everything on the application-layer side of the socket but has little control of the transport-layer side of the socket. The only control that the application developer has on the transport-layer side is (1) the choice of transport protocol and (2) perhaps the ability to fix a few transport-layer parameters such as maximum buffer and maximum segment sizes (to be covered in Chapter 3). Once the application developer chooses a transport protocol (if a choice is available), the application is built using the transport-layer services provided by that protocol. We’ll explore sockets in some detail in Section 2.6.
+
+Addressing Processes In order to send postal mail to a particular destination, the destination needs to have an address. Similarly, in order for a process running on one host to send packets to a process running on another host, the receiving process needs to have an address. To identify the receiving process, two pieces of information need to be specified: (1) the address of the host and (2) an identifier that specifies the receiving process in the destination host. In the Internet, the host is identified by its IP address. We’ll discuss IP addresses in great detail in Chapter 4. For now, all we need to know is that an IP address is a 32-bit quantity that we can think of as uniquely identifying the host. In addition to knowing the address of the host to which a message is destined, the sending process must also identify the receiving process (more specifically, the receiving socket) running in the host. This information is needed because in general a host could be running many network applications. A destination port number serves this purpose. Popular applications have been assigned specific port numbers. For example, a Web server is identified by port number 80. A mail server process (using the SMTP protocol) is identified by port number 25. A list of well-known port numbers for all Internet standard protocols can be found at www.iana.org. We’ll examine port numbers in detail in Chapter 3.
 
 ##### 2.1.3 Transport Services Available to Applications
 
 Recall that a socket is the interface between the application process and the transport-layer protocol. The application at the sending side pushes messages through the socket. At the other side of the socket, the transport-layer protocol has the responsibility of getting the messages to the socket of the receiving process.
 
-Many networks, including the Internet, provide more than one transportlayer protocol. When you develop an application, you must choose one of the available transport-layer protocols. How do you make this choice? Most likely, you would study the services provided by the available transport-layer protocols, and then pick the protocol with the services that best match your application’s needs. The situation is similar to choosing either train or airplane transport for travel between two cities. You have to choose one or the other, and each transportation mode offers different services. (For example, the train offers downtown pickup and drop-off, whereas the plane offers shorter travel time.) What are the services that a transport-layer protocol can offer to applications invoking it? We can broadly classify the possible services along four dimensions: reliable data transfer, throughput, timing, and security.
+Many networks, including the Internet, provide more than one transport-layer protocol. When you develop an application, you must choose one of the available transport-layer protocols. How do you make this choice? Most likely, you would study the services provided by the available transport-layer protocols, and then pick the protocol with the services that best match your application’s needs. The situation is similar to choosing either train or airplane transport for travel between two cities. You have to choose one or the other, and each transportation mode offers different services. (For example, the train offers downtown pickup and drop-off, whereas the plane offers shorter travel time.) What are the services that a transport-layer protocol can offer to applications invoking it? We can broadly classify the possible services along four dimensions: reliable data transfer, throughput, timing, and security.
 
 Reliable Data Transfer As discussed in Chapter 1, packets can get lost within a computer network. For example, a packet can overflow a buffer in a router, or can be discarded by a host or router after having some of its bits corrupted. For many applications— such as electronic mail, file transfer, Web document transfers, and financial applications—data loss can have devastating consequences (in the latter case, for either the bank or the customer!). Thus, to support these applications, something has to be done to guarantee that the data sent by one end of the application is delivered correctly and completely to the other end of the application. If a protocol provides such a guaranteed data delivery service, it is said to provide reliable data transfer. One important service that a transport-layer protocol can potentially provide to an application is process-to-process reliable data transfer. When a transport protocol provides this service, the sending process can just pass its data into the socket and know with complete confidence that the data will arrive without errors at the receiving process.
 
@@ -1614,11 +1615,11 @@ When you (as an application developer) create a new network application for the 
 
 TCP Services The TCP service model includes a connection-oriented service and a reliable data transfer service. When an application invokes TCP as its transport protocol, the application receives both of these services from TCP.
 
-• Connection-oriented service. TCP has the client and server exchange transport-layer control information with each other before the application-level messages begin to flow. This so-called handshaking procedure alerts the
+• Connection-oriented service. TCP has the client and server exchange transport-layer control information with each other before the application-level messages begin to flow. This so-called handshaking procedure alerts the client and server, allowing them to prepare for an onslaught of packets.
 
 ![](media/page-106-img-01.png)
 
-Figure 2.4 Requirements of selected network applications client and server, allowing them to prepare for an onslaught of packets.
+Figure 2.4 Requirements of selected network applications
 
 After the handshaking phase, a TCP connection is said to exist between the sockets of the two processes. The connection is a full-duplex connection in that the two processes can send messages to each other over the connection at the same time. When the application finishes sending messages, it must tear down the connection. In Chapter 3, we’ll discuss connection-oriented service in detail and examine how it is implemented.
 
@@ -1766,7 +1767,7 @@ HTTP with Persistent Connections Non-persistent connections have some shortcomin
 
 ![](media/page-115-img-01.png)
 
-Figure 2.7 Back-of- the-envelope calculation for the time needed to request and receive an HTML file
+Figure 2.7 Back-of-the-envelope calculation for the time needed to request and receive an HTML file
 
 With persistent connections, as employed in HTTP 1.1 and HTTP 2, the server leaves the TCP connection open after sending a response. Subsequent requests and responses between the same client and server can be sent over the same connection. In particular, an entire Web page (in the example above, the base HTML file and the 10 images) can be sent over a single persistent TCP connection.
 
@@ -1926,11 +1927,11 @@ We mentioned above that an HTTP server is stateless. This simplifies server desi
 
 As shown in Figure 2.10, cookie technology has four components: (1) a cookie header line in the HTTP response message; (2) a cookie header line in the HTTP request message; (3) a cookie file kept on the user’s end system and managed by the user’s browser; and (4) a back-end database at the Web site.
 
-Using Figure 2.10, let’s walk through an example of how cookies work. Suppose Susan, who always accesses the Web using Google Chrome from her
-
-Figure 2.10 Keeping user state with cookies home PC, contacts Amazon.com for the first time. Let us suppose that in the past she has already visited the eBay site. When the request comes into the Amazon Web server, the server creates a unique identification number and creates an entry in its back-end database that is indexed by the identification number. The Amazon Web server then responds to Susan’s browser, including
+Using Figure 2.10, let’s walk through an example of how cookies work. Suppose Susan, who always accesses the Web using Google Chrome from her home PC, contacts Amazon.com for the first time. Let us suppose that in the past she has already visited the eBay site. When the request comes into the Amazon Web server, the server creates a unique identification number and creates an entry in its back-end database that is indexed by the identification number. The Amazon Web server then responds to Susan’s browser, including
 
 ![](media/page-120-img-01.png)
+
+Figure 2.10 Keeping user state with cookies
 
 Set-cookie in the HTTP response a : header, which contains the identification number. For example, the header line might be: Set-cookie: 1678 Set- When Susan’s browser receives the HTTP response message, it sees the cookie : header. The browser then appends a line to the special cookie file that it manages. This line includes the hostname of the server and the identification Set-cookie number in the : header. Note that the cookie file already has an entry for eBay, since Susan has visited that site in the past. As Susan continues to browse the Amazon site, each time she requests a Web page, her browser consults her cookie file, extracts her identification number for this site, and puts a cookie header line that includes the identification number in the HTTP request. Specifically, each of her HTTP requests to the Amazon server includes the header line:
 
@@ -2102,11 +2103,13 @@ In this section, we examine the application-layer protocols that are at the hear
 
 Figure 2.12 presents a high-level view of the Internet mail system. We see from this diagram that it has three major components: user agents, mail servers, and the Simple Mail Transfer Protocol (SMTP). We now describe each of these components in the context of a sender, Alice, sending an e-mail message to a recipient, Bob. User agents allow users to read, reply to, forward, save, and compose messages. Examples of user agents for e-mail include Microsoft Outlook, Apple Mail, Web-based Gmail, the Gmail App running in a smartphone, and so on. Today, many users send emails to their mail servers and receive emails from their mail servers via HTTP-based user agents such as gmail and Yahoo! mail. When Alice is finished composing her message, her user agent sends the message to her mail server, where the message is placed in the mail server’s outgoing message queue. When Bob wants to read a message, his user agent retrieves the message from his mailbox in his mail server.
 
-Mail servers form the core of the e-mail infrastructure. Each recipient, such as Bob, has a mailbox located in one of the mail servers. Bob’s mailbox manages and maintains the messages that have been sent to him. A typical message starts its journey in the sender’s user agent, then travels to the sender’s mail server, and then travels to the recipient’s mail server, where it is deposited in the recipient’s mailbox. When Bob wants to access the messages in his mailbox, the mail server containing his mailbox authenticates Bob (with his username and password). Alice’s mail server must also deal with failures in Bob’s mail server. If Alice’s server cannot deliver mail to Bob’s server, Alice’s the sender (Alice) with an e-mail message. SMTP is the principal application-layer protocol for Internet electronic mail. It uses the reliable data transfer service of TCP to transfer mail from the sender’s mail server to the recipient’s mail server. As with most application-layer protocols, SMTP has two sides: a client side, which executes on the sender’s mail server, and a server side, which executes on the recipient’s mail server. Both the client and server sides of SMTP run on every mail server. When a mail server sends mail to other mail servers, it acts as an SMTP client. When a mail server receives mail from other mail servers, it acts as an SMTP server.
+Mail servers form the core of the e-mail infrastructure. Each recipient, such as Bob, has a mailbox located in one of the mail servers. Bob’s mailbox manages and maintains the messages that have been sent to him. A typical message starts its journey in the sender’s user agent, then travels to the sender’s mail server, and then travels to the recipient’s mail server, where it is deposited in the recipient’s mailbox. When Bob wants to access the messages in his mailbox, the mail server containing his mailbox authenticates Bob (with his username and password). Alice’s mail server must also deal with failures in Bob’s mail server. If Alice’s server cannot deliver mail to Bob’s server, Alice’s server holds the message in a message queue and attempts to transfer the message later. Reattempts are often done every 30 minutes or so; if there is no success after several days, the server removes the message and notifies the sender (Alice) with an e-mail message.
 
-Figure 2.12 A high-level view of the Internet e-mail system server holds the message in a message queue and attempts to transfer the message later. Reattempts are often done every 30 minutes or so; if there is no success after several days, the server removes the message and notifies
+SMTP is the principal application-layer protocol for Internet electronic mail. It uses the reliable data transfer service of TCP to transfer mail from the sender’s mail server to the recipient’s mail server. As with most application-layer protocols, SMTP has two sides: a client side, which executes on the sender’s mail server, and a server side, which executes on the recipient’s mail server. Both the client and server sides of SMTP run on every mail server. When a mail server sends mail to other mail servers, it acts as an SMTP client. When a mail server receives mail from other mail servers, it acts as an SMTP server.
 
 ![](media/page-130-img-01.png)
+
+Figure 2.12 A high-level view of the Internet e-mail system
 
 ##### 2.3.1 SMTP
 
@@ -2776,7 +2779,7 @@ In this subsection, we’ll write simple client-server programs that use UDP; in
 
 Recall from Section 2.1 that processes running on different machines communicate with each other by sending messages into sockets. We said that each process is analogous to a house and the process’s socket is analogous to a door.
 
-The application resides on one side of the door in the house; the transportlayer protocol resides on the other side of the door in the outside world. The application developer has control of everything on the application-layer side of the socket; however, it has little control of the transport-layer side.
+The application resides on one side of the door in the house; the transport-layer protocol resides on the other side of the door in the outside world. The application developer has control of everything on the application-layer side of the socket; however, it has little control of the transport-layer side.
 
 Now let’s take a closer look at the interaction between two communicating processes that use UDP sockets. Before the sending process can push a packet of data out the socket door, when using UDP, it must first attach a destination address to the packet. After the packet passes through the sender’s socket, the Internet will use this destination address to route the packet through the Internet to the socket in the receiving process. When the packet arrives at the receiving socket, the receiving process will retrieve the packet through the socket, and then inspect the packet’s contents and take appropriate action.
 
@@ -3521,7 +3524,7 @@ This means that IP makes its “best effort” to deliver segments between commu
 
 Having taken a glimpse at the IP service model, let’s now summarize the service models provided by UDP and TCP. The most fundamental responsibility of UDP and TCP is to extend IP’s delivery service between two end systems to a delivery service between two processes running on the end systems.
 
-Extending host-to-host delivery to process-to-process delivery is called transport-layer  multiplexing  and demultiplexing. We’ll discuss transportlayer multiplexing and demultiplexing in the next section. UDP and TCP also provide integrity checking by including error-detection fields in their segments’ headers. These two minimal transport-layer services—process-to-process data delivery and error checking—are the only two services that UDP  provides!
+Extending host-to-host delivery to process-to-process delivery is called transport-layer  multiplexing  and demultiplexing. We’ll discuss transport-layer multiplexing and demultiplexing in the next section. UDP and TCP also provide integrity checking by including error-detection fields in their segments’ headers. These two minimal transport-layer services—process-to-process data delivery and error checking—are the only two services that UDP  provides!
 
 In particular, like IP, UDP is an unreliable service—it does not guarantee that data sent by one process will arrive intact (or at all!) to the destination process.
 
@@ -3551,7 +3554,7 @@ Let’s now examine how this is done.
 
 First recall from Section 2.6 that a process (as part of a network application) can have one or more sockets, doors through which data passes from the network to the process and through which data passes from the process to the network. Thus, as shown in Figure 3.2, the transport layer in the receiving host does not actually deliver data directly to a process, but instead to an intermediary socket. Because at any given time there can be more than one socket in the receiving host, each socket has a unique identifier. The format of the identifier depends on whether the socket is a UDP or a TCP socket, as we’ll discuss shortly.
 
-Now let’s consider how a receiving host directs an incoming transportlayer segment to the appropriate socket. Each transport-layer segment has a set of fields in the segment for this purpose. At the receiving end, the transport layer examines these fields to identify the receiving socket and then directs the segment to that socket. This job of delivering the data in a transport-layer segment to the correct socket is called demultiplexing. The job of gathering data chunks at the source host from different sockets, encapsulating each data chunk with header information (that will later be used in demultiplexing) to create segments, and passing the segments to the network layer is called multiplexing. Note that the transport layer in the middle host in Figure 3.2 must demultiplex segments arriving from the network layer below to either process P or P above; this is done by directing the arriving segment’s data to 1 2 the corresponding process’s socket. The transport layer in the middle host Figure 3.2 Transport-layer multiplexing and demultiplexing
+Now let’s consider how a receiving host directs an incoming transport-layer segment to the appropriate socket. Each transport-layer segment has a set of fields in the segment for this purpose. At the receiving end, the transport layer examines these fields to identify the receiving socket and then directs the segment to that socket. This job of delivering the data in a transport-layer segment to the correct socket is called demultiplexing. The job of gathering data chunks at the source host from different sockets, encapsulating each data chunk with header information (that will later be used in demultiplexing) to create segments, and passing the segments to the network layer is called multiplexing. Note that the transport layer in the middle host in Figure 3.2 must demultiplex segments arriving from the network layer below to either process P or P above; this is done by directing the arriving segment’s data to 1 2 the corresponding process’s socket. The transport layer in the middle host Figure 3.2 Transport-layer multiplexing and demultiplexing
 
 ![](media/page-188-img-01.png)
 
@@ -3589,9 +3592,9 @@ You may be wondering now, what is the purpose of the source port number? As show
 
 ![](media/page-190-img-01.png)
 
-Figure 3.4 The inversion of source and destination port numbers serves as part of a “return address”—when B wants to send a segment back to A, the destination port in the B-to-A segment will take its value from the source port value of the A-to-B segment. (The complete return address is A’s IP address and the source port number.) As an example, recall the UDP server
+Figure 3.4 The inversion of source and destination port numbers serves as part of a “return address”—when B wants to send a segment back to A, the destination port in the B-to-A segment will take its value from the source port value of the A-to-B segment. (The complete return address is A’s IP address and the source port number.)
 
-UDPServer.py program studied in Section 2.7. In , the server uses the
+As an example, recall the UDPServer.py program studied in Section 2.7. In UDPServer.py, the server uses the
 
 
 recvfrom method to extract the client-side (source) port number from the
@@ -3778,11 +3781,11 @@ shown in Figure 3.9. The FSM in Figure 3.9(a) defines the operation of the sende
 
 The arrows in the FSM description indicate the transition of the protocol from one state to another. (Since each FSM in Figure 3.9 has just one state, a transition is necessarily from the one state back to itself; we’ll see more complicated state diagrams shortly.) The event causing the transition is shown above the horizontal line labeling the transition, and the actions taken when the event occurs are shown below the horizontal line.
 
-When no action is taken on an event, or no event occurs and an action is taken, we’ll use the symbol Λ below
+When no action is taken on an event, or no event occurs and an action is taken, we’ll use the symbol Λ below or above the horizontal, respectively, to explicitly denote the lack of an action or event. The initial state of the FSM is indicated by the dashed arrow. Although the FSMs in Figure 3.9 have but one state, the FSMs we will see shortly have multiple states, so it will be important to identify the initial state of each FSM.
 
 ![](media/page-201-img-01.png)
 
-Figure 3.9 rdt1.0 —A protocol for a completely reliable channel or above the horizontal, respectively, to explicitly denote the lack of an action or event. The initial state of the FSM is indicated by the dashed arrow. Although the FSMs in Figure 3.9 have but one state, the FSMs we will see shortly have multiple states, so it will be important to identify the initial state of each FSM.
+Figure 3.9 rdt1.0 —A protocol for a completely reliable channel
 
 rdt The sending side of simply accepts data from the upper layer via the
 
@@ -3814,9 +3817,7 @@ Before developing a protocol for reliably communicating over such a channel, fir
 
 Fundamentally, three additional protocol capabilities are required in ARQ protocols to handle the presence of bit errors:
 
-• Err or detection. First, a mechanism is needed to allow the receiver to detect when bit errors have occurred. Recall from the previous section that UDP uses the Internet checksum field for exactly this purpose. In Chapter 6, we’ll examine error-detection and- correction techniques in greater detail; these techniques allow the receiver to detect and possibly correct packet bit errors. For now, we need only know that these techniques require that extra bits (beyond the bits of original data to be transferred) be sent from the sender to the receiver; these bits will be gathered into the packet check-
-
-rdt2.0 sum field of the data packet.
+• Error detection. First, a mechanism is needed to allow the receiver to detect when bit errors have occurred. Recall from the previous section that UDP uses the Internet checksum field for exactly this purpose. In Chapter 6, we’ll examine error-detection and correction techniques in greater detail; these techniques allow the receiver to detect and possibly correct packet bit errors. For now, we need only know that these techniques require that extra bits (beyond the bits of original data to be transferred) be sent from the sender to the receiver; these bits will be gathered into the packet checksum field of the rdt2.0 data packet.
 
 • Receiver feedback. Since the sender and receiver are typically executing on different end systems, possibly separated by thousands of miles, the only way for the sender to learn of the receiver’s view of the world (in this case, whether or not a packet was received correctly) is for the receiver to provide explicit feedback to the sender. The positive (ACK) and negative (NAK) acknowledgment replies in the message-dictation scenario are
 
@@ -3890,11 +3891,17 @@ as many states as before. This is because the protocol state must now reflect wh
 
 Figure 3.11 rdt2.1 sender
 
-Figure 3.12 rdt2.1 receiver images of those where a 1-numbered packet is being sent or expected; the only
-
 ![](media/page-206-img-01.png)
 
-differences have to do with the handling of the sequence number. rdt2.1 Protocol uses both positive and negative acknowledgments from the receiver to the sender. When an out-of-order packet is received, the receiver sends a positive acknowledgment for the packet it has received. When a cor- rupted packet is received, the receiver sends a negative acknowledgment. We can accomplish the same effect as a NAK if, instead of sending a NAK, we send an ACK for the last correctly received packet. A sender that receives two ACKs for the same packet (that is, receives duplicate ACKs) knows that the receiver did not correctly receive the packet following the packet that is being ACKed twice. Our NAK-free reliable data transfer protocol for a channel with rdt2.2 bit errors is , shown in Figures 3.13 and 3.14. One subtle change rtdt2.1 rdt2.2 between and is that the receiver must now include the sequence number of the packet being acknowledged by an ACK message (this ACK 0 ACK 1 make_pkt is done by including the , or , argument in in the receiver FSM), and the sender must now check the sequence number of the packet being acknowledged by a received ACK message (this is done by 0 1 isACK including the or argument in in the sender FSM). Reliable Data Transfer over a Lossy Channel with Bit Errors: rdt3.0 Suppose now that in addition to corrupting bits, the underlying channel can lose packets as well, a not-uncommon event in today’s computer networks (including the Internet). Two additional concerns must now be addressed by the protocol: how to detect packet loss and what to do when packet loss occurs. The use of checksumming, sequence numbers, ACK packets, and retransmissions— rdt2.2 the techniques already developed in —will allow us to answer the latter concern. Handling the first concern will require adding a new protocol mechanism.
+Figure 3.12 rdt2.1 receiver
+
+images of those where a 1-numbered packet is being sent or expected; the only
+
+differences have to do with the handling of the sequence number.
+
+Protocol rdt2.1 uses both positive and negative acknowledgments from the receiver to the sender. When an out-of-order packet is received, the receiver sends a positive acknowledgment for the packet it has received. When a corrupted packet is received, the receiver sends a negative acknowledgment. We can accomplish the same effect as a NAK if, instead of sending a NAK, we send an ACK for the last correctly received packet. A sender that receives two ACKs for the same packet (that is, receives duplicate ACKs) knows that the receiver did not correctly receive the packet following the packet that is being ACKed twice. Our NAK-free reliable data transfer protocol for a channel with bit errors is rdt2.2, shown in Figures 3.13 and 3.14. One subtle change between rdt2.1 and rdt2.2 is that the receiver must now include the sequence number of the packet being acknowledged by an ACK message (this is done by including the ACK, 0 or ACK, 1 argument in make_pkt() in the receiver FSM), and the sender must now check the sequence number of the packet being acknowledged by a received ACK message (this is done by including the 0 or 1 argument in isACK() in the sender FSM).
+
+Reliable Data Transfer over a Lossy Channel with Bit Errors: rdt3.0 Suppose now that in addition to corrupting bits, the underlying channel can lose packets as well, a not-uncommon event in today’s computer networks (including the Internet). Two additional concerns must now be addressed by the protocol: how to detect packet loss and what to do when packet loss occurs. The use of checksumming, sequence numbers, ACK packets, and retransmissions, the techniques already developed in rdt2.2, will allow us to answer the latter concern. Handling the first concern will require adding a new protocol mechanism.
 
 ![](media/page-207-img-01.png)
 
@@ -3930,11 +3937,12 @@ rdt3.0 problems, you’ll be asked to provide the receiver FSM for . Figure 3.16
 
 Figure 3.15 rdt3.0 sender
 
-Figure 3.16 rdt3.0 Operation of , the alternating-bit protocol shows how the protocol operates with no lost or delayed packets and how it handles lost data packets. In Figure 3.16, time moves forward from the top of the diagram toward the bottom of the diagram; note that a receive time for a packet is necessarily later than the send time for a packet as a result of transmission and propagation delays. In Figures 3.16(b)–(d), the send-side brackets indicate the times at which a timer is set and later times out. Several of the more subtle aspects of this protocol are explored in the exercises at the end of this chapter. Because packet sequence numbers alternate between 0 and 1, pro-
-
+![](media/page-209-img-01.png)
 ![](media/page-209-img-01.png)
 
-rdt3.0 tocol is sometimes known as the alternating-bit protocol. We have now assembled the key elements of a data transfer protocol. Checksums, sequence numbers, timers, and positive and negative acknowledgment packets each play a crucial and necessary role in the operation of the protocol. We now have a working reliable data transfer protocol!
+Figure 3.16 Operation of rdt3.0, the alternating-bit protocol
+
+shows how the protocol operates with no lost or delayed packets and how it handles lost data packets. In Figure 3.16, time moves forward from the top of the diagram toward the bottom of the diagram; note that a receive time for a packet is necessarily later than the send time for a packet as a result of transmission and propagation delays. In Figures 3.16(b)–(d), the send-side brackets indicate the times at which a timer is set and later times out. Several of the more subtle aspects of this protocol are explored in the exercises at the end of this chapter. Because packet sequence numbers alternate between 0 and 1, protocol rdt3.0 is sometimes known as the alternating-bit protocol. We have now assembled the key elements of a data transfer protocol. Checksums, sequence numbers, timers, and positive and negative acknowledgment packets each play a crucial and necessary role in the operation of the protocol. We now have a working reliable data transfer protocol!
 
 ##### 3.4.2 Pipelined Reliable Data Transfer Protocols
 
@@ -3968,13 +3976,13 @@ point, the sender can now transmit the next message. Thus, in 30.008 msec, the s
 
 ![](media/page-210-img-01.png)
 
-Figure 3.17 Stop- and-wait versus pipelined protocol That is, the sender was busy only 2.7 hundredths of one percent of the time! Viewed another way, the sender was able to send only 1,000 bytes in
+Figure 3.17 Stop-and-wait versus pipelined protocol
 
 ![](media/page-211-img-01.png)
 
 Figure 3.18 Stop-and-wait and pipelined sending
 
-30.008 milliseconds, an effective throughput of only 267 kbps—even though a 1 Gbps link was available! Imagine the unhappy network manager who just paid a fortune for a gigabit capacity link but manages to get a throughput of only 267 kilobits per second! This is a graphic example of how network protocols can limit the capabilities provided by the underlying network hardware.
+That is, the sender was busy only 2.7 hundredths of one percent of the time! Viewed another way, the sender was able to send only 1,000 bytes in 30.008 milliseconds, an effective throughput of only 267 kbps—even though a 1 Gbps link was available! Imagine the unhappy network manager who just paid a fortune for a gigabit capacity link but manages to get a throughput of only 267 kilobits per second! This is a graphic example of how network protocols can limit the capabilities provided by the underlying network hardware.
 
 Also, we have neglected lower-layer protocol-processing times at the sender and receiver, as well as the processing and queuing delays that would occur at any intermediate routers between the sender and receiver. Including these effects would serve only to further increase the delay and further accentuate the poor performance.
 
@@ -4096,7 +4104,7 @@ Figure 3.22 Go-Back-N in operation
 
 ##### 3.4.4 Selective Repeat (SR)
 
-The GBN protocol allows the sender to potentially “fill the pipeline” in Figure 3.17 with packets, thus avoiding the channel utilization problems we noted with stop-and-wait protocols. There are, however, scenarios in which GBN itself suffers from performance problems. In particular, when the window size and bandwidth-delay product are both large, many packets can be in the pipeline. A single packet error can thus cause GBN to retransmit a large number of packets, many unnecessarily if they have been correctly received but are outof-order and thus buffered at the receiver. As the probability of channel errors increases, the pipeline can become filled with these unnecessary retransmissions. Imagine, in our message-dictation scenario, that if every time a word was garbled, the surrounding 1,000 words (for example, a window size of 1,000 words) had to be repeated. The dictation would be slowed by all of the reiterated words.
+The GBN protocol allows the sender to potentially “fill the pipeline” in Figure 3.17 with packets, thus avoiding the channel utilization problems we noted with stop-and-wait protocols. There are, however, scenarios in which GBN itself suffers from performance problems. In particular, when the window size and bandwidth-delay product are both large, many packets can be in the pipeline. A single packet error can thus cause GBN to retransmit a large number of packets, many unnecessarily if they have been correctly received but are out-of-order and thus buffered at the receiver. As the probability of channel errors increases, the pipeline can become filled with these unnecessary retransmissions. Imagine, in our message-dictation scenario, that if every time a word was garbled, the surrounding 1,000 words (for example, a window size of 1,000 words) had to be repeated. The dictation would be slowed by all of the reiterated words.
 
 As the name suggests, selective-repeat protocols avoid unnecessary retransmissions by having the sender retransmit only those packets that were received in error (that is, were lost or corrupted) at the receiver. This individual, as-needed, retransmission will require that the receiver individually acknowledge correctly received packets. A window size of N  will again be
 
@@ -4166,11 +4174,13 @@ The TCP/IP protocol, which is the bread and butter of today’s Internet, was de
 
 In 2004, Cerf and Kahn received the ACM’s Turing Award, considered the “Nobel Prize of Computing” for “pioneering work on internetworking, including the design and implementation of the Internet’s basic communications protocols, TCP/IP, and for inspired leadership in networking.” Once a TCP connection is established, the two application processes can send data to each other. Let’s consider the sending of data from the client process to the server process. The client process passes a stream of data through the socket (the door of the process), as described in Section 2.6. Once the data passes through the door, the data is in the hands of TCP running in the client.
 
-As shown in Figure 3.27, TCP directs this data to the connection’s send buffer, which is one of the buffers that is set aside during the initial three-way handshake. From time to time, TCP will grab chunks of data from the send buffer and pass the data to the network layer. Interestingly, the original TCP specification [RFC 793] is very laid back about specifying when TCP should actually send buffered data, stating that TCP should “send that data in segments at its
+As shown in Figure 3.27, TCP directs this data to the connection’s send buffer, which is one of the buffers that is set aside during the initial three-way handshake. From time to time, TCP will grab chunks of data from the send buffer and pass the data to the network layer. Interestingly, the original TCP specification [RFC 793] is very laid back about specifying when TCP should actually send buffered data, stating that TCP should “send that data in segments at its own convenience.”
 
 ![](media/page-221-img-01.png)
 
-Figure 3.27 TCP send and receive buffers own convenience.” The maximum amount of data that can be grabbed and placed in a segment is limited by the maximum segment size (MSS). The MSS is typically set by first determining the length of the largest link-layer frame that can be sent by the local sending host (the so-called maximum transmission unit, MTU), and then setting the MSS to ensure that a TCP segment (when encapsulated in an IP datagram) plus the TCP/IP header length (typically 40 bytes) will fit into a single link-layer frame. Both Ethernet and PPP link-layer protocols have an MTU of 1,500 bytes. Thus, a typical value of MSS is 1460 bytes. Approaches have also been proposed for discovering the path MTU—the largest link-layer frame that can be sent on all links from source to destination [RFC 1191]—and setting the MSS based on the path MTU value.
+Figure 3.27 TCP send and receive buffers
+
+The maximum amount of data that can be grabbed and placed in a segment is limited by the maximum segment size (MSS). The MSS is typically set by first determining the length of the largest link-layer frame that can be sent by the local sending host (the so-called maximum transmission unit, MTU), and then setting the MSS to ensure that a TCP segment (when encapsulated in an IP datagram) plus the TCP/IP header length (typically 40 bytes) will fit into a single link-layer frame. Both Ethernet and PPP link-layer protocols have an MTU of 1,500 bytes. Thus, a typical value of MSS is 1460 bytes. Approaches have also been proposed for discovering the path MTU—the largest link-layer frame that can be sent on all links from source to destination [RFC 1191]—and setting the MSS based on the path MTU value.
 
 Note that the MSS is the maximum amount of application-layer data in the segment, not the maximum size of the TCP segment including headers. (This terminology is confusing, but we have to live with it, as it is well entrenched.) TCP pairs each chunk of client data with a TCP header, thereby forming TCP segments. The segments are passed down to the network layer, where they are separately encapsulated within network-layer IP datagrams. The IP datagrams are then sent into the network.
 
@@ -4514,11 +4524,11 @@ The SYN bit is set to zero, since the connection is established. This third stag
 
 Once these three steps have been completed, the client and server hosts can send segments containing data to each other. In each of these future segments, the SYN bit will be set to zero. Note that in order to establish the connection, three packets are sent between the two hosts, as illustrated in Figure 3.37. For this reason, this connection-establishment procedure is often referred to as a three-way handshake. Several aspects of the TCP three-way handshake are explored in the homework problems (Why are initial sequence numbers needed? Why is a three-way handshake, as opposed to a two-way handshake, needed?). It’s interesting to note that a rock climber and a belayer (who is stationed below the rock climber and whose job it is to handle the climber’s safety rope) use a three-way-handshake communication protocol that is identical to TCP’s to ensure that both sides are ready before the climber begins ascent.
 
-Given that the TCP client that initiates a three-way handshake needs to wait to receive a SYNACK message from the server before it knows that the server has accepted the connection and that the connection’s state has been initialized, it would seem that a one RTT delay is inherent in connection setup for
-
 ![](media/page-238-img-01.png)
 
-Figure 3.37 TCP three-way handshake: segment exchange any such handshaking protocol (e.g., the TLS protocol that we will study in Chapter 8, or the QUIC protocol that we studied in Chapter 2 and will revisit later in this chapter). However, if the client and server have previously communicated, it’s possible to use a technique known as “fast open” to reduce the handshaking time to zero! That is, a client can immediately send data to a connection-oriented server with which it has previously communicated without undertaking the first two steps of a traditional 3-way handshake.
+Figure 3.37 TCP three-way handshake: segment exchange
+
+Given that the TCP client that initiates a three-way handshake needs to wait to receive a SYNACK message from the server before it knows that the server has accepted the connection and that the connection’s state has been initialized, it would seem that a one RTT delay is inherent in connection setup for any such handshaking protocol (e.g., the TLS protocol that we will study in Chapter 8, or the QUIC protocol that we studied in Chapter 2 and will revisit later in this chapter). However, if the client and server have previously communicated, it’s possible to use a technique known as “fast open” to reduce the handshaking time to zero! That is, a client can immediately send data to a connection-oriented server with which it has previously communicated without undertaking the first two steps of a traditional 3-way handshake.
 
 The key idea behind fast open, also sometimes referred to as 0 RTT hand-
 
@@ -4536,11 +4546,13 @@ This causes TCP in the client to send a SYN segment to TCP in the server. After 
 
 Figure 3.38 Closing a TCP connection
 
-Suppose that the client application decides it wants to close the connection. (Note that the server could also choose to close the connection.) This causes the client TCP to send a TCP segment with the FIN bit set to 1 and to enter the FIN_WAIT_1 state. While in the FIN_WAIT_1 state, the client TCP waits for a TCP segment from the server with an acknowledgment. When it
+Suppose that the client application decides it wants to close the connection. (Note that the server could also choose to close the connection.) This causes the client TCP to send a TCP segment with the FIN bit set to 1 and to enter the FIN_WAIT_1 state. While in the FIN_WAIT_1 state, the client TCP waits for a TCP segment from the server with an acknowledgment.
 
 ![](media/page-240-img-02.png)
 
-Figure 3.39 A typical sequence of TCP states visited by a client TCP receives this segment, the client TCP enters the FIN_WAIT_2 state. While in the FIN_WAIT_2 state, the client waits for another segment from the server with the FIN bit set to 1; after receiving this segment, the client TCP acknowledges the server’s segment and enters the TIME_WAIT state. The TIME_WAIT state lets the TCP client resend the final acknowledgment in case the ACK is lost. The time spent in the TIME_WAIT state is implementation-dependent, but typical values are 30 seconds, 1 minute, and 2 minutes. After the wait, the connection formally closes and all resources on the client side (including port numbers) are released.
+Figure 3.39 A typical sequence of TCP states visited by a client TCP
+
+When TCP receives this segment, the client TCP enters the FIN_WAIT_2 state. While in the FIN_WAIT_2 state, the client waits for another segment from the server with the FIN bit set to 1; after receiving this segment, the client TCP acknowledges the server’s segment and enters the TIME_WAIT state. The TIME_WAIT state lets the TCP client resend the final acknowledgment in case the ACK is lost. The time spent in the TIME_WAIT state is implementation-dependent, but typical values are 30 seconds, 1 minute, and 2 minutes. After the wait, the connection formally closes and all resources on the client side (including port numbers) are released.
 
 Figure 3.40 illustrates the series of states typically visited by the serverside TCP, assuming the client begins connection teardown. The transitions are self-explanatory. In these two state-transition diagrams, we have only shown how a TCP connection is normally established and shut down. We have not described what happens in certain pathological scenarios, for example, when both sides of a connection want to initiate or shut down at the same time. If you are interested in learning about this and other advanced issues concerning TCP, you are encouraged to see Stevens’ comprehensive book [Stevens 1994].
 
@@ -4626,23 +4638,23 @@ left), the average delay becomes larger and larger. When the sending rate exceed
 
 standpoint, it is far from ideal from a delay standpoint. Even in this (extremely) idealized scenario, we’ve already found one cost of a congested network—large queuing delays are experienced as the packet-arrival rate nears the link capacity.
 
-Scenario 2: Two Senders and a Router with Finite Buffers Let’s now slightly modify scenario 1 in the following two ways (see  Figure 3.43).
+Scenario 2: Two Senders and a Router with Finite Buffers Let’s now slightly modify scenario 1 in the following two ways (see Figure 3.43).
 
 First, the amount of router buffering is assumed to be finite. A consequence of this real-world assumption is that packets will be dropped when arriving to an already-full buffer. Second, we assume that each connection is reliable. If a packet containing a transport-level segment is dropped at the router, the sender will eventually retransmit it. Because packets can be retransmitted, we must now be more careful with our use of the term sending rate. Specifically, let us again denote the rate at which the application sends original data into the socket by λ bytes sec . The rate at which the transport layer sends in segments (containing original data and retransmitted data) into the network will be denoted λ′ bytes sec . λ′ is sometimes referred to as the offered load in in to the network.
 
-Figure 3.43 Scenario 2: Two hosts (with retransmissions) and a router with finite
-
-buffers
-
 ![](media/page-245-img-01.png)
 
-Figure 3.44 Scenario 2 performance with finite buffers R 2 under this R 2. According to Figure 3.44(b), at this value of R 3. Thus, out of the
+Figure 3.43 Scenario 2: Two hosts (with retransmissions) and a router with finite buffers
 
 ![](media/page-246-img-01.png)
 
+Figure 3.44 Scenario 2 performance with finite buffers
+
 The performance realized under scenario 2 will now depend strongly on how retransmission is performed. First, consider the unrealistic case that Host A is able to somehow (magically!) determine whether or not a buffer is free in the router and thus sends a packet only when a buffer is free.
 
-In this case, no loss would occur, λ would be equal to λ′ , and the throughput of the connec- in in tion would be equal to λ . This case is shown in Figure 3.44(a). From a in throughput standpoint, performance is ideal—everything that is sent is received. Note that the average host sending rate cannot exceed scenario, since packet loss is assumed never to occur. Consider next the slightly more realistic case that the sender retransmits only when a packet is known for certain to be lost. (Again, this assumption is a bit of a stretch. However, it is possible that the sending host might set its timeout large enough to be virtually assured that a packet that has not been acknowledged has been lost.) In this case, the performance might look some- thing like that shown in Figure 3.44(b). To appreciate what is happening here, consider the case that the offered load, λ′ (the rate of original data transmission in plus retransmissions), equals the offered load: the rate at which data are delivered to the receiver application is 0.5 units of data transmitted. On average, 0.333 bytes/sec are original data and 0.166 bytes/sec are retransmitted data. We see here another cost of a congested network—the sender must perform retransmissions in order to compensate for dropped (lost) packets due to buffer overflow.
+In this case, no loss would occur, λin would be equal to λ′in, and the throughput of the connection would be equal to λin. This case is shown in Figure 3.44(a). From a throughput standpoint, performance is ideal—everything that is sent is received. Note that the average host sending rate cannot exceed R/2 under this scenario, since packet loss is assumed never to occur.
+
+Consider next the slightly more realistic case that the sender retransmits only when a packet is known for certain to be lost. (Again, this assumption is a bit of a stretch. However, it is possible that the sending host might set its timeout large enough to be virtually assured that a packet that has not been acknowledged has been lost.) In this case, the performance might look something like that shown in Figure 3.44(b). To appreciate what is happening here, consider the case that the offered load, λ′in (the rate of original data transmission plus retransmissions), equals R/2. According to Figure 3.44(b), at this value of the offered load, the rate at which data are delivered to the receiver application is R/3. Thus, out of the 0.5R units of data transmitted, 0.333R bytes/sec (on average) are original data and 0.166R bytes/sec (on average) are retransmitted data. We see here another cost of a congested network—the sender must perform retransmissions in order to compensate for dropped (lost) packets due to buffer overflow.
 
 Finally, let us consider the case that the sender may time out prematurely and retransmit a packet that has been delayed in the queue but not yet lost. In this case, both the original data packet and the retransmission may reach the receiver. Of course, the receiver needs but one copy of this packet and will discard the retransmission. In this case, the work done by the router in forwarding the retransmitted copy of the original packet was wasted, as the receiver will have already received the original copy of this packet. The router would have better used the link transmission capacity to send a different packet instead.
 
@@ -5030,13 +5042,13 @@ Is TCP’s AIMD algorithm fair, particularly given that different TCP connection
 
 Let’s consider the simple case of two TCP connections sharing a single link with transmission rate R, as shown in Figure 3.55. Assume that the two connections have the same MSS and RTT (so that if they have the same congestion window size, then they have the same throughput), that they have a large amount of data to send, and that no other TCP connections or UDP datagrams traverse this shared link. Also, ignore the slow-start phase of TCP and assume the TCP connections are operating in CA mode (AIMD) at all times.
 
-Figure 3.56 plots the throughput realized by the two TCP connections. If TCP is to share the link capacity equally between the two connections, then the realized throughput should fall along the 45-degree arrow (equal shares of the
+Figure 3.56 plots the throughput realized by the two TCP connections.
 
 ![](media/page-264-img-02.png)
 
-Figure 3.56 Throughput realized by TCP connections 1 and 2 link’s capacity.) emanating from the origin. Ideally, the sum of the two throughputs should equal R. (Certainly, each connection receiving an equal, but zero,
+Figure 3.56 Throughput realized by TCP connections 1 and 2
 
-share of the link capacity is not a desirable situation!) So the goal should be to have the achieved throughputs fall somewhere near the intersection of the equal capacity share line and the full utilization line in Figure 3.56.
+If TCP is to share the link capacity equally between the two connections, then the realized throughput should fall along the 45-degree arrow (equal shares of the link’s capacity) emanating from the origin. Ideally, the sum of the two throughputs should equal R. (Certainly, each connection receiving an equal, but zero, share of the link capacity is not a desirable situation!) So the goal should be to have the achieved throughputs fall somewhere near the intersection of the equal capacity share line and the full utilization line in Figure 3.56.
 
 Suppose that the TCP window sizes are such that at a given point in time, connections 1 and 2 realize throughputs indicated by point A in Figure 3.56.
 
@@ -5944,11 +5956,13 @@ Input Queueing But what happens if the switch fabric is not fast enough (relativ
 
 In this case, packet queuing can also occur at the input ports, as packets must join input port queues to wait their turn to be transferred through the switching fabric to the output port. To illustrate an important consequence of this queuing, consider a crossbar switching fabric and suppose that (1) all link speeds are identical, (2) that one packet can be transferred from any one input port to a given output port in the same amount of time it takes for a packet to be received on an input link, and (3) packets are moved from a given input queue to their desired output queue in an FCFS manner. Multiple packets can be transferred in parallel, as long as their output ports are different. However, if two packets at the front of two input queues are destined for the same output queue, then one of the packets will be blocked and must wait at the input queue—the switching fabric can transfer only one packet to a given output port at a time.
 
-Figure 4.8 shows an example in which two packets at the front of their input queues are destined for the same upper-right output port. Suppose that the switch fabric chooses to transfer the packet from the front of the upper-left queue. In this case, the first packet in the lower-left queue must wait. But not only must this first packet wait, so too must the second packet that is queued behind that packet in the lower-left queue, even though there is no contention for the middle-right output port (the destination for the second packet in the lower queue). This phenomenon is known as head-of-the-line (HOL) blocking in an input-queued switch—a queued packet in an input queue must wait for
+Figure 4.8 shows an example in which two packets at the front of their input queues are destined for the same upper-right output port. Suppose that the switch fabric chooses to transfer the packet from the front of the upper-left queue. In this case, the first packet in the lower-left queue must wait. But not only must this first packet wait, so too must the second packet that is queued behind that packet in the lower-left queue, even though there is no contention for the middle-right output port (the destination for the second packet in the lower queue). This phenomenon is known as head-of-the-line (HOL) blocking in an input-queued switch—a queued packet in an input queue must wait for transfer through the fabric (even though its output port is free) because it is blocked by another packet at the head of the line.
 
 ![](media/page-303-img-01.png)
 
-Figure 4.8 HOL blocking at and input-queued switch transfer through the fabric (even though its output port is free) because it is blocked by another packet at the head of the line. [Karol 1987] shows that due to HOL blocking, the input queue will grow to unbounded length (informally, this is equivalent to saying that significant packet loss will occur) under certain assumptions as soon as the packet arrival rate on the input links reaches only 58 percent of their capacity. A number of solutions to HOL blocking are discussed in [McKeown 1997].
+Figure 4.8 HOL blocking at an input-queued switch
+
+[Karol 1987] shows that due to HOL blocking, the input queue will grow to unbounded length (informally, this is equivalent to saying that significant packet loss will occur) under certain assumptions as soon as the packet arrival rate on the input links reaches only 58 percent of their capacity. A number of solutions to HOL blocking are discussed in [McKeown 1997].
 
 Output Queueing Let’s next consider whether queueing can occur at a switch’s output ports.
 
@@ -6014,7 +6028,9 @@ segment is released by the gamer and is queued, as the 22nd packet is being tran
 
 As a result, the gamer is unhappy with the delay, and the parent (who even knows wireshark!) is confused because he or she doesn’t understand why delays are persistent and excessively long, even when there is no other traffic on the home network.
 
-This scenario above of long delay due to persistent buffering is known as bufferbloat and illustrates that not only is throughput important, but also minimal delay is important as well [Kleinrock 2018], and that the interaction Figure 4.10 Bufferbloat: persistent queues
+This scenario above of long delay due to persistent buffering is known as bufferbloat and illustrates that not only is throughput important, but also minimal delay is important as well [Kleinrock 2018], and that the interaction
+
+Figure 4.10 Bufferbloat: persistent queues
 
 ![](media/page-306-img-01.png)
 
@@ -6038,37 +6054,55 @@ queueing abstraction
 
 ![](media/page-308-img-01.png)
 
-from the queue) until the arrival of packet 5. Priority Queuing Under priority queuing, packets arriving at the output link are classified into priority classes upon arrival at the queue, as shown in Figure 4.13. In practice, a network operator may configure a queue so that packets carrying network management information (for example, as indicated by the source or destina- tion TCP/UDP port number) receive priority over user traffic; additionally, real-time voice-over-IP packets might receive priority over non-real-time traf- fic such e-mail packets. Each priority class typically has its own queue. When choosing a packet to transmit, the priority queuing discipline will transmit a packet from the highest priority class that has a nonempty queue (that is, has packets waiting for transmission). The choice among packets in the same pri- ority class is typically done in a FIFO manner. Figure 4.14 illustrates the operation of a priority queue with two priority classes. Packets 1, 3, and 4 belong to the high-priority class, and packets 2 and 5 belong to the low-priority class. Packet 1 arrives and, finding the link idle, begins transmission. During the transmission of packet 1, packets 2 and 3 arrive and are queued in the low- and high-priority queues, respectively. After
+Figure 4.12 The FIFO queue in operation
 
-Figure 4.12 The FIFO queue in operation below the lower timeline. The time that a packet spends in service (being transmitted) is indicated by the horizontal length of the rectangle between the two timelines. In our examples here, let’s assume that each packet takes three units of time to be transmitted. Under the FIFO discipline, packets leave in the same order in which they arrived. Note that after the departure of packet 4, the link remains idle (since packets 1 through 4 have been transmitted and removed
+below the lower timeline. The time that a packet spends in service (being transmitted) is indicated by the horizontal length of the rectangle between the two timelines. In our examples here, let's assume that each packet takes three units of time to be transmitted. Under the FIFO discipline, packets leave in the same order in which they arrived. Note that after the departure of packet 4, the link remains idle (since packets 1 through 4 have been transmitted and removed from the queue) until the arrival of packet 5.
 
-![](media/page-308-img-02.png)
+Priority Queuing
+
+Under priority queuing, packets arriving at the output link are classified into priority classes upon arrival at the queue, as shown in Figure 4.13. In practice, a network operator may configure a queue so that packets carrying network management information (for example, as indicated by the source or destination TCP/UDP port number) receive priority over user traffic; additionally, real-time voice-over-IP packets might receive priority over non-real-time traffic such e-mail packets. Each priority class typically has its own queue. When choosing a packet to transmit, the priority queuing discipline will transmit a packet from the highest priority class that has a nonempty queue (that is, has packets waiting for transmission). The choice among packets in the same priority class is typically done in a FIFO manner. Figure 4.14 illustrates the operation of a priority queue with two priority classes. Packets 1, 3, and 4 belong to the high-priority class, and packets 2 and 5 belong to the low-priority class. Packet 1 arrives and, finding the link idle, begins transmission. During the transmission of packet 1, packets 2 and 3 arrive and are queued in the low- and high-priority queues, respectively. After
 
 Figure 4.13 The priority queueing model
 
-Figure 4.14 The priority queue in operation the transmission of packet 1, packet 3 (a high-priority packet) is selected for transmission over packet 2 (which, even though it arrived earlier, is a low-priority packet). At the end of the transmission of packet 3, packet 2 then begins transmission. Packet 4 (a high-priority packet) arrives during the transmission of packet 2 (a low-priority packet). Under a non-preemptive priority queuing discipline, the transmission of a packet is not interrupted once it has begun. In this case, packet 4 queues for transmission and begins being transmitted after Net Neutrality We’ve seen that packet scheduling mechanisms (e.g., priority traffic scheduling disciplines such a strict priority, and WFQ) can be used to provide different levels of service to different “classes” of traffic. The definition of what precisely constitutes a “class” of traffic is up to an ISP to decide, but could be potentially based on any set of fields in the IP datagram header. For example, the port field in the IP datagram header could be used to classify datagrams according to the “well-know service” associated with that port: SNMP network management datagram (port 161 might be assigned ) to a higher priority class than an IMAP e-mail protocol (ports 143, or 993 datagram ) and therefore receive better service. An ISP could also potentially use a datagram’s source IP address to provide priority to datagrams being sent by certain companies (who have presumably paid the ISP for this privilege) over datagrams being sent from other companies (who have not paid); an ISP could even block traffic with a source IP address in a given company, or country. There are many mechanisms that would allow an ISP to provide different levels of service to different classes of traffic. The real question is what policies and laws determine what an ISP can actually do. Of course, these laws will vary by country; see [Smithsonian 2017] for a brief survey. Here, we’ll briefly consider US policy on what has come to be known as “net neutrality.” The term “net neutrality” doesn’t have a precise decision, but the March 2015 Order on Protecting and Promoting an Open Internet [FCC 2015] by the US Federal Communications Commission provides three “clear, bright line” rules that are now often associated with net neutrality:
+Figure 4.14 The priority queue in operation
+
+the transmission of packet 1, packet 3 (a high-priority packet) is selected for transmission over packet 2 (which, even though it arrived earlier, is a low-priority packet). At the end of the transmission of packet 3, packet 2 then begins transmission. Packet 4 (a high-priority packet) arrives during the transmission of packet 2 (a low-priority packet). Under a non-preemptive priority queuing discipline, the transmission of a packet is not interrupted once it has begun. In this case, packet 4 queues for transmission and begins being transmitted after the transmission of packet 2 is completed.
+
+![](media/page-308-img-02.png)
+
+Principles in Practice
+
+Net Neutrality
+
+We’ve seen that packet scheduling mechanisms (e.g., priority traffic scheduling disciplines such as strict priority, and WFQ) can be used to provide different levels of service to different “classes” of traffic. The definition of what precisely constitutes a “class” of traffic is up to an ISP to decide, but could be potentially based on any set of fields in the IP datagram header. For example, the port field in the IP datagram header could be used to classify datagrams according to the “well-know service” associated with that port: SNMP network management datagram (port 161) might be assigned to a higher priority class than an IMAP e-mail protocol (ports 143, or 993) datagram and therefore receive better service. An ISP could also potentially use a datagram’s source IP address to provide priority to datagrams being sent by certain companies (who have presumably paid the ISP for this privilege) over datagrams being sent from other companies (who have not paid); an ISP could even block traffic with a source IP address in a given company, or country. There are many mechanisms that would allow an ISP to provide different levels of service to different classes of traffic. The real question is what policies and laws determine what an ISP can actually do. Of course, these laws will vary by country; see [Smithsonian 2017] for a brief survey. Here, we’ll briefly consider US policy on what has come to be known as “net neutrality.” The term “net neutrality” doesn’t have a precise decision, but the March 2015 Order on Protecting and Promoting an Open Internet [FCC 2015] by the US Federal Communications Commission provides three “clear, bright line” rules that are now often associated with net neutrality:
 
 ![](media/page-309-img-01.png)
 
-the transmission of packet 2 is completed. Principles in Practice
-
 • “No Blocking. . . . A person engaged in the provision of broadband Internet access service, . . . shall not block lawful content, applications, services, or non-harmful devices, subject to reasonable network management.”
 
-• “No Throttling. . . . A person engaged in the provision of broadband Internet access service, . . . shall not impair or degrade lawful Internet traffic on the basis of Internet content, application, or service, or use of a non-harmful device, subject to reasonable network management.” • “No Paid Prioritization. . . . A person engaged in the provision of broadband Internet access service, . . . shall not engage in paid prioritization. “Paid prioritization” refers to the management of a broadband provider’s network to directly or indirectly favor some traffic over other traffic, including through use of techniques such as traffic shaping, prioritization, resource reservation, or other forms of preferential traffic management, . . .” Quite interestingly, before the Order, ISP behaviors violating the first two of these rules had been observed [Faulhaber 2012]. In 2005, an ISP in North Carolina agreed to stop its practice of blocking its customers from using Vonage, a voice-over-IP service that competed with its own telephone service. In 2007, Comcast was judged to be interfering with BitTorrent P2P traffic by internally creating and sending TCP RST packets to BitTorrent senders and receivers, which caused them to close their BitTorrent connection [FCC 2008].
+• “No Throttling. . . . A person engaged in the provision of broadband Internet access service, . . . shall not impair or degrade lawful Internet traffic on the basis of Internet content, application, or service, or use of a non-harmful device, subject to reasonable network management.”
+
+• “No Paid Prioritization. . . . A person engaged in the provision of broadband Internet access service, . . . shall not engage in paid prioritization. “Paid prioritization” refers to the management of a broadband provider’s network to directly or indirectly favor some traffic over other traffic, including through use of techniques such as traffic shaping, prioritization, resource reservation, or other forms of preferential traffic management, . . .”
+
+Quite interestingly, before the Order, ISP behaviors violating the first two of these rules had been observed [Faulhaber 2012]. In 2005, an ISP in North Carolina agreed to stop its practice of blocking its customers from using Vonage, a voice-over-IP service that competed with its own telephone service. In 2007, Comcast was judged to be interfering with BitTorrent P2P traffic by internally creating and sending TCP RST packets to BitTorrent senders and receivers, which caused them to close their BitTorrent connection [FCC 2008].
 
 Both sides of the net neutrality debate have been argued strenuously, mostly focused on the extent to which net neutrality provides benefits to customers, while at the same time promoting innovation. See [Peha 2006, Faulhaber 2012, Economides 2017, Madhyastha 2017].
 
 The 2015 FCC Order on Protecting and Promoting an Open Internet, which banned ISPs from blocking, throttling, or providing paid prioritizing, was superseded by the 2017 FCC Restoring Internet Freedom Order, [FCC 2017] which rolled back these prohibitions and focused instead on ISP transparency. In 2024, the FCC reinstated much of the 2015 FCC Order (effectively rolling back the 2017 rollback) and also re-re-classified broadband Internet access service (BIAS) as “telecommunications service” rather than an “information service” [FCC 2024]. This seemingly innocuous reclassification, however, means that broadband Internet access service would be subject to significantly more US government regulation. With so much interest and so many changes, it’s probably safe to say we aren’t close to having seen the final chapter written on net neutrality in the United States, or elsewhere.
 
-Round Robin and Weighted Fair Queuing (WFQ) Under the round robin queuing discipline, packets are sorted into classes as with priority queuing. However, rather than there being a strict service priority among classes, a round robin scheduler alternates service among the classes.
+Round Robin and Weighted Fair Queuing (WFQ)
+
+Under the round robin queuing discipline, packets are sorted into classes as with priority queuing. However, rather than there being a strict service priority among classes, a round robin scheduler alternates service among the classes.
 
 In the simplest form of round robin scheduling, a class 1 packet is transmitted, followed by a class 2 packet, followed by a class 1 packet, followed by a class 2 packet, and so on. A so-called work-conserving queuing discipline will never allow the link to remain idle whenever there are packets (of any class) queued for transmission. A work-conserving round robin discipline that looks for a packet of a given class but finds none will immediately check the next class in the round robin sequence.
 
-Figure 4.15 illustrates the operation of a two-class round robin queue. In this example, packets 1, 2, and 4 belong to class 1, and packets 3 and 5 belong to the second class. Packet 1 begins transmission immediately upon arrival at the output queue. Packets 2 and 3 arrive during the transmission of packet 1 and thus queue for transmission. After the transmission of packet 1, the link queued packet; it is thus transmitted immediately after packet 2. A generalized form of round robin queuing that has been widely imple- mented in routers is the so-called weighted fair queuing (WFQ) discipline [Demers 1990; Parekh 1993. WFQ is illustrated in Figure 4.16. Here, arriving packets are classified and queued in the appropriate per-class waiting area. As in round robin scheduling, a WFQ scheduler will serve classes in a circular manner—first serving class 1, then serving class 2, then serving class 3, and then (assuming there are three classes) repeating the service pattern. WFQ is also a work-conserving queuing discipline and thus will immediately move on to the next class in the service sequence when it finds an empty class queue. WFQ differs from round robin in that each class may receive a differential amount of service in any interval of time. Specifically, each class, i, is assigned a weight, w . Under WFQ, during any interval of time during which there are i class i packets to send, class i will then be guaranteed to receive a fraction of service equal to w Σ w , where the sum in the denominator is taken over all i j classes that also have packets queued for transmission. In the worst case, even if all classes have queued packets, class i will still be guaranteed to receive a fraction w Σ w of the bandwidth, where in this worst case the sum in the i j denominator is over all classes. Thus, for a link with transmission rate R, class i  will always achieve a throughput of at least R w i Σ w . Our description of i j WFQ has been idealized, as we have not considered the fact that packets are dis- crete and a packet’s transmission will not be interrupted to begin transmission of another packet; [Demers 1990; Parekh 1993] discuss this packetization issue.
+Figure 4.15 illustrates the operation of a two-class round robin queue. In this example, packets 1, 2, and 4 belong to class 1, and packets 3 and 5 belong to the second class. Packet 1 begins transmission immediately upon arrival at the output queue. Packets 2 and 3 arrive during the transmission of packet 1 and thus queue for transmission. After the transmission of packet 1, the link
 
 ![](media/page-311-img-01.png)
 
-Figure 4.15 The two-class robin queue in operation scheduler looks for a class 2 packet and thus transmits packet 3. After the transmission of packet 3, the scheduler looks for a class 1 packet and thus transmits packet 2. After the transmission of packet 2, packet 4 is the only
+Figure 4.15 The two-class robin queue in operation
+
+The scheduler looks for a class 2 packet and thus transmits packet 3. After the transmission of packet 3, the scheduler looks for a class 1 packet and thus transmits packet 2. After the transmission of packet 2, packet 4 is the only
 
 ![](media/page-311-img-02.png)
 
@@ -6106,7 +6140,7 @@ policy issue determined and configured by the network administrator for that rou
 
 This field is decremented by one each time the datagram is processed by a router. If the TTL field reaches 0, a router must drop that datagram.
 
-• Protocol. This field is typically used only when an IP datagram reaches its final destination. The value of this field indicates the specific transportlayer protocol to which the data portion of this IP datagram should be passed. For example, a value of 6 indicates that the data portion is passed to TCP, while a value of 17 indicates that the data is passed to UDP. For a list of all possible values, see [IANA Protocol Numbers 2025]. Note that the protocol number in the IP datagram has a role that is analogous to the role of the port number field in the transport-layer segment. The protocol number is the glue that binds the network and transport layers together, whereas the port number is the glue that binds the transport and application layers together. We’ll see in Chapter 6 that the link-layer frame also has a special field that binds the link layer to the network layer.
+• Protocol. This field is typically used only when an IP datagram reaches its final destination. The value of this field indicates the specific transport-layer protocol to which the data portion of this IP datagram should be passed. For example, a value of 6 indicates that the data portion is passed to TCP, while a value of 17 indicates that the data is passed to UDP. For a list of all possible values, see [IANA Protocol Numbers 2025]. Note that the protocol number in the IP datagram has a role that is analogous to the role of the port number field in the transport-layer segment. The protocol number is the glue that binds the network and transport layers together, whereas the port number is the glue that binds the transport and application layers together. We’ll see in Chapter 6 that the link-layer frame also has a special field that binds the link layer to the network layer.
 
 • Header checksum. The header checksum aids a router in detecting bit errors in a received IP datagram. The header checksum is computed by treating each 2 bytes in the header as a number and summing these numbers using 1s complement arithmetic. As discussed in Section 3.3, the 1s complement of this sum, known as the Internet checksum, is stored in the checksum field. A router computes the header checksum for each received IP datagram and detects an error condition if the checksum carried in the datagram header does not equal the computed checksum. Routers typically discard datagrams for which an error has been detected. Note that the checksum must be recomputed and stored again at each router, since the TTL field, and possibly the options field as well, will change. An interesting discussion of fast algorithms for computing the Internet checksum is [RFC 1071]. A question often asked at this point is, why does TCP/IP perform error checking at both the transport and network layers? There are several reasons for this repetition. First, note that only the IP header is checksummed at the IP layer, while the TCP/UDP checksum is computed over the entire TCP/UDP segment. Second, TCP/UDP and IP do not necessarily both have to belong to the same protocol stack. TCP can, in principle, run over a different network-layer protocol (for example, ATM) [Black 1995]) and IP can carry data that will not be passed to TCP/UDP.
 
@@ -6116,7 +6150,7 @@ Often the source host determines the destination address via a DNS lookup, as di
 
 • Options. The options fields allow an IP header to be extended. Header options were meant to be used rarely—hence the decision to save overhead by not including the information in options fields in every datagram header. However, the mere existence of options does complicate matters— since datagram headers can be of variable length, one cannot determine a priori where the data field will start. Also, since some datagrams may require options processing and others may not, the amount of time needed to process an IP datagram at a router can vary greatly. These considerations become particularly important for IP processing in high-performance routers and hosts. For these reasons and others, IP options were not included in the IPv6 header, as discussed in Section 4.3.4.
 
-• Data (payload).Finally, we come to the last and most important field—the raison d’etre for the datagram in the first place!
+• Data (payload). Finally, we come to the last and most important field—the raison d’etre for the datagram in the first place!
 
 In most circumstances, the data field of the IP datagram contains the transport-layer segment (TCP or UDP) to be delivered to the destination. However, the data field can carry other types of data, such as ICMP messages (discussed in Section 5.6).
 
@@ -6169,7 +6203,9 @@ From the discussion above, it’s clear that an organization (such as a company 
 
 ![](media/page-317-img-01.jpg)
 
-Figure 4.20 Three routers interconnecting six subnets subnet addresses often have much in common. To understand why, let’s next turn our attention to how addressing is handled in the global Internet.
+Figure 4.20 Three routers interconnecting six subnets
+
+Subnet addresses often have much in common. To understand why, let’s next turn our attention to how addressing is handled in the global Internet.
 
 The Internet’s address assignment strategy is known as Classless Interdomain Routing (CIDR—pronounced cider) [RFC 4632].CIDR generalizes the notion of subnet addressing. As with subnet addressing, the 32-bit IP address is divided into two parts and again has the dotted-decimal form a b c d x . . . ,
 
@@ -6217,7 +6253,9 @@ Figure 4.21 Hierarchical addressing and route aggregation
 
 ![](media/page-319-img-01.png)
 
-Figure 4.22 ISPs-R-Us has a more specific route to Organization 1 We would be remiss if we did not mention yet another type of IP address, the IP broadcast address 255.255.255.255. When a host sends a datagram with destination address 255.255.255.255, the message is delivered to all hosts on the same subnet. Routers optionally forward the message into neighboring
+Figure 4.22 ISPs-R-Us has a more specific route to Organization 1
+
+We would be remiss if we did not mention yet another type of IP address, the IP broadcast address 255.255.255.255. When a host sends a datagram with destination address 255.255.255.255, the message is delivered to all hosts on the same subnet. Routers optionally forward the message into neighboring
 
 ![](media/page-320-img-01.png)
 
@@ -6935,11 +6973,11 @@ Let’s quickly set the context for our study of the network control plane by re
 
 In this chapter, we’ll study how those forwarding and flow tables are computed, maintained and installed. In our introduction to the network layer in Section 4.1, we learned that there are two possible approaches for doing so.
 
-• Per-router control. Figure 5.1 illustrates the case where a routing algorithm runs in each and every router; both a forwarding and a routing function are contained within each router. Each router has a routing component that communicates with the routing components in other routers to compute the values for its forwarding table. This per-router control approach has been used in the Internet for decades. The OSPF and BGP protocols
+• Per-router control. Figure 5.1 illustrates the case where a routing algorithm runs in each and every router; both a forwarding and a routing function are contained within each router. Each router has a routing component that communicates with the routing components in other routers to compute the values for its forwarding table. This per-router control approach has been used in the Internet for decades. The OSPF and BGP protocols that we’ll study in Sections 5.3 and 5.4 are based on this per-router approach to control.
 
 ![](media/page-354-img-01.png)
 
-Figure 5.1 Per-router control: Individual routing algorithm components interact in the control plane that we’ll study in Sections 5.3 and 5.4 are based on this per-router approach to control.
+Figure 5.1 Per-router control: Individual routing algorithm components interact in the control plane
 
 • Logically centralized control. Figure 5.2 illustrates the case in which a logically centralized controller computes and distributes the forwarding tables to be used by each and every router. As we saw in Sections 4.4 and 4.5, the generalized match-plus-action abstraction allows the router to perform traditional IP forwarding as well as a rich set of other functions (load sharing, firewalling, and NAT) that had been previously implemented in separate middleboxes.
 
@@ -7137,13 +7175,11 @@ Hence y’s least-cost path to w is now clockwise. Similarly, x determines that 
 
 Figure 5.5(b). When the LS algorithm is run next, nodes x, y, and z all detect a
 
-zero-cost path to w in the counterclockwise direction, and all route their traffic
+zero-cost path to w in the counterclockwise direction, and all route their traffic to the counterclockwise routes. The next time the LS algorithm is run, x, y, and z all then route their traffic to the clockwise routes.
 
 ![](media/page-361-img-01.png)
 
-Figure 5.5 Oscillations with congestion-sensitive routing to the counterclockwise routes. The next time the LS algorithm is run, x y ,  , and
-
-z all then route their traffic to the clockwise routes.
+Figure 5.5 Oscillations with congestion-sensitive routing
 
 What can be done to prevent such oscillations (which can occur in any algorithm, not just an LS algorithm, that uses a congestion or delay-based link metric)? One solution would be to mandate that link costs not depend on the amount of traffic carried—an unacceptable solution since one goal of routing is to avoid highly congested (for example, high-delay) links. Another solution is to ensure that not all routers run the LS algorithm at the same time.
 
@@ -7239,7 +7275,7 @@ The leftmost column of the figure displays three initial routing tables for each
 
 ![](media/page-365-img-01.png)
 
-Figure 5.6 Distance- vector (DV) algorithm in operation
+Figure 5.6 Distance-vector (DV) algorithm in operation
 
 respectively. Because at initialization node x has not received anything from
 
@@ -7531,11 +7567,13 @@ In addition to being the Internet’s inter-AS routing protocol, BGP is often us
 
 When a user wants to access this replicated content, it is desirable to point the user to the “nearest” server with the replicated content. BGP’s route-selection algorithm provides an easy and natural mechanism for doing so.
 
-To make our discussion concrete, let’s describe how a CDN might use IP-anycast. As shown in Figure 5.12, during the IP-anycast configuration stage, the CDN company assigns the same IP address to each of its servers, and uses standard BGP to advertise this IP address from each of the servers. When a BGP router receives multiple route advertisements for this IP address, it treats these advertisements as providing different paths to the same physical location (when, in fact, the advertisements are for different paths to different physical locations). When configuring its routing table, each router will locally use the BGP route-selection algorithm to pick the “best” (for example, closest, as
+To make our discussion concrete, let’s describe how a CDN might use IP-anycast. As shown in Figure 5.12, during the IP-anycast configuration stage, the CDN company assigns the same IP address to each of its servers, and uses standard BGP to advertise this IP address from each of the servers. When a BGP router receives multiple route advertisements for this IP address, it treats these advertisements as providing different paths to the same physical location (when, in fact, the advertisements are for different paths to different physical locations). When configuring its routing table, each router will locally use the BGP route-selection algorithm to pick the “best” (for example, closest, as determined by AS-hop counts) route to that IP address.
 
 ![](media/page-378-img-01.png)
 
-Figure 5.12 Using IP-anycast to bring users to the closest CDN server determined by AS-hop counts) route to that IP address. For example, if one BGP route (corresponding to one location) is only one AS hop away from the router, and all other BGP routes (corresponding to other locations) are two or more AS hops away, then the BGP router would choose to route packets to the location that is one hop away. After this initial BGP address-advertisement phase, the CDN can do its main job of distributing content. When a client requests the video, the CDN returns to the client the common IP address used by the geographically dispersed servers, no matter where the client is located.
+Figure 5.12 Using IP-anycast to bring users to the closest CDN server
+
+For example, if one BGP route (corresponding to one location) is only one AS hop away from the router, and all other BGP routes (corresponding to other locations) are two or more AS hops away, then the BGP router would choose to route packets to the location that is one hop away. After this initial BGP address-advertisement phase, the CDN can do its main job of distributing content. When a client requests the video, the CDN returns to the client the common IP address used by the geographically dispersed servers, no matter where the client is located.
 
 When the client sends a request to that IP address, Internet routers then forward the request packet to the “closest” server, as defined by the BGP route-selection algorithm.
 
@@ -7693,7 +7731,7 @@ In this example, let’s assume that the link between switch s1 and s2 goes down
 
 Figure 5.16 SDN controller scenario: Link-state change
 
-2.  The SDN controller receives the OpenFlow message indicating the linkstate change, and notifies the link-state manager, which updates a linkstate database.
+2.  The SDN controller receives the OpenFlow message indicating the link-state change, and notifies the link-state manager, which updates a link-state database.
 
 3.  The network-control application that implements Dijkstra’s link-state routing has previously registered to be notified when link state changes.
 
@@ -7723,11 +7761,11 @@ The ONOS Controller
 
 controller created, distributed, and supported by the Open Networking Foundation [OpenNetworking 2025].
 
-Figure 5.17 ONOS controller architecture
-
 ![](media/page-390-img-01.png)
 
-Figure 5.17 presents a simplified view of the ONOS controller Similar to the canonical controller in Figure 5.15, three layers can be identified in the ONOS controller: • Northbound abstractions and protocols. A unique feature of ONOS is its intent framework, which allows an application to request a high-level service (e.g., to setup a connection between host A and Host B, or conversely to not allow Host A and host B to communicate) without having to know the details of how this service is performed. State information is provided to network-control applications across the northbound API either synchronously (via query) or asynchronously (via listener callbacks, e.g., when network state changes). • Distributed core. The state of the network’s links, hosts, and devices is maintained in ONOS’s distributed core. ONOS is deployed as a service on a set of interconnected servers, with each server running an identical copy of the ONOS software; an increased number of servers offers an increased service capacity. The ONOS core provides the mechanisms for service replication and coordination among instances, providing the applications above and the network devices below with the abstraction of logically centralized core services. • Southbound abstractions and protocols. The southbound abstractions mask the heterogeneity of the underlying hosts, links, switches, and protocols, allowing the distributed core to be both device and protocol agnostic. Because of this abstraction, the southbound interface below the distributed core is logically higher than in our canonical controller in Figure 5.14. Orion Orion [Ferguson 2021] is the second-generation SDN platform used to control Google’s Jupiter datacenter networks [Singh 2015] as well as the internal B4 wide-area network [Jain 2013] that globally connects these data centers. Figure 5.18 presents of high-level view of Orion. Orion’s overall structure and context are remarkably similar to that of ONOS, shown in Figure 5.17. Indeed, the Orion creators note [Ferguson 2021] how the “architecture of Orion . . . maps to the textbook ONF view” [ONF 2013]. We see the Orion SDN core at the center of Figure 7.18, with a northbound interface to the Orion apps, and a southbound interface to the Orioncontrolled routers and switches. But we can find many important differences from ONOS beneath this common high-level view.
+Figure 5.17 ONOS controller architecture
+
+Figure 5.17 presents a simplified view of the ONOS controller. Similar to the canonical controller in Figure 5.15, three layers can be identified in the ONOS controller: • Northbound abstractions and protocols. A unique feature of ONOS is its intent framework, which allows an application to request a high-level service (e.g., to setup a connection between host A and Host B, or conversely to not allow Host A and host B to communicate) without having to know the details of how this service is performed. State information is provided to network-control applications across the northbound API either synchronously (via query) or asynchronously (via listener callbacks, e.g., when network state changes). • Distributed core. The state of the network’s links, hosts, and devices is maintained in ONOS’s distributed core. ONOS is deployed as a service on a set of interconnected servers, with each server running an identical copy of the ONOS software; an increased number of servers offers an increased service capacity. The ONOS core provides the mechanisms for service replication and coordination among instances, providing the applications above and the network devices below with the abstraction of logically centralized core services. • Southbound abstractions and protocols. The southbound abstractions mask the heterogeneity of the underlying hosts, links, switches, and protocols, allowing the distributed core to be both device and protocol agnostic. Because of this abstraction, the southbound interface below the distributed core is logically higher than in our canonical controller in Figure 5.14. Orion Orion [Ferguson 2021] is the second-generation SDN platform used to control Google’s Jupiter datacenter networks [Singh 2015] as well as the internal B4 wide-area network [Jain 2013] that globally connects these data centers. Figure 5.18 presents of high-level view of Orion. Orion’s overall structure and context are remarkably similar to that of ONOS, shown in Figure 5.17. Indeed, the Orion creators note [Ferguson 2021] how the “architecture of Orion . . . maps to the textbook ONF view” [ONF 2013]. We see the Orion SDN core at the center of Figure 5.18, with a northbound interface to the Orion apps, and a southbound interface to the Orion-controlled routers and switches. But we can find many important differences from ONOS beneath this common high-level view.
 
 Each Google network is divided into one or more domains, with an Orion SDN controller instance being responsible for managing and controlling the devices within its domain. The use of domains purposefully limits the scope and impact of any failures, as well as the amount of work that must be performed by an Orion controller.
 
@@ -7903,7 +7941,11 @@ Given the request-response nature of SNMP, it is worth noting here that although
 
 SNMP has evolved through three versions. The designers of SNMPv3 have said that “SNMPv3 can be thought of as SNMPv2 with additional security and administration capabilities” [RFC 3410]. Certainly, there are changes in SNMPv3 over SNMPv2, but nowhere are those changes more evident than in the area of administration and security. The central role of security in SNMPv3 was particularly important, since the lack of adequate security resulted in SNMP being used primarily for monitoring rather than control (for SetRequest example, is rarely used in SNMPv1). Once again, we see that
 
-security—a topic we’ll cover in detail in Chapter 8 — is of critical concern, but once again a concern whose importance had been realized perhaps a bit late and only then “added on.” The Management Information Base (MIB) We learned earlier that a managed device’s operational state data (and to some extent its configuration data) in the SNMP/MIB approach to network management are represented as objects that are gathered together into an MIB for that device. An MIB object might be a counter, such as the number of IP datagrams discarded at a router due to errors in an IP datagram header; or the number of carrier sense errors in an Ethernet interface card; descriptive information such as the version of the software running on a DNS server; status information such as whether a particular device is functioning correctly; or protocol-specific information such as a routing path to a destination. Related MIB objects are gathered into MIB modules. There are over 400 MIB modules defined in various IETC RFC’s; there are many more device- and vendor-specific MIBs. [RFC 4293] specifies the MIB module that defines managed objects (including ipSystemStatsInDelivers) for managing implementations of the Internet Protocol (IP) and its associated Internet Control Message Protocol (ICMP). [RFC 4022] specifies the MIB module for TCP, and [RFC 4113] specifies the MIB module for UDP.
+security—a topic we’ll cover in detail in Chapter 8 — is of critical concern, but once again a concern whose importance had been realized perhaps a bit late and only then “added on.”
+
+The Management Information Base (MIB)
+
+We learned earlier that a managed device’s operational state data (and to some extent its configuration data) in the SNMP/MIB approach to network management are represented as objects that are gathered together into an MIB for that device. An MIB object might be a counter, such as the number of IP datagrams discarded at a router due to errors in an IP datagram header; or the number of carrier sense errors in an Ethernet interface card; descriptive information such as the version of the software running on a DNS server; status information such as whether a particular device is functioning correctly; or protocol-specific information such as a routing path to a destination. Related MIB objects are gathered into MIB modules. There are over 400 MIB modules defined in various IETC RFC’s; there are many more device- and vendor-specific MIBs. [RFC 4293] specifies the MIB module that defines managed objects (including ipSystemStatsInDelivers) for managing implementations of the Internet Protocol (IP) and its associated Internet Control Message Protocol (ICMP). [RFC 4022] specifies the MIB module for TCP, and [RFC 4113] specifies the MIB module for UDP.
 
 While MIB-related RFCs make for rather tedious and dry reading, it is nonetheless instructive (i.e., like eating vegetables, it is “good for you”) to con-
 
@@ -8287,15 +8329,17 @@ Error correction is similar to error detection, except that a receiver not only 
 
 Before diving into our detailed study of the link layer, let’s conclude this introduction by considering the question of where the link layer is implemented. Is a host’s link layer implemented in hardware or software? Is it implemented on a separate card or chip, and how does it interface with the rest of a host’s hardware and operating system components?
 
-Figure 6.2 shows a typical host architecture. The Ethernet capabilities are either integrated into the motherboard chipset or implemented via a low-cost dedicated Ethernet chip. For the most part, the link layer is implemented on a chip called the network adapter, also sometimes known as a network interface controller (NIC). The network adapter implements many link layer services including framing, link access, error detection, and so on. Thus, much of a linklayer controller’s functionality is implemented in hardware. For example, Intel’s 800 series adapters [Intel 2025] implements the Ethernet protocols we’ll study in Section 6.5; the Atheros Fastconnect 6800 subsystem [Qualcomm 2025] controller implements the 802.11 protocols we’ll study in Chapter 7.
+Figure 6.2 shows a typical host architecture. The Ethernet capabilities are either integrated into the motherboard chipset or implemented via a low-cost dedicated Ethernet chip. For the most part, the link layer is implemented on a chip called the network adapter, also sometimes known as a network interface controller (NIC). The network adapter implements many link-layer services including framing, link access, error detection, and so on. Thus, much of a link-layer controller’s functionality is implemented in hardware. For example, Intel’s 800 series adapters [Intel 2025] implements the Ethernet protocols we’ll study in Section 6.5; the Atheros Fastconnect 6800 subsystem [Qualcomm 2025] controller implements the 802.11 protocols we’ll study in Chapter 7.
 
-On the sending side, the controller takes a datagram that has been created and stored in host memory by the higher layers of the protocol stack, encapsulates the datagram in a link-layer frame (filling in the frame’s various fields), and then transmits the frame into the communication link, following the linkaccess protocol. On the receiving side, a controller receives the entire frame, and extracts the network-layer datagram. If the link layer performs error detection, then it is the sending controller that sets the error-detection bits in the frame header and it is the receiving controller that performs error detection.
+On the sending side, the controller takes a datagram that has been created and stored in host memory by the higher layers of the protocol stack, encapsulates the datagram in a link-layer frame (filling in the frame’s various fields), and then transmits the frame into the communication link, following the link-access protocol. On the receiving side, a controller receives the entire frame, and extracts the network-layer datagram. If the link layer performs error detection, then it is the sending controller that sets the error-detection bits in the frame header and it is the receiving controller that performs error detection.
 
-Figure 6.2 shows that while most of the link layer is implemented in hardware, part of the link layer is implemented in software that runs on the host’s CPU. The software components of the link layer implement higher-level linklayer functionality such as assembling link-layer addressing information and
+Figure 6.2 shows that while most of the link layer is implemented in hardware, part of the link layer is implemented in software that runs on the host’s CPU. The software components of the link layer implement higher-level link-layer functionality such as assembling link-layer addressing information and
 
 ![](media/page-417-img-01.png)
 
-Figure 6.2 Network adapter: Its relationship to other host components and to protocol stack functionality activating the controller hardware. On the receiving side, link-layer  software responds to controller interrupts (for example, due to the receipt of one or more frames), handling error conditions and passing a datagram up to the network layer. Thus, the link layer is a combination of hardware and  software—the place in the protocol stack where software meets hardware.
+Figure 6.2 Network adapter: Its relationship to other host components and to protocol stack functionality
+
+The link-layer software activates the controller hardware. On the receiving side, link-layer software responds to controller interrupts (for example, due to the receipt of one or more frames), handling error conditions and passing a datagram up to the network layer. Thus, the link layer is a combination of hardware and software—the place in the protocol stack where software meets hardware.
 
 #### 6.2 Error-Detection and -Correction Techniques
 
@@ -8311,7 +8355,7 @@ and EDC as a result of in-transit bit flips.
 
 ![](media/page-418-img-01.png)
 
-Figure 6.3 Error- detection and -correction scenario
+Figure 6.3 Error-detection and -correction scenario
 
 ′ The receiver’s challenge is to determine whether or not D is the same as
 
@@ -8347,7 +8391,7 @@ even parity
 
 ![](media/page-420-img-01.png)
 
-Figure 6.5 Two- dimensional even parity
+Figure 6.5 Two-dimensional even parity
 
 probability of undetected errors in a frame protected by single-bit parity can approach 50 percent [Spragins 1991].Clearly, a more robust error-detection scheme is needed (and, fortunately, is used in practice!). But before examining error-detection schemes that are used in practice, let’s consider a simple generalization of one-bit parity that will provide us with insight into error-correction techniques.
 
@@ -8363,7 +8407,7 @@ mation. With this two-dimensional parity scheme, the parity of both the column a
 
 to a 0—an error that is both detectable and correctable at the receiver. Although our discussion has focused on the original d bits of information, a single error
 
-in the parity bits themselves is also detectable and correctable. Two- dimensional parity can also detect (but not correct!) any combination of two errors in a packet. Other properties of the two-dimensional parity scheme are explored in the problems at the end of the chapter.
+in the parity bits themselves is also detectable and correctable. Two-dimensional parity can also detect (but not correct!) any combination of two errors in a packet. Other properties of the two-dimensional parity scheme are explored in the problems at the end of the chapter.
 
 The ability of the receiver to both detect and correct errors is known as forward error correction (FEC).These techniques are commonly used in audio storage and playback devices such as audio CDs. In a network setting, FEC techniques can be used by themselves, or in conjunction with link-layer ARQ techniques similar to those we examined in Chapter 3. FEC techniques are valuable because they can decrease the number of sender retransmissions required. Perhaps more important, they allow for immediate correction of errors at the receiver. This avoids having to wait for the round-trip propagation delay needed for the sender to receive a NAK packet and for the retransmitted packet to propagate back to the receiver—a potentially important advantage for real-time network applications [Rubenstein 1998] or links (such as deep-space links) with long propagation delays. Research examining the use of FEC in error-control protocols includes [Biersack 1992; Nonnenmacher 1998; Byers 1998; Shacham 1990].
 
@@ -8421,7 +8465,9 @@ D i 2 r R = remainder G
 
 ![](media/page-423-img-01.png)
 
-Figure 6.7 A sample CRC calculation Figure 6.7 illustrates this calculation for the case of D = 101110 , d = 6 , G = 1001 , and r = 3 . The 9 bits transmitted in this case are 101 110 011. You should check these calculations for yourself and also check that indeed D i 2 r = 101011 i G XOR R . International standards have been defined for 8-, 12-, 16-, and 32-bit gen- erators, G. The CRC-32 32-bit standard, which has been adopted in a number of link-level IEEE protocols, uses a generator of G = 100000100110000010001110110110111 CRC-32 Each of the CRC standards can detect burst errors of fewer than r + 1 bits. (This means that all consecutive bit errors of r bits or fewer will be detected.) Furthermore, under appropriate assumptions, a burst of length greater than r + 1 bits is detected with probability 1 − 0.5 . Also, each of the CRC stan- r dards can detect any odd number of bit errors. See [Williams 1993] for a discussion of implementing CRC checks. The theory behind CRC codes and even more powerful codes is beyond the scope of this text. The text [Schwartz 1980] provides an excellent introduction to this topic.
+Figure 6.7 A sample CRC calculation
+
+Figure 6.7 illustrates this calculation for the case of D = 101110, d = 6, G = 1001, and r = 3. The 9 bits transmitted in this case are 101 110 011. You should check these calculations for yourself and also check that indeed D i 2 r = 101011 i G XOR R. International standards have been defined for 8-, 12-, 16-, and 32-bit generators, G. The CRC-32 32-bit standard, which has been adopted in a number of link-level IEEE protocols, uses a generator of G = 100000100110000010001110110110111. Each of the CRC standards can detect burst errors of fewer than r + 1 bits. (This means that all consecutive bit errors of r bits or fewer will be detected.) Furthermore, under appropriate assumptions, a burst of length greater than r + 1 bits is detected with probability 1 − 0.5. Also, each of the CRC standards can detect any odd number of bit errors. See [Williams 1993] for a discussion of implementing CRC checks. The theory behind CRC codes and even more powerful codes is beyond the scope of this text. The text [Schwartz 1980] provides an excellent introduction to this topic.
 
 #### 6.3 Multiple Access Links and Protocols
 
@@ -8489,11 +8535,13 @@ Imagine the partygoer who is the only one with anything to say (and imagine that
 
 While TDM shares the broadcast channel in time, FDM divides the R bps
 
-channel into different frequencies (each with a bandwidth of R N ) and assigns
+channel into different frequencies (each with a bandwidth of R/N) and assigns each frequency to one of the N nodes. FDM thus creates N smaller channels of R/N bps out of the single, larger R bps channel.
 
 ![](media/page-426-img-01.png)
 
-Figure 6.9 A four-node TDM and FDM example each frequency to one of the N nodes. FDM thus creates N smaller channels of R N  bps out of the single, larger R bps channel. FDM shares both the advantages and drawbacks of TDM. It avoids collisions and divides the bandwidth fairly among the N nodes. However, FDM also shares a principal disadvantage
+Figure 6.9 A four-node TDM and FDM example
+
+FDM shares both the advantages and drawbacks of TDM. It avoids collisions and divides the bandwidth fairly among the N nodes. However, FDM also shares a principal disadvantage
 
 with TDM—a node is limited to a bandwidth of R N , even when it is the only
 
@@ -8613,7 +8661,7 @@ Abramson’s work is important not only because it was the first example of a ra
 
 ![](media/page-432-img-01.png)
 
-Figure 6.12 Space- time diagram of two CSMA nodes with colliding transmissions
+Figure 6.12 Space-time diagram of two CSMA nodes with colliding transmissions
 
 The first question that you might ask about CSMA is why, if all nodes perform carrier sensing, do collisions occur in the first place? After all, a node will refrain from transmitting whenever it senses that another node is transmitting.
 
@@ -8637,7 +8685,7 @@ When a node performs collision detection, it ceases transmission as soon as it d
 
 Before analyzing the CSMA/CD protocol, let us now summarize its operation from the perspective of an adapter (in a node) attached to a broadcast channel:
 
-1.  The adapter obtains a datagram from the network layer, prepares a linklayer frame, and puts the frame adapter buffer.
+1.  The adapter obtains a datagram from the network layer, prepares a link-layer frame, and puts the frame in the adapter buffer.
 
 2.  If the adapter senses that the channel is idle (that is, there is no signal energy entering the adapter from the channel), it starts to transmit the frame. If, on the other hand, the adapter senses that the channel is busy, it waits until it senses no signal energy and then starts to transmit the frame.
 
@@ -8647,7 +8695,9 @@ Before analyzing the CSMA/CD protocol, let us now summarize its operation from t
 
 ![](media/page-433-img-01.png)
 
-Figure 6.13 CSMA with collision detection hand, the adapter detects signal energy from other adapters while transmitting, it aborts the transmission (that is, it stops transmitting its frame).
+Figure 6.13 CSMA with collision detection
+
+On the other hand, if the adapter detects signal energy from other adapters while transmitting, it aborts the transmission (that is, it stops transmitting its frame).
 
 5.  After aborting, the adapter waits a random amount of time and then returns to step 2.
 
@@ -8771,7 +8821,9 @@ To understand the need for a protocol such as ARP, consider the network shown in
 
 ![](media/page-440-img-01.png)
 
-Figure 6.17 Each interface on a LAN has an IP address and a MAC address dotted-decimal notation and MAC addresses are shown in hexadecimal notation. For the purposes of this discussion, we will assume in this section that the switch broadcasts all frames; that is, whenever a switch receives a frame on one interface, it forwards the frame on all of its other interfaces. In the next section, we will provide a more accurate explanation of how switches operate.
+Figure 6.17 Each interface on a LAN has an IP address and a MAC address
+
+Dotted-decimal notation and MAC addresses are shown in hexadecimal notation. For the purposes of this discussion, we will assume in this section that the switch broadcasts all frames; that is, whenever a switch receives a frame on one interface, it forwards the frame on all of its other interfaces. In the next section, we will provide a more accurate explanation of how switches operate.
 
 Principles in Practice Keeping the Layers Independent There are several reasons why hosts and router interfaces have MAC addresses in addition to network-layer addresses. First, LANs are designed for arbitrary network-layer protocols, not just for IP and the Internet. If adapters were assigned IP addresses rather than “neutral” MAC addresses, then adapters would not easily be able to support other network-layer protocols (for example, IPX or DECnet).
 
@@ -8809,7 +8861,7 @@ There are a couple of interesting things to note about the ARP protocol.
 
 First, the query ARP message is sent within a broadcast frame, whereas the response ARP message is sent within a standard frame. Before reading on you should think about why this is so. Second, ARP is plug-and-play; that is, an ARP table gets built automatically—it doesn’t have to be configured by a system administrator. And if a host becomes disconnected from the subnet, its entry is eventually deleted from the other ARP tables in the subnet.
 
-Students often wonder if ARP is a link-layer protocol or a network-layer protocol. As we’ve seen, an ARP packet is encapsulated within a link-layer frame and thus lies architecturally above the link layer. However, an ARP packet has fields containing link-layer addresses and thus is arguably a linklayer protocol, but it also contains network-layer addresses and thus is also arguably a network-layer protocol. In the end, ARP is probably best considered a protocol that straddles the boundary between the link and network layers— not fitting neatly into the simple layered protocol stack we studied in Chapter 1. Such are the complexities of real-world protocols!
+Students often wonder if ARP is a link-layer protocol or a network-layer protocol. As we’ve seen, an ARP packet is encapsulated within a link-layer frame and thus lies architecturally above the link layer. However, an ARP packet has fields containing link-layer addresses and thus is arguably a link-layer protocol, but it also contains network-layer addresses and thus is also arguably a network-layer protocol. In the end, ARP is probably best considered a protocol that straddles the boundary between the link and network layers— not fitting neatly into the simple layered protocol stack we studied in Chapter 1. Such are the complexities of real-world protocols!
 
 Sending a Datagram off the Subnet It should now be clear how ARP operates when a host wants to send a datagram to another host on the same subnet. But now let’s look at the more complicated situation when a host on a subnet wants to send a network-layer datagram to a host off the subnet (that is, across a router onto another subnet).
 
@@ -9009,11 +9061,11 @@ First consider the pros and cons of switches. As mentioned above, switches are p
 
 Now consider the pros and cons of routers. Because network addressing is often hierarchical (and not flat, as is MAC addressing), packets do not normally cycle through routers even when the network has redundant paths.
 
-(However, packets can cycle when router tables are misconfigured; but as we learned in Chapter 4, IP uses a special datagram header field to limit the
+(However, packets can cycle when router tables are misconfigured; but as we learned in Chapter 4, IP uses a special datagram header field to limit the cycling.) Thus, packets are not restricted to a spanning tree and can use the best path between source and destination. Because routers do not have the spanning tree restriction, they have allowed the Internet to be built with a rich topology that includes, for example, multiple active links between Europe and North America. Another feature of routers is that they provide firewall protection against layer-2 broadcast storms. Perhaps the most significant drawback of routers, though, is that they are not plug-and-play—they and the hosts that connect to them need their IP addresses to be configured. Also, routers often have a larger per-packet processing time than switches, because they have to process up through the layer-3 fields. Finally, there are two different ways to pronounce the word router, either as “rootor” or as “rowter,” and people waste a lot of time arguing over the proper pronunciation [Perlman 1999].
 
 ![](media/page-454-img-01.png)
 
-Figure 6.24 Packet processing in switches, routers, and hosts cycling.) Thus, packets are not restricted to a spanning tree and can use the best path between source and destination. Because routers do not have the spanning tree restriction, they have allowed the Internet to be built with a rich topology that includes, for example, multiple active links between Europe and North America. Another feature of routers is that they provide firewall protection against layer-2 broadcast storms. Perhaps the most significant drawback of routers, though, is that they are not plug-and-play—they and the hosts that connect to them need their IP addresses to be configured. Also, routers often have a larger per-packet processing time than switches, because they have to process up through the layer-3 fields. Finally, there are two different ways to pronounce the word router, either as “rootor” or as “rowter,” and people waste a lot of time arguing over the proper pronunciation [Perlman 1999].
+Figure 6.24 Packet processing in switches, routers, and hosts
 
 Table 6.1 Comparison of the typical features of popular interconnection
 
@@ -9047,7 +9099,9 @@ Fortunately, each of these difficulties can be handled by a switch that supports
 
 ![](media/page-456-img-01.png)
 
-Figure 6.25 A single switch with two configured VLANs But by completely isolating the two VLANs, we have introduced a new difficulty! How can traffic from the EE Department be sent to the CS Department?
+Figure 6.25 A single switch with two configured VLANs
+
+But by completely isolating the two VLANs, we have introduced a new difficulty! How can traffic from the EE Department be sent to the CS Department?
 
 One way to handle this would be to connect a VLAN switch port (e.g., port 1 in Figure 6.25) to an external router and configure that port to belong both the EE and CS VLANs.
 
@@ -9107,15 +9161,15 @@ received frame with MPLS label 8 will be switched toward A. Note that router R4 
 
 ![](media/page-461-img-01.png)
 
-Figure 6.29 MPLS- enhanced forwarding
+Figure 6.29 MPLS-enhanced forwarding
 
-In our discussion above, we’ve not specified the specific protocol used to distribute labels among the MPLS-capable routers, as the details of this signaling are well beyond the scope of this book. We note, however, that the IETF working group on MPLS has specified in [RFC 3468] that an extension of the RSVP protocol, known as RSVP-TE [RFC 3209], will be the focus of its efforts for MPLS signaling. We’ve also not discussed how MPLS actually computes the paths for packets among MPLS capable routers, nor how it gathers linkstate information (e.g., amount of link bandwidth unreserved by MPLS) to use in these path computations. Existing link-state routing algorithms (e.g., OSPF) have been extended to flood this information to MPLS-capable routers. Interestingly, the actual path computation algorithms are not standardized, and are currently vendor-specific.
+In our discussion above, we’ve not specified the specific protocol used to distribute labels among the MPLS-capable routers, as the details of this signaling are well beyond the scope of this book. We note, however, that the IETF working group on MPLS has specified in [RFC 3468] that an extension of the RSVP protocol, known as RSVP-TE [RFC 3209], will be the focus of its efforts for MPLS signaling. We’ve also not discussed how MPLS actually computes the paths for packets among MPLS-capable routers, nor how it gathers link-state information (e.g., amount of link bandwidth unreserved by MPLS) to use in these path computations. Existing link-state routing algorithms (e.g., OSPF) have been extended to flood this information to MPLS-capable routers. Interestingly, the actual path computation algorithms are not standardized, and are currently vendor-specific.
 
 Thus far, the emphasis of our discussion of MPLS has been on the fact that MPLS performs switching based on labels, without needing to consider the IP address of a packet. The true advantages of MPLS and the reason for current interest in MPLS, however, lie not in the potential increases in switching speeds, but rather in the new traffic management capabilities that MPLS enables. As noted above, R4 has two MPLS paths to A. If forwarding were performed up at the IP layer on the basis of IP address, the IP routing protocols we studied in Chapter 5 would specify only a single, least-cost path to A. Thus, MPLS provides the ability to forward packets along routes that would not be possible using standard IP routing protocols. This is one simple form of traffic engineering using MPLS [RFC 3346; RFC 3272; RFC 2702; Xiao 2000], in which a network operator can override normal IP routing and force some of the traffic headed toward a given destination along one path, and other traffic destined toward the same destination along another path (whether for policy, performance, or some other reason).
 
 It is also possible to use MPLS for many other purposes as well. It can be used to perform fast restoration of MPLS forwarding paths, e.g., to reroute traffic over a precomputed failover path in response to link failure [Kar 2000;
 
-Huang 2002; RFC 3469].Finally, we note that MPLS can, and has, been used to implement so-called virtual private networks (VPNs). In implementing a VPN for a customer, an ISP uses its MPLS-enabled network to connect together the customer’s various networks. MPLS can be used to isolate both the resources and addressing used by the customer’s VPN from that of other users crossing the ISP’s network; see [DeClercq 2002] for details. We’ll also cover VPNs in more detail in Section 8.7.1.
+Huang 2002; RFC 3469]. Finally, we note that MPLS can, and has, been used to implement so-called virtual private networks (VPNs). In implementing a VPN for a customer, an ISP uses its MPLS-enabled network to connect together the customer’s various networks. MPLS can be used to isolate both the resources and addressing used by the customer’s VPN from that of other users crossing the ISP’s network; see [DeClercq 2002] for details. We’ll also cover VPNs in more detail in Section 8.7.1.
 
 Our discussion of MPLS has been brief, and we encourage you to consult [Davie 2000] and the reference above. We note that MPLS rose to prominence before the development of software-defined networking, which we studied in Chapter 5, and that many of MPLS’ traffic engineering capabilities can also be achieved via SDN and the generalized forwarding paradigm we studied in Chapter 4. Only the future will tell whether MPLS and SDN will continue to co-exist, or whether newer technologies (such as SDN) will eventually replace MPLS.
 
@@ -9127,15 +9181,15 @@ Figure 6.30 shows the simple case of two physically separate Ethernet LANs—one
 
 This is accomplished by creating a link-layer tunnel with one endpoint on a device on the Sunnyvale LAN and the other endpoint on a device on the Bangalore LAN. An Ethernet frame entering the tunnel on the Sunnyvale LAN will exit the tunnel on the Bangalore LAN. A VXLAN tunnel extends an Ethernet, or more generally a layer 2 subnet, across layer 3 network boundaries. You may recall that we saw tunneling used in Chapter 4 to connect one IPv6 network to another IPv6 through an intermediary IPv4 network. With VXLANs, we have another example of how an entire network (in this case the IP network between the tunnel endpoints) is virtualized to be a single logical link. In Chapter 7, we’ll also see that tunneling is widely used in cellular networks. Indeed, tunneling appears in many, many network settings [Zave 2024].
 
-The VXLAN Tunnel Endpoints (VTEPs) play a crucial role in VXLANs.A VTEP is an ordinary physical switch or router, or a virtualized switch or router in a data center, which is configured to implement VXLANs.
+The VXLAN Tunnel Endpoints (VTEPs) play a crucial role in VXLANs. A VTEP is an ordinary physical switch or router, or a virtualized switch or router in a data center, which is configured to implement VXLANs. In Figure 6.30, Host A, which is in Sunnyvale, sends an Ethernet frame with the MAC destination address of Host B, which is in Bangalore. Being physically attached to the Sunnyvale LAN, VTEP x receives the frame and notes that it is destined to Host B, which it knows is at the other end of the tunnel. VTEP x then places the Ethernet frame in its entirety, together with some additional VXLAN header information, in the payload a standard UDP datagram. This header information includes a 24-bit VXLAN Network Identifier (VNI), which allows 16 million VXLANs to be identified per extended LAN. The large number of virtual LANs made possible with VXLANs is particularly valuable in data center use cases.
 
-In Figure 6.30, tion includes a 24-bit VXLAN Network Identifier (VNI), which allows 16 million VXLANs to be identified per extended LAN. The large number of virtual LANs made possible with VXLANs is particularly valuable in data center use cases. The UDP datagram, containing the original Ethernet frame and header information, is then placed inside an IP datagram that is addressed to VTEP y, which implements the other end of the VXLAN tunnel. The IP network between x and y then delivers this IP datagram to y, as it would normally deliver any datagram, oblivious to the contents within. VTEP y receives the datagram and noting that it contains a UDP segment containing a VXLAN Ethernet frame, extracts and transmits the Ethernet frame on the Bangalore Ethernet. The original Ethernet frame with source MAC address A and destination MAC address B is then received at Host B. If you can wrap your mind around the rather unusual layering of encapsulating an Ethernet datagram inside a UDP segment inside an IP datagram, as shown in Figure 6.30, then you have truly mastered not only the concept of
+The UDP datagram, containing the original Ethernet frame and header information, is then placed inside an IP datagram that is addressed to VTEP y, which implements the other end of the VXLAN tunnel. The IP network between x and y then delivers this IP datagram to y, as it would normally deliver any datagram, oblivious to the contents within. VTEP y receives the datagram and noting that it contains a UDP segment containing a VXLAN Ethernet frame, extracts and transmits the Ethernet frame on the Bangalore Ethernet. The original Ethernet frame with source MAC address A and destination MAC address B is then received at Host B.
 
-Figure 6.30 A VXLAN containing segments in Sunnyvale and Bangalore Host A, which is in Sunnyvale, sends an Ethernet frame with the MAC destination address of Host B, which is in Bangalore. Being physically attached to the Sunnyvale LAN, VTEP x receives the frame and notes that it is destined to Host B, which it knows is at the other end of the tunnel. VTEP x then places the Ethernet frame in its entirety, together with some additional VXLAN header information, in the payload a standard UDP datagram. This header informa-
+Figure 6.30 A VXLAN containing segments in Sunnyvale and Bangalore
 
 ![](media/page-463-img-01.png)
 
-tunneling but also of link virtualization, and the notion of an entire network serving as a single virtual link!
+If you can wrap your mind around the rather unusual layering of encapsulating an Ethernet datagram inside a UDP segment inside an IP datagram, as shown in Figure 6.30, then you have truly mastered not only the concept of tunneling but also of link virtualization, and the notion of an entire network serving as a single virtual link!
 
 In this brief discussion of VXLANs, we’ve skipped over some important issues. For example, how did VTEP x know that Host B lay at the other end of the tunnel, what VXLAN header information is included inside the UDP datagram, and what are the various use cases that require a large number of VXLANs? Good sources of information about the details of VXLANs and their use are [Arista VXLAN 2017; Cisco VXLAN 2014; Juniper VXLAN 2024; RFC 7348].
 
@@ -9199,9 +9253,15 @@ Increasing the degree of connectivity between tiers has two significant benefits
 
 ![](media/page-468-img-01.png)
 
-also been proposed [Alizadeh 2014; Noormohammadpour 2018]. While these schemes perform multi-path routing at the flow level, there are also designs that route individual packets within a flow among multiple paths [He 2015; The three-layer hierarchy shown in Figures 6.31 and 6.32, have evolved into a two-layer data-center interconnection fabric known as a leaf-spine topology [Alizadeh 2013], as shown in Figure 6.33. In the leaf-spine topology, the access switch (known as a leaf switch) is connected to each and every core switch (known as a spine switch). The interconnection capacity of the leaf-spine topology can scale by either upgrading link speeds between the leaf and spine nodes, or by adding more spine nodes horizontally. In a leaf-spine topology, all communication within the data center beyond the access switch requires exactly two switch hops, as opposed to the variable and potentially larger number of hops in the topologies in Figures 6.31 and 6.32. The evolution toward leaf-spine topologies reflects the increase of communication among servers within the data center (so-called “east-west” Figure 6.33 Leaf and spine switch interconnection
+Figure 6.32 A three-tier, highly interconnected data network topology
 
-Figure 6.32 A three-tier, highly interconnected data network topology A direct consequence of the increased connectivity between tiers in data center networks is that multi-path routing can become a first-class citizen in these networks. Flows are by default multipath flows. A very simple scheme to achieve multi-path routing is Equal Cost Multi Path (ECMP) [RFC 2992], which performs a randomized next-hop selection along the switches between source and destination. Advanced schemes using finer-grained load balancing have Raiciu 2010].
+A direct consequence of the increased connectivity between tiers in data center networks is that multi-path routing can become a first-class citizen in these networks. Flows are by default multipath flows. A very simple scheme to achieve multi-path routing is Equal Cost Multi Path (ECMP) [RFC 2992], which performs a randomized next-hop selection along the switches between source and destination. Advanced schemes using finer-grained load balancing have also been proposed [Alizadeh 2014; Noormohammadpour 2018]. While these schemes perform multi-path routing at the flow level, there are also designs that route individual packets within a flow among multiple paths [He 2015; Raiciu 2010].
+
+The three-layer hierarchy shown in Figures 6.31 and 6.32, have evolved into a two-layer data-center interconnection fabric known as a leaf-spine topology [Alizadeh 2013], as shown in Figure 6.33. In the leaf-spine topology, the access switch (known as a leaf switch) is connected to each and every core switch (known as a spine switch). The interconnection capacity of the leaf-spine topology can scale by either upgrading link speeds between the leaf and spine nodes, or by adding more spine nodes horizontally. In a leaf-spine topology, all communication within the data center beyond the access switch requires exactly two switch hops, as opposed to the variable and potentially larger number of hops in the topologies in Figures 6.31 and 6.32.
+
+The evolution toward leaf-spine topologies reflects the increase of communication among servers within the data center (so-called “east-west”
+
+Figure 6.33 Leaf and spine switch interconnection
 
 ![](media/page-468-img-02.png)
 
@@ -9215,21 +9275,31 @@ Poutievski 2022] rather than being purchased from switch vendors.
 
 Data center networking is evolving rapidly, with the trends being driven by cost reduction, virtualization, physical constraints, manageability, expandability, and customization.
 
-Centralized SDN Control and Management Because a data center is managed by a single organization, it is perhaps natural that a number of the largest data center operators, including Google, Microsoft, and Facebook, are embracing the notion of SDN-like logically centralized control. For example, we learned about Google’ s Orion SDN platform that is used to control and manage its data-center networks as well as the wide-area B4 network that connects these data centers. Their architectures also reflect a clear separation of a data plane (comprised of relatively simple, commodity switches) and a software-based control plane, as we saw in Section 5.5. Due to the immense-scale of their data centers, automated configuration and operational state management, as we encountered in Section 5.7, are also crucial [Vahdat 2024].
+Centralized SDN Control and Management
 
-Virtualization Virtualization has been a driving force for much of the growth of cloud computing and data center networks more generally. Virtual Machines (VMs) decouple software running applications from the physical hardware.
+Because a data center is managed by a single organization, it is perhaps natural that a number of the largest data center operators, including Google, Microsoft, and Facebook, are embracing the notion of SDN-like logically centralized control. For example, we learned about Google’ s Orion SDN platform that is used to control and manage its data-center networks as well as the wide-area B4 network that connects these data centers. Their architectures also reflect a clear separation of a data plane (comprised of relatively simple, commodity switches) and a software-based control plane, as we saw in Section 5.5. Due to the immense-scale of their data centers, automated configuration and operational state management, as we encountered in Section 5.7, are also crucial [Vahdat 2024].
+
+Virtualization
+
+Virtualization has been a driving force for much of the growth of cloud computing and data center networks more generally. Virtual Machines (VMs) decouple software running applications from the physical hardware.
 
 This decoupling also allows seamless migration of VMs between physical servers, which might be located on different racks. Standard Ethernet and IP protocols have limitations in enabling the movement of VMs while maintaining active network connections across servers. Since all data center networks are managed by a single administrative authority, an elegant solution to the problem is to treat the entire data center network as a single, flat, layer-2 network. Recall that in a typical Ethernet network, the ARP protocol maintains the binding between the IP address and hardware (MAC) address on an interface.
 
 To emulate the effect of having all hosts connect to a “single” switch, the ARP mechanism is modified to use a DNS style query system instead of a broadcast, and the directory maintains a mapping of the IP address assigned to a VM and which physical switch the VM is currently connected to in the data center network. Scalable schemes that implement this basic design have been proposed in [Mysore 2009; Greenberg 2009b] and have been successfully deployed in modern data centers.
 
-Physical Constraints Unlike the wide area Internet, data center networks operate in environments that not only have very high capacity (40 Gbps and 100 Gbps links are now commonplace) but also have extremely low delays (microseconds).Consequently, buffer sizes are small and congestion control protocols such as TCP and its variants do not scale well in data centers. In data centers, congestion control protocols have to react fast and operate in extremely low loss regimes, as loss recovery and timeouts can lead to extreme inefficiency. Several approaches to tackle this issue have been proposed and deployed, ranging from data center-specific TCP variants [Alizadeh 2010] to implementing Remote Direct Memory Access (RDMA) technologies on standard Ethernet [Zhu 2015; Moshref 2016; Guo 2016]. Scheduling theory has also been applied to develop mechanisms that decouple flow scheduling from rate control, enabling very simple congestion control protocols while maintaining high utilization of the links [Alizadeh 2013; Hong 2012].
+Physical Constraints
 
-Hardware Modularity and Customization Another major trend is to employ shipping container–based modular data centers (MDCs) [YouTube 2009; Waldrop 2007]. In an MDC, a factory builds, within a standard 12-meter shipping container, a “mini data center” and ships the container to the data center location. Each container has up to a few thousand hosts, stacked in tens of racks, which are packed closely together. At the data center location, multiple containers are interconnected with each other and also with the Internet. Once a prefabricated container is deployed at a data center, it is often difficult to service. Thus, each container is designed for graceful performance degradation: as components (servers and switches) fail over time, the container continues to operate but with degraded performance. When many components have failed and performance has dropped below a threshold, the entire container is removed and replaced with a fresh one.
+Unlike the wide area Internet, data center networks operate in environments that not only have very high capacity (40 Gbps and 100 Gbps links are now commonplace) but also have extremely low delays (microseconds).Consequently, buffer sizes are small and congestion control protocols such as TCP and its variants do not scale well in data centers. In data centers, congestion control protocols have to react fast and operate in extremely low loss regimes, as loss recovery and timeouts can lead to extreme inefficiency. Several approaches to tackle this issue have been proposed and deployed, ranging from data center-specific TCP variants [Alizadeh 2010] to implementing Remote Direct Memory Access (RDMA) technologies on standard Ethernet [Zhu 2015; Moshref 2016; Guo 2016]. Scheduling theory has also been applied to develop mechanisms that decouple flow scheduling from rate control, enabling very simple congestion control protocols while maintaining high utilization of the links [Alizadeh 2013; Hong 2012].
+
+Hardware Modularity and Customization
+
+Another major trend is to employ shipping container–based modular data centers (MDCs) [YouTube 2009; Waldrop 2007]. In an MDC, a factory builds, within a standard 12-meter shipping container, a “mini data center” and ships the container to the data center location. Each container has up to a few thousand hosts, stacked in tens of racks, which are packed closely together. At the data center location, multiple containers are interconnected with each other and also with the Internet. Once a prefabricated container is deployed at a data center, it is often difficult to service. Thus, each container is designed for graceful performance degradation: as components (servers and switches) fail over time, the container continues to operate but with degraded performance. When many components have failed and performance has dropped below a threshold, the entire container is removed and replaced with a fresh one.
 
 Building a data center out of containers creates new networking challenges. With an MDC, there are two types of networks: the container-internal networks within each of the containers and the core network connecting each container [Guo 2009; Farrington 2010]. Within each container, at the scale of up to a few thousand hosts, it is possible to build a fully connected network using inexpensive commodity Gigabit Ethernet switches. However, the design of the core network, interconnecting hundreds to thousands of containers while providing high host-to-host bandwidth across containers for typical workloads, remains a challenging problem. A hybrid electrical/optical switch architecture for interconnecting the containers is described in [Farrington 2010].
 
-Energy-efficiency and Carbon-efficiency We learned earlier that the cost of power is a significant factor in operating a data center. And with an increase in the size and number of data centers, power now represent a non-negligible fraction of overall energy demand. [Goldman 2024] estimates that data centers consume approximately 400 Terawatt hours of energy in 2024—between 1% and 2% of global electricity use. That demand is expected to rise to 3–4% of global energy use by the end of the decade, driven in part by increasing demands of data- and compute-intensive demands of AI-based applications, including Large Language Models. Many data center operators are thus focused on energy-efficiency, e.g., [Microsoft 2025]. Beyond energy-efficiency alone, an increased emphasis on sustainability of human-built infrastructure has resulted in an emphasis on carbon efficiency—optimizing operations to reduce their overall carbon footprint [Shenoy 2022].
+Energy-efficiency and Carbon-efficiency
+
+We learned earlier that the cost of power is a significant factor in operating a data center. And with an increase in the size and number of data centers, power now represent a non-negligible fraction of overall energy demand. [Goldman 2024] estimates that data centers consume approximately 400 Terawatt hours of energy in 2024—between 1% and 2% of global electricity use. That demand is expected to rise to 3–4% of global energy use by the end of the decade, driven in part by increasing demands of data- and compute-intensive demands of AI-based applications, including Large Language Models. Many data center operators are thus focused on energy-efficiency, e.g., [Microsoft 2025]. Beyond energy-efficiency alone, an increased emphasis on sustainability of human-built infrastructure has resulted in an emphasis on carbon efficiency—optimizing operations to reduce their overall carbon footprint [Shenoy 2022].
 
 A final important trend is that large cloud providers are increasingly building or customizing just about everything that is in their data centers, including network adapters, switches routers, TORs, software, and networking protocols [Greenberg 2015; Singh 2015]. Another trend, pioneered by Amazon, is to improve reliability with “availability zones,” which essentially replicate distinct data centers in different nearby buildings. By having the buildings nearby (a few kilometers apart), transactional data can be synchronized across the data centers in the same availability zone while providing fault tolerance [Amazon 2014]. Many more innovations in data center design are likely to continue to come.
 
@@ -9791,15 +9861,19 @@ That is, all of the radiated electromagnetic energy is concentrated at one speci
 
 Equipped with the concept of power spectral density, we can now carefully define the notion of a radio signal’s bandwidth—a key physical-layer concept in wireless networks. A radio signal’s bandwidth, as its name suggests, is the width (measured in Hz) of the range of frequencies occupied by the signal. The signal in Figure 7.3(b), has a bandwidth of 22 MHz, with its power spread evenly between 2.427 and 2.429 GHz. We’ll see in Section 7.6 that this particular 22-MHz-wide “channel”—i.e., a radio channel with a 22 MHz bandwidth—corresponds to channel 6 in a WiFi network.
 
-It’s important to note that this precise notion of signal “bandwidth” in the wireless physical layer—the width of the frequency band occupied by a radio supports a maximum transmission rate of 72.2 Mbps, while a 40-MHz-wide 802.11n WiFi channel has a maximum transmission rate of 150 Mbps [Intel 2024]. But as we will see, the relationship between radio channel bandwidth (measured in Hertz) and link transmission bandwidth (measured in bits per second) is rather complex. We’ll be careful to use the term “bandwidth” in this chapter to mean the width of the frequency band occupied by a radio signal. We know from our everyday experience (e.g., from listening to AM, FM, or satellite radio) that radio signals can sometimes be clear but at other times be filled with noise. The top part of Figure 7.4 shows the original “clean” signal from Figure 7.2, with additional noise signal introduced between the transmitter and receiver (the middle section of Figure 7.4), and the received signal (the bot- tom part of Figure 7.4). Looking at the middle section of the noisy received signal, you can perhaps appreciate the challenge of extracting the original transmitted signal from the received noisy signal. There can be many sources of noise: • Interfering transmitters. Certain radio frequency bands are reserved for “unlicensed” use, meaning that many industrial and consumer devices can transmit radio waves in that band, subject to power restrictions. One of these bands is the 2.4–2.5 GHz band, where baby monitors, garage door openers, and many other home devices can all transmit signals. Even more importantly, many networks—WiFi, Bluetooth and Zigbee band and do so in an uncoordinated manner. Of course, it’s fine when it’s your WiFi network using this band, but nearby networks owned by others look just like noise to your network! As the saying goes, “One person’s network transmission is another person’s noise.”
+It’s important to note that this precise notion of signal “bandwidth” in the wireless physical layer—the width of the frequency band occupied by a radio signal—is very different from the rather informal use of the term “bandwidth” elsewhere in networking to refer to a link’s bit transmission rate or capacity. Students are often understandably confused by this. For starters, note that radio signal bandwidth is measured in Hertz, while a link’s transmission rate is measured in bits per second (bps). As we’ll see, a radio channel’s bandwidth (in Hertz) is related to the rate at which bits can be transmitted across a radio link (in bits per second). In general, the larger the bandwidth, the higher the rate at which bits can be transmitted. For example, a 20-MHz-wide 802.11n WiFi channel (Section 7.3.2) supports a maximum transmission rate of 72.2 Mbps, while a 40-MHz-wide 802.11n WiFi channel has a maximum transmission rate of 150 Mbps [Intel 2024]. But as we will see, the relationship between radio channel bandwidth (measured in Hertz) and link transmission bandwidth (measured in bits per second) is rather complex. We’ll be careful to use the term “bandwidth” in this chapter to mean the width of the frequency band occupied by a radio signal.
 
-Figure 7.3 (a) Signal power spectral density, (b) signal bandwidth (idealized) signal—is very different from the rather informal use of the term “bandwidth” elsewhere in networking to refer to a link’s bit transmission rate or capacity. Students are often understandably confused by this. For starters, note that radio signal bandwidth is measured in Hertz, while a link’s transmission rate is measured in bits per second (bps). As we’ll see, a radio channel’s bandwidth (in Hertz) is related to the rate at which bits can be transmitted across a radio link (in bits per second). In general, the larger the bandwidth, the higher the rate at which bits can be transmitted. For example, a 20-MHz-wide 802.11n WiFi channel (Section 7.3.2) (IEEE 802.15.4) networks, for example—use the unlicensed 2.4–2.5 GHz
+Figure 7.3 (a) Signal power spectral density, (b) signal bandwidth (idealized)
 
 ![](media/page-496-img-01.png)
 
-![](media/page-497-img-01.png)
+We know from our everyday experience (e.g., from listening to AM, FM, or satellite radio) that radio signals can sometimes be clear but at other times be filled with noise. The top part of Figure 7.4 shows the original “clean” signal from Figure 7.2, with additional noise signal introduced between the transmitter and receiver (the middle section of Figure 7.4), and the received signal (the bottom part of Figure 7.4). Looking at the middle section of the noisy received signal, you can perhaps appreciate the challenge of extracting the original transmitted signal from the received noisy signal. There can be many sources of noise:
+
+• Interfering transmitters. Certain radio frequency bands are reserved for “unlicensed” use, meaning that many industrial and consumer devices can transmit radio waves in that band, subject to power restrictions. One of these bands is the 2.4–2.5 GHz band, where baby monitors, garage door openers, and many other home devices can all transmit signals. Even more importantly, many networks—WiFi, Bluetooth and Zigbee (IEEE 802.15.4) networks, for example—use the unlicensed 2.4–2.5 GHz band and do so in an uncoordinated manner. Of course, it’s fine when it’s your WiFi network using this band, but nearby networks owned by others look just like noise to your network! As the saying goes, “One person’s network transmission is another person’s noise.”
 
 Figure 7.4 Original signal, noise, and noisy received signal
+
+![](media/page-497-img-01.png)
 
 • EM radiators. Electric motors and microwaves, particularly older models with less shielding, can emit radio waves.
 
@@ -9837,25 +9911,29 @@ larger at distance 3d. The path loss exponent of 2 is for so-called free-space p
 
 The quadratic path loss in both distance and frequency has important ramifications for radio communication: low frequency (e.g., kHz) radio tends to be used for long-distance, low-data-rate radio applications such as radio navigation, while high frequencies (e.g., GHz) tend to be used for relatively shorter distance terrestrial applications including cellular and WiFi networks.
 
-The exponential decrease in received power as a function of distance gives rise to the hidden terminal problem, a phenomenon that will drive the design
+The exponential decrease in received power as a function of distance gives rise to the hidden terminal problem, a phenomenon that will drive the design of wireless link-layer multiple access protocols such as WiFi’s CSMA/CA protocol (Section 7.3.1). Figure 7.6(a) illustrates the case where nodes A and B can “hear” each other, i.e., the received power levels of their signals are above a detection threshold. Similarly, nodes B and C can hear each other. However, because of path loss, nodes A and C cannot hear each other because their received power levels have dropped below the detection threshold. Thus, nodes A and C are “hidden” from each other. One can already appreciate how hidden terminals will impact wireless CSMA protocols—if A and C want to transmit to B they may listen to the channel, not hear each other transmitting (due to path loss), and yet their transmissions to B will interfere with each other at B. Figure 7.6(b) illustrates another hidden terminal scenario where A’s and B’s signals are physically blocked from each other. And yet in this case as well, their transmissions interfere with each other at B. Clearly, communicating over a wireless channel will be more complicated than communicating over a wired channel!
 
 ![](media/page-498-img-01.png)
 
-Figure 7.5 Free space path loss decreases according to the square of the distance between transmitter and receiver other, but A and C cannot hear each other of wireless link-layer multiple access protocols such as WiFi’s CSMA/CA protocol (Section 7.3.1). Figure 7.6(a) illustrates the case where nodes A and B can “hear” each other, i.e., the received power levels of their signals are above a detection threshold. Similarly, nodes B and C can hear each other. However, because of path loss, nodes A and C cannot hear each other because their received power levels have dropped below the detection threshold. Thus, nodes A and C are “hidden” from each other. One can already appreciate how hidden terminals will impact wireless CSMA protocols—if A and C want to transmit to B they may listen to the channel, not hear each other transmitting (due to path loss), and yet their transmissions to B will interfere with each other at B. Figure 7.6(b) illustrates another hidden terminal scenario where A’s and B’s signals are physically blocked from each other. And yet in this case as well, their transmissions interfere with each other at B. Clearly, communicating over a wireless channel
+Figure 7.5 Free space path loss decreases according to the square of the distance between transmitter and receiver
 
-Figure 7.6 Hidden terminals: A and B can hear each other, B and C can hear each
+Figure 7.6 Hidden terminals: A and B can hear each other, B and C can hear each other, but A and C cannot hear each other
 
 ![](media/page-499-img-01.png)
 
-will be more complicated than communicating over a wired channel! The inverse square law also states that the received power decreases exponentially not just in distance, but in frequency as well. This exponential decrease with frequency also has very important consequences in wireless networks. It means, for example, that moving from a fixed-bandwidth channel at 5 GHz to a similar channel at 50 GHz, will result in 100 times less power received at 50 GHz! Thus, channels at higher frequencies tend to operate at shorter ranges, while lower frequency channels tend to be used to cover longer distances. Figure 7.7 illustrates another important characteristic of wireless communication: multipath signals. In this figure, part of the radio signal transmitted by a sender follows a direct line-of-sight path to the receiver, shown conceptually as a received green pulse in Figure 7.7(a). However, the transmitted signal also reflects off of objects (e.g., buildings) in the environment and arrives at the receiver at slightly later points in time, as the reflected pulses have travelled longer distances from the transmitter to the receiver. These multipath received signals are shown as the red and purple pulses in Figure 7.7(b). Because of multipath, the reception of a signal that was transmitted at a given instant of time at the sender is spread out over time at the receiver. Clearly, multipath will complicate the receiver’s job of reconstructing the originally transmitted signal. Multipath also places constraints on the maximum rate at which a transmitter can change its transmitted signal, and consequently constrains the rate dictated minimum amount of time needed between changes in the sender’s signal is referred to as the receiver’s coherence time. Antennas: MIMO The antennas deployed in most of today’s wireless cellular and WiFi base stations and devices aren’t at all like your grandparent’s (or even your parent’s) antennas! Beginning in the early 2000s wireless networks began moving from systems with a single antenna at the transmitter and a single antenna at the receiver, to multiple-input and multiple-output (MIMO) antennas that use multiple antennas at both the transmitter and receiver. As we’ll see, these inno- vative MIMO technologies have allowed radio networks to significantly increase link throughput (the number of bits per second successfully received)
+The inverse square law also states that the received power decreases exponentially not just in distance, but in frequency as well. This exponential decrease with frequency also has very important consequences in wireless networks. It means, for example, that moving from a fixed-bandwidth channel at 5 GHz to a similar channel at 50 GHz, will result in 100 times less power received at 50 GHz! Thus, channels at higher frequencies tend to operate at shorter ranges, while lower frequency channels tend to be used to cover longer distances. Figure 7.7 illustrates another important characteristic of wireless communication: multipath signals. In this figure, part of the radio signal transmitted by a sender follows a direct line-of-sight path to the receiver, shown conceptually as a received green pulse in Figure 7.7(a). However, the transmitted signal also reflects off of objects (e.g., buildings) in the environment and arrives at the receiver at slightly later points in time, as the reflected pulses have travelled longer distances from the transmitter to the receiver. These multipath received signals are shown as the red and purple pulses in Figure 7.7(b). Because of multipath, the reception of a signal that was transmitted at a given instant of time at the sender is spread out over time at the receiver. Clearly, multipath will complicate the receiver’s job of reconstructing the originally transmitted signal. Multipath also places constraints on the maximum rate at which a transmitter can change its transmitted signal, and consequently constrains the rate dictated minimum amount of time needed between changes in the sender’s signal is referred to as the receiver’s coherence time. Antennas: MIMO The antennas deployed in most of today’s wireless cellular and WiFi base stations and devices aren’t at all like your grandparent’s (or even your parent’s) antennas! Beginning in the early 2000s wireless networks began moving from systems with a single antenna at the transmitter and a single antenna at the receiver, to multiple-input and multiple-output (MIMO) antennas that use multiple antennas at both the transmitter and receiver. As we’ll see, these innovative MIMO technologies have allowed radio networks to significantly increase link throughput (the number of bits per second successfully received)
 
 ![](media/page-500-img-01.png)
 
-Figure 7.7 (a) Line-of-sight (LoS) signal; (b) LoS and reflected signal reception at which a transmitter can transmit bits. Figure 7.8 shows two transmitted pulses from the sender. The transmitter must space its signal/pulse transmissions far enough apart so that the LoS signal (the green pulse in Figure 7.8) and all of its multipath reflections (the red and purple pulses) are received at the receiver before the next LoS signal/pulse is received. If this isn’t done, the two pulses and their reflections will be mixed in time at the receiver. This receiver-
+Figure 7.7 (a) Line-of-sight (LoS) signal; (b) LoS and reflected signal reception
+
+Figure 7.8 shows two transmitted pulses from the sender. The transmitter must space its signal/pulse transmissions far enough apart so that the LoS signal (the green pulse in Figure 7.8) and all of its multipath reflections (the red and purple pulses) are received at the receiver before the next LoS signal/pulse is received. If this isn’t done, the two pulses and their reflections will be mixed in time at the receiver. This receiver-
 
 ![](media/page-500-img-02.png)
 
-Figure 7.8 Multipath reflections determine coherence time between transmitter and receiver. One immediate advantage of having multiple antennas at the receiver should be apparent – N receiver antennas means
+Figure 7.8 Multipath reflections determine coherence time between transmitter and receiver
+
+One immediate advantage of having multiple antennas at the receiver should be apparent – N receiver antennas means
 
 (to a first approximation) that the total received signal has N  times more
 
@@ -9975,9 +10053,15 @@ In this section, we’ve already covered a lot of material about the characteris
 
 In this subsection, we’ll move “up” the stack (while staying in the physical layer) and discuss how a wireless transmitter groups the bits that are to be transmitted into “symbols,” which are then encoded into waveforms that are then transmitted over the wireless channel. At the receiver, symbols are then extracted from the received waveform and translated back into bits.
 
-Figure 7.11 shows the major steps in physical-layer transmission and reception. Data bits are presented to the physical layer at the transmitter from the link layer above. These bits are then processed into electromagnetic waveforms that propagate over the channel to the receiver, where they are Figure 7.11 Major steps in physical-layer transmission and reception transformed back into bits that are then passed from the physical layer to the link layer. Ideally, these bits also pass through this processing and transmission pipeline as fast as possible.
+Figure 7.11 shows the major steps in physical-layer transmission and reception. Data bits are presented to the physical layer at the transmitter from the link layer above. These bits are then processed into electromagnetic waveforms that propagate over the channel to the receiver, where they are
 
-Physical-layer coding In the first step (“coding”) the original data bits from the link layer may be expanded, e.g., in the simplest case, redundant copies of the original bits can be added to the original set of bits to protect against the corruption of some of the transmitted bits by channel noise. It is important to note that bits added here in the physical layer are in addition to checksum or CRC bits that have been added at the link layer, and that we studied in Chapter 6. If a link-layer frame contains checksum or CRC bits, these bits are treated in the physical layer exactly the same as any other bits in the link-layer frame, and so may themselves be protected by added physical-layer bits!
+Figure 7.11 Major steps in physical-layer transmission and reception
+
+transformed back into bits that are then passed from the physical layer to the link layer. Ideally, these bits also pass through this processing and transmission pipeline as fast as possible.
+
+Physical-layer coding
+
+In the first step (“coding”) the original data bits from the link layer may be expanded, e.g., in the simplest case, redundant copies of the original bits can be added to the original set of bits to protect against the corruption of some of the transmitted bits by channel noise. It is important to note that bits added here in the physical layer are in addition to checksum or CRC bits that have been added at the link layer, and that we studied in Chapter 6. If a link-layer frame contains checksum or CRC bits, these bits are treated in the physical layer exactly the same as any other bits in the link-layer frame, and so may themselves be protected by added physical-layer bits!
 
 The transmitted bits might also be reordered, e.g., spreading redundant bits among the transmitted bits, so that a burst of noise does not cause all copies of a bit to be affected. The receiver then reverses the encoding steps to recover the original bitstream. For example, eight original data bits
 
@@ -10005,7 +10089,9 @@ there are still enough received bits for the receiver to recover the original ei
 
 Lastly, we note that the dashed arrows at the top of Figure 7.11 from the receiver to the transmitter represent receiver feedback that is used by the transmitter to choose a modulation technique that is best suited to the current (yet changing) wireless channel conditions—a topic we’ll consider shortly at the end of this section.
 
-Modulation: amplitude, frequency, and phase Modulation lies at the heart of the wireless transmitter’s physical layer. Modulation takes coded bits from the coding module shown in Figure 7.11 and creates waveforms that encode these bits.
+Modulation: amplitude, frequency, and phase
+
+Modulation lies at the heart of the wireless transmitter’s physical layer. Modulation takes coded bits from the coding module shown in Figure 7.11 and creates waveforms that encode these bits.
 
 ![](media/page-507-img-01.png)
 
@@ -10021,7 +10107,9 @@ As shown in Figure 7.12, there are three common approaches for encoding informat
 
 In these examples, we see that the receiver can determine whether a bit value of 0 or 1 is encoded into the transmitter’s analog radio signal simply by measuring the amplitude, frequency, or phase of the radio signal. Note the ability to detect frequency and phase shifts implies that the clocks at the sender and receiver have been carefully synchronized.
 
-Quadrature Phase Shift Keying (QPSK) Our example in Figure 7.12 shows two values of amplitude, frequency or phase being used to encode a single bit value.
+Quadrature Phase Shift Keying (QPSK)
+
+Our example in Figure 7.12 shows two values of amplitude, frequency or phase being used to encode a single bit value.
 
 But why stop at two values?
 
@@ -10049,15 +10137,17 @@ Figure 7.13 Quadrature Phase Shift Keying (QPSK)
 
 Figure 7.14 QPSK constellation diagram— four symbols represented by four signal waveforms that have four different phases and identical amplitudes
 
-Quadrature Amplitude Modulation (QAM) In QPSK, only the signal’s phase is modulated. In quadrature amplitude modulation (QAM), a signal’s phase and its amplitude are both modulated. QAM is nicely illustrated using constellation diagrams. Figure 7.15 shows the constellation diagrams for 4-QAM, 16-QAM and 64-QAM. The number preceding “-QAM” refers to the number of symbols in this version of QAM. 4-QAM is essentially the same as QPSK and has 4 symbols. Figure 7.15 also shows the bit values encoded by a symbol—2 bits for 4-QAM,  4 bits for 16-QAM, and Figure 7.15 Bit encodings for 4-QAM, 16-QAM, 64-QAM, constellations (for WiFi)
+Quadrature Amplitude Modulation (QAM)
+
+In QPSK, only the signal’s phase is modulated. In quadrature amplitude modulation (QAM), a signal’s phase and its amplitude are both modulated. QAM is nicely illustrated using constellation diagrams. Figure 7.15 shows the constellation diagrams for 4-QAM, 16-QAM and 64-QAM. The number preceding “-QAM” refers to the number of symbols in this version of QAM. 4-QAM is essentially the same as QPSK and has 4 symbols. Figure 7.15 also shows the bit values encoded by a symbol—2 bits for 4-QAM, 4 bits for 16-QAM, and
+
+Figure 7.15 Bit encodings for 4-QAM, 16-QAM, 64-QAM, constellations (for WiFi)
 
 ![](media/page-509-img-02.png)
 
+Figure 7.16 Transmitted versus received 16-QAM-modulated signals
+
 ![](media/page-510-img-01.png)
-
-Figure 7.16 Transmitted versus
-
-received 16-QAMmodulated signals
 
 6 bits for 64-QAM. 16-QAM, 64-QAM and 256-QAM are used in 4 5G and WiFi networks, with higher order QAMs  1024,  4096 appearing in the WiFi-6 
 
@@ -10067,7 +10157,9 @@ A constellation diagram can also provide us with additional insight about how no
 
 As a result of changing electromagnetic and measurement noise at the receiver, a “1111” signal’s amplitude and phase will be received differently each time that signal is transmitted. The yellow-shaded dots in Figure 7.16 represent possible instances of measured amplitude and phase at the receiver. Most of the yellow-shaded dots, corresponding to measured amplitude and phase values, are closer to the amplitude and phase of the “1111” symbol than any other constellation symbol. In these cases, the receiver would correctly infer that the originally transmitted symbol was “1111”. However, note that there is one received signal that is closer to the “1011” symbol than the “1111” symbol; in this case, the receiver would incorrectly infer that the “1011” symbol had been sent, when in fact the “1111” symbol was transmitted, resulting in an incorrect symbol reception.
 
-Adaptive Modulation Figures 7.15 and 7.16 also suggest that as the constellation diagram becomes more densely packed at higher order QAMs, the effects of noise and receiver measurement error will become more pronounced. This results in higher symbol-error rates, and hence bit-error rates. While higher transmission rates might seem to always be desirable and thus using a higher-order QAM might also always seem like a good idea, this won’t be true if the error rate is too high! This observation offers a valuable insight for physical-layer wireless communication—that it will be important for the transmitter and receiver to choose a modulation technique that is matched to the channel conditions.
+Adaptive Modulation
+
+Figures 7.15 and 7.16 also suggest that as the constellation diagram becomes more densely packed at higher order QAMs, the effects of noise and receiver measurement error will become more pronounced. This results in higher symbol-error rates, and hence bit-error rates. While higher transmission rates might seem to always be desirable and thus using a higher-order QAM might also always seem like a good idea, this won’t be true if the error rate is too high! This observation offers a valuable insight for physical-layer wireless communication—that it will be important for the transmitter and receiver to choose a modulation technique that is matched to the channel conditions.
 
 Figure 7.17 illustrates this insight. Suppose the goal is to keep the bit error rate (BER) below 10 − 4 . At the same time, of course, we’d like to achieve the
 
@@ -10153,7 +10245,9 @@ Because of these two challenges, collisions at a destination are typically more 
 
 ![](media/page-515-img-01.png)
 
-Figure 7.20 CSMA/ CA uses link-layer acknowledgments within a given amount of time, it assumes that an error has occurred and retransmits the frame, using the CSMA/CA protocol to access the channel. If an acknowledgment is not received after some fixed number of retransmissions, the transmitting station gives up and discards the frame.
+Figure 7.20 CSMA/CA uses link-layer acknowledgments
+
+Within a given amount of time, it assumes that an error has occurred and retransmits the frame, using the CSMA/CA protocol to access the channel. If an acknowledgment is not received after some fixed number of retransmissions, the transmitting station gives up and discards the frame.
 
 Having discussed how CSMA/CA uses link-layer acknowledgments, we’re now in a position to describe the CSMA/CA protocol more fully. Suppose that a station (wireless device or an AP) has a frame to transmit.
 
@@ -10339,13 +10433,13 @@ As discussed in Section 7.1, since the UE, NR, gNB nomenclature is opaque and no
 
 • The 5G Core. The 5G Core consists of the links, routers, servers, and Core Network Functions that lie between a RAN and a gateway from the cellular provider’s network into the larger Internet, including other cellular provider networks. A typical cellular network will have a single core, with multiple attached edge networks The links and routers in the cellular core are typically wired, use the same Internet protocols and technology that we studied in Chapters 4, 5, and 6. The distinction between the networklayer data and control planes that we made earlier in Chapters 4 and 5, respectively, is also very much present in 5G, except that the data plane is known as the user plane in 5G terminology. Indeed, the logical separation of control and user planes is so foundational in 5G architecture that (of course!) it even has its own acronym in the 5G standards: CUPS, which stands for Control Plane and User Plane Separation!
 
-• What is unique in the 5G Core is the set of control and management functions, known as 5G  Core Network Functions, that provide 5G services such as RAN access and authorization, and support for user-device mobility. We’ll study these services, shown in blue boxes in Figure 7.28, data center (often referred to as an edge-cloud) in the Core but near the RAN, or may be implemented in a large, physically-distant data center. The only absolute requirement is that these services be reachable via IP.User application code may also run on servers at the base station or in the 5G Core, communicating with wireless devices in the RAN to implement an application’s service.
+• What is unique in the 5G Core is the set of control and management functions, known as 5G Core Network Functions, that provide 5G services such as RAN access and authorization, and support for user-device mobility. We’ll study these services, shown in blue boxes in Figure 7.28, in Section 7.4. The locations where these Core services are implemented will differ from one 5G network to another. For example, the servers implementing Core services might be co-located at the base station in the case of a small private 5G network, or might be implemented in a large, physically-distant data center. The only absolute requirement is that these services be reachable via IP. User application code may also run on servers at the base station or in the 5G Core, communicating with wireless devices in the RAN to implement an application’s service. This is referred to as local breakout, as the user’s application client-server traffic never leaves the cellular network.
 
-This is referred to as local breakout, as the user’s application client-server traffic never leaves the cellular network. 4G, 5G RAN: the physical radio channel 4G and 5G RANs implement OFDMA channel sharing, which we studied in where the transmission time for a single symbol in a single minislot is 66 sec µ . In 5G networks, larger subchannel bandwidths (30, 60, 120, 240, 480, and 960 kHz) with proportionally shorter minislot lengths are also defined. Recall from Section 7.3.1 that a resource element (RE) is a single time min- islot on a single OFDMA subcarrier frequency. Both 4G and 5G networks bundle neighboring REs (in frequency and time) into a Resource Block (RB).
-
-Figure 7.28 Major elements of a 5G network in Section 7.4. The locations where these Core services are implemented will differ from one 5G network to another. For example, the servers implementing Core services might be co-located at the base station in the case of a small private 5G network, or might be implemented in a physically separate small Section 7.3.1. In 4G networks, the smallest subchannel bandwidth is 15 kHz,
+Figure 7.28 Major elements of a 5G network
 
 ![](media/page-528-img-01.png)
+
+4G, 5G RAN: the physical radio channel 4G and 5G RANs implement OFDMA channel sharing, which we studied in Section 7.3.1. In 4G networks, the smallest subchannel bandwidth is 15 kHz, where the transmission time for a single symbol in a single minislot is 66 µsec. In 5G networks, larger subchannel bandwidths (30, 60, 120, 240, 480, and 960 kHz) with proportionally shorter minislot lengths are also defined. Recall from Section 7.3.1 that a resource element (RE) is a single time minislot on a single OFDMA subcarrier frequency. Both 4G and 5G networks bundle neighboring REs (in frequency and time) into a Resource Block (RB).
 
 ![](media/page-529-img-01.png)
 
@@ -10361,7 +10455,9 @@ There is even one last higher level of bandwidth aggregation in 4G 5G networks! 
 
 Figure 7.30 Bands, channels, and subcarriers
 
-4G, 5G RAN Radio: physical and logical control and data channels Our discussion above has focused on the physical radio channel resources— the radio frequencies, time minislots, and RB structure. Each RB also has a direction. The downlink direction is from the base station to the user device.
+4G, 5G RAN Radio: physical and logical control and data channels
+
+Our discussion above has focused on the physical radio channel resources— the radio frequencies, time minislots, and RB structure. Each RB also has a direction. The downlink direction is from the base station to the user device.
 
 The uplink direction is from the user device to the base station. As we saw in wired (e.g., cable) edge networks in Chapter 6, there is typically significantly more downstream traffic than uplink traffic, with a ratio of approximately 10:1 [Sauter 2021; Mitra 2024] between downlink and uplink traffic in 4G 5G networks. Each network operator can set the ratio of downlink to uplink channel resources by determining the fraction of OFDMA time slots assigned in each direction, a process known as Time Division Duplexing (TDD). It is also possible to group resources by frequency, with a range of channel frequencies assigned exclusively for uplink or downlink transmission—a process known the Frequency Division Duplexing (FDD).
 
@@ -10419,19 +10515,25 @@ Figure 7.32 shows a view of the 5G base station’s link-layer control and packe
 
 In earlier 2G, 3G, and 4G networks, a RAN cellular base station was implemented as a monolithic unit—essentially a specialized, single vendor “box” implementing that generation’s standardized functions. Beginning with 5G, there has been a move to “disaggregate” RAN functions into multiple functional units that interoperate with each other through standardized interfaces. This disaggregated architecture allows multiple vendors to offer competing implementations of pieces of the 5G base station, lowering the barrier to entry, and increasing competition and innovation—similar to a key motivation we found behind the development of SDN in Chapter 5.
 
-Figure 7.33 shows the functional split of a 5G base station into a Radio Unit (RU), a Distributed Unit (DU), and a Central Unit (CU), as well as the and real-time communication requirements. While the RU, DU, and CU are part of the 3GPP 5G specification [3GPP TS 38.300; 3GPP TS 38.401], the O-RAN Alliance takes this disaggregation one step further by specifying interfaces among these units [O-RAN Architecture 2024; Polese 2023]. Implementing the 5G RAN control plane The disaggregation of the 5G base station into RU, DU, and CU functional units is but one of two disaggregations in 5G. A second form of disaggregation arises in the 5G control plane. In particular, since the RRC control plane is Figure 7.33 Disaggregation: functional split of a 5G base station into three “units”
+Figure 7.33 shows the functional split of a 5G base station into a Radio Unit (RU), a Distributed Unit (DU), and a Central Unit (CU), as well as the RAN functions performed within each unit. Where such functional units are situated in the RAN—in the base station, in an edge cloud, or in a central cloud—is an implementation decision, often driven by communication delays and real-time communication requirements. While the RU, DU, and CU are part of the 3GPP 5G specification [3GPP TS 38.300; 3GPP TS 38.401], the O-RAN Alliance takes this disaggregation one step further by specifying interfaces among these units [O-RAN Architecture 2024; Polese 2023].
+
+Implementing the 5G RAN control plane
+
+The disaggregation of the 5G base station into RU, DU, and CU functional units is but one of two disaggregations in 5G. A second form of disaggregation arises in the 5G control plane. In particular, since the RRC control plane is separate from the user plane (in much the same way that the Internet control plane and data plane are separate), it’s possible to implement the standardized RRC functions in a modern SDN-like manner.
 
 ![](media/page-533-img-01.png)
 
-Figure 7.32 5G base station RAN control and packet-processing pipeline RAN functions performed within each unit. Where such functional units are situated in the RAN—in the base station, in an edge cloud, or in a central cloud—is an implementation decision, often driven by communication delays
+Figure 7.32 5G base station RAN control and packet-processing pipeline
 
 ![](media/page-533-img-02.png)
 
-Figure 7.34 SD-RAN: a software-defined RAN control plane separate from the user plane (in much the same way that the Internet control plane and data plane are separate), it’s possible to implement the standardized
+Figure 7.33 Disaggregation: functional split of a 5G base station into three “units”
 
 ![](media/page-534-img-01.png)
 
-RRC functions in a modern SDN-like manner. Figure 7.34 shows an SDN-like implementation of the RAN control plane. It’s instructive to compare the monolithic RRC implementation suggested in Figure 7.33 with the SDN RRC implementation of Figure 7.34. In particular, as long as the re-factored implementation in Figure 7.34 implements all of the functional interfaces to the mobile core and to the user plane as in Figure 7.33, one implementation is indistinguishable from the other as far as the other components of the 5G network are concerned. An SD-RAN controller will typically have the following main components shown in Figure 7.34: • A control-plane proxy that implements a 3GPP-compliant interface between the RAN and 5G Core’s control plane. Specifically, the RAN’s control plane proxy must implement the well-defined service-based interface to each of the Core Network Functions shown in Figure 7.28 and discussed later in Section 7.4. • A real-time intelligent controller (RIC) that serves a similar function here as the SDN controller in Figure 5.14. The RIC itself has three major components: • A lower layer communication layer that communicates commands to the data-plane RAN components. • A RAN-wide state-management layer. The RIC’s control decisions will require up-to-date information about channel state, connection state and identity information for each user device, for the QoS requirements, and for much more. This information is stored in the local RAN Node Information Base (R-NIB). • An interface to a set of application-layer control processes.
+Figure 7.34 SD-RAN: a software-defined RAN control plane
+
+Figure 7.34 shows an SDN-like implementation of the RAN control plane. It’s instructive to compare the monolithic RRC implementation suggested in Figure 7.33 with the SDN RRC implementation of Figure 7.34. In particular, as long as the re-factored implementation in Figure 7.34 implements all of the functional interfaces to the mobile core and to the user plane as in Figure 7.33, one implementation is indistinguishable from the other as far as the other components of the 5G network are concerned. An SD-RAN controller will typically have the following main components shown in Figure 7.34: • A control-plane proxy that implements a 3GPP-compliant interface between the RAN and 5G Core’s control plane. Specifically, the RAN’s control plane proxy must implement the well-defined service-based interface to each of the Core Network Functions shown in Figure 7.28 and discussed later in Section 7.4. • A real-time intelligent controller (RIC) that serves a similar function here as the SDN controller in Figure 5.14. The RIC itself has three major components: • A lower layer communication layer that communicates commands to the data-plane RAN components. • A RAN-wide state-management layer. The RIC’s control decisions will require up-to-date information about channel state, connection state and identity information for each user device, for the QoS requirements, and for much more. This information is stored in the local RAN Node Information Base (R-NIB). • An interface to a set of application-layer control processes.
 
 • The RIC control processes that make RAN control decisions regarding load balancing, device handover, QoS provisioning, and more. These processes, known as xApps in the OpenRAN parlance, can access information in the R-NIB and are implemented as separate software processes executing outside of the RIC itself, as shown in Figure 7.34. A set of opensource xApps can be found at [O-RAN xApp 2024]. OpenRAN [O-RAN Architecture 2024] is one of the most prominent examples of an SD-RAN.
 
@@ -10509,13 +10611,19 @@ Haque 2023].
 
 Figure 7.37 illustrates four different MAC scheduling algorithms, showing the data (i.e., link-layer frames) queued at the base station for transmission to six downstream devices. We’ll focus here on scheduling the downstream transmissions from the base station to its associated devices. Our discussion, however, is applicable to the upstream channel as well, since the base station also schedules the upstream channel and informs devices of the upstream channel resources that the devices can use, and when. With an OFDMA downstream channel, the scheduler’s decision determines which device’s queued frames will be transmitted in which resource blocks (RBs) between the current scheduling instant and the next. In 4G 5G systems, scheduling decisions are made every 1 ms. In WiFi 6, the time between scheduling decisions can be even shorter [Qualcomm 2021].
 
-Round Robin (RR) Scheduling Recall our discussion of RR scheduling in a wired setting in Section 4.2.5. In a wireless setting, RR allocates an equal number of RBs to each device for the
+Round Robin (RR) Scheduling
+
+Recall our discussion of RR scheduling in a wired setting in Section 4.2.5. In a wireless setting, RR allocates an equal number of RBs to each device for the
 
 ![](media/page-539-img-01.png)
 
-Figure 7.37 Four MAC scheduling algorithms, measurements used next transmission round. RR is channel-unaware and QoS-unaware. RR is fair by turns, since each device is allocated an equal number of RBs, but not necessarily throughput-fair since different devices may experience different channel conditions, and thus realize different throughputs.
+Figure 7.37 Four MAC scheduling algorithms, measurements used next transmission round.
 
-Maximum Throughput (MT) scheduling In MT scheduling, shown in Figure 7.37(b), the base station assigns RBs to the user devices that have the highest measured channel quality for that RB and that have data to send. Channel quality can be determined in many different ways. In 5G networks, a base station periodically broadcasts reference signal symbols in known positions in resource blocks. A device periodically sends a 4-bit Channel Quality Indication (CQI) based on its measured reception of these reference signals.
+RR is channel-unaware and QoS-unaware. RR is fair by turns, since each device is allocated an equal number of RBs, but not necessarily throughput-fair since different devices may experience different channel conditions, and thus realize different throughputs.
+
+Maximum Throughput (MT) scheduling
+
+In MT scheduling, shown in Figure 7.37(b), the base station assigns RBs to the user devices that have the highest measured channel quality for that RB and that have data to send. Channel quality can be determined in many different ways. In 5G networks, a base station periodically broadcasts reference signal symbols in known positions in resource blocks. A device periodically sends a 4-bit Channel Quality Indication (CQI) based on its measured reception of these reference signals.
 
 In MT scheduling, at each scheduling instant, t, the base station
 
@@ -10531,7 +10639,9 @@ max d i t , { }  i k , k
 
 and assigns RB to device i. The process repeats until all RBs have been assigned. k Note that MT scheduling is channel-aware, but unfair. Indeed, in the most unfair case, the single device with the highest channel quality among all devices may be assigned all of the available RBs, if there is enough data to send to the device!
 
-Blind Equal Throughput (BET) The BET scheduling algorithm, shown in Figure 7.37(c), explicitly aims to be fair by providing equal average throughput to all user devices. In BET, the scheduler maintains an estimate of a device’s average throughput. Let r t be i
+Blind Equal Throughput (BET)
+
+The BET scheduling algorithm, shown in Figure 7.37(c), explicitly aims to be fair by providing equal average throughput to all user devices. In BET, the scheduler maintains an estimate of a device’s average throughput. Let r t be i
 
 the measured throughput achieved by device i during time period t. An expo-
 
@@ -10547,7 +10657,9 @@ more recent values of R i  in computing the average throughput; a higher
 
 value of b gives higher importance to recent values. You might recall that we encountered this EWMA formula when we learned about how TCP estimates round-trip times in Section 3.5.3. BET simply assigns an RB to the device with the smallest throughput that has queued data awaiting transmission in the base station. The process repeats until all RBs have been assigned. BET scheduling is explicitly throughput-fair, QoS-unaware, and arguably somewhat channel-aware, in that it uses the realized per-device throughput (which depends on the channel quality).
 
-Proportional Fairness (PF) scheduling PF scheduling seeks to strike a balance between maximizing performance (throughput) and providing fairness among devices. Let d t and R t be i i  k defined as above. At each scheduling time, t, the PF scheduler finds the device
+Proportional Fairness (PF) scheduling
+
+PF scheduling seeks to strike a balance between maximizing performance (throughput) and providing fairness among devices. Let d t and R t be i i  k defined as above. At each scheduling time, t, the PF scheduler finds the device
 
 i and resource block, k, that achieves
 
@@ -10583,15 +10695,17 @@ Coordinated sleep/wake in 5G networks As in the case of WiFi, when a user device
 
 There are two different forms of 5G device sleep/wake cycles, roughly corresponding to a light sleep (perhaps akin to a short “nap”), and a deeper sleep.
 
-Figure 7.38 shows the structure of the light sleep cycle, known as Discontinuous Reception (DRX) in the Connected State. Here, there are two phases ated with powering up the radio, checking for pending downlink transmissions, and powering down the radio. In the example in Figure 7.38, a user device receives a transmission from the base station at t and starts an activity timer. At t , with the device having 0 1 neither received any transmissions since t nor having any transmissions to 0 send, the activity timer expires, and the device enters a short DRX sleep cycle. At the end of each short DRX cycle, the device awakens and checks whether the base station is advertising pending transmissions to it, or whether it has transmissions of its own to send. In this example, since there is no activity for this device over several short sleep cycles, the device then enters a long DRX sleep cycle at t . The device again wakes up at the end of each longer sleep 2 cycle to check for incoming or outgoing transmissions. At t , a packet arrives at 3 the base station for transmission to this device and is buffered, since the device is sleeping. At the end of the long sleep cycle ending at t , the device awakens, 4 finds that the base station is advertising a transmission for the device, enters the active state, eventually receives a transmission from the base station at t , 5 and restarts its inactivity timer. In this example, the increase in latency experienced by the arriving packet due to device sleep is equal to t –t . 5 3 There are additional user device sleep states that are even longer and deeper than the DRX cycles shown in Figure 7.38. After even longer periods of inactivity, a device can enter the Idle state or Inactive state, where it must take additional steps to re-establish its active presence in the RAN before it can send or receive user data. See [Hailu 2019; Developedia 2021; Sauter 2021] for more details. Uncoordinated, wake-and-send in LoRaWAN LoRa (see Section 7.5.3) [Sematech 2019a, 2019b; Sinha 2017] is a low-power, low-bitrate, wireless networking technology for relatively simple IoT devices
+Figure 7.38 shows the structure of the light sleep cycle, known as Discontinuous Reception (DRX) in the Connected State. Here, there are two phases of this light sleep: short DRX cycles and long DRX cycles. The two phases differ, as their names would suggest, only on the length of the sleep period, trading latency (delay until the device receives datagrams that have arrived at the base station destined for the device) with the energy expenditures associated with powering up the radio, checking for pending downlink transmissions, and powering down the radio. In the example in Figure 7.38, a user device receives a transmission from the base station at t and starts an activity timer. At t , with the device having 0 1 neither received any transmissions since t nor having any transmissions to 0 send, the activity timer expires, and the device enters a short DRX sleep cycle. At the end of each short DRX cycle, the device awakens and checks whether the base station is advertising pending transmissions to it, or whether it has transmissions of its own to send. In this example, since there is no activity for this device over several short sleep cycles, the device then enters a long DRX sleep cycle at t . The device again wakes up at the end of each longer sleep 2 cycle to check for incoming or outgoing transmissions. At t , a packet arrives at 3 the base station for transmission to this device and is buffered, since the device is sleeping. At the end of the long sleep cycle ending at t , the device awakens, 4 finds that the base station is advertising a transmission for the device, enters the active state, eventually receives a transmission from the base station at t , 5 and restarts its inactivity timer. In this example, the increase in latency experienced by the arriving packet due to device sleep is equal to t –t . 5 3 There are additional user device sleep states that are even longer and deeper than the DRX cycles shown in Figure 7.38. After even longer periods of inactivity, a device can enter the Idle state or Inactive state, where it must take additional steps to re-establish its active presence in the RAN before it can send or receive user data. See [Hailu 2019; Developedia 2021; Sauter 2021] for more details.
 
-Figure 7.38 A user device’s light sleep cycle, with short and long DRX cycles of this light sleep: short DRX cycles and long DRX cycles. The two phases differ, as their names would suggest, only on the length of the sleep period, trading latency (delay until the device receives datagrams that have arrived at the base station destined for the device) with the energy expenditures associ-
+Figure 7.38 A user device’s light sleep cycle, with short and long DRX cycles
 
 ![](media/page-543-img-01.png)
 
-Figure 7.39 LoRa wake-and-send whose typical task is to report sensor measurement data to a nearby gateway, typically within a few kilometers of the device. The simplest type of LoRa device, known as a Class A device, uses its radio in an uncoordinated, wakeand-send approach to do so. A device with data to send simply wakes up, transmits its data without any coordination with a gateway node (or even knowing that a gateway node is present), optionally waits for downlink data from the gateway node, and then goes back to sleep. Here, device-energy conservation is a first-class consideration, with the device’s usual sleep state only occasionally disturbed by device-initiated wake-up for data transmission.
+Figure 7.39 LoRa wake-and-send
 
 ![](media/page-544-img-01.png)
+
+Uncoordinated, wake-and-send in LoRaWAN LoRa (see Section 7.5.3) [Sematech 2019a, 2019b; Sinha 2017] is a low-power, low-bitrate, wireless networking technology for relatively simple IoT devices whose typical task is to report sensor measurement data to a nearby gateway, typically within a few kilometers of the device. The simplest type of LoRa device, known as a Class A device, uses its radio in an uncoordinated, wake-and-send approach to do so. A device with data to send simply wakes up, transmits its data without any coordination with a gateway node (or even knowing that a gateway node is present), optionally waits for downlink data from the gateway node, and then goes back to sleep. Here, device-energy conservation is a first-class consideration, with the device’s usual sleep state only occasionally disturbed by device-initiated wake-up for data transmission.
 
 Figure 7.39 shows LoRa’s wake-and-send behavior. At t , the LoRa IoT 0 device awakes and sends a LoRa frame (e.g., containing a sensor measurement) to the LoRa gateway. The device then looks for messages from the gateway, and receiving none, returns to sleep at t . At t , the gateway has a 1 2 message to send to the IoT device but must wait until the next device contact (following t ) before sending the message. The gateway’s message is received 3 at t and the device returns to sleep at t . 4 5 Like LoRa Class A, Bluetooth Low Energy (BLE) and 4G LTE Narrowband IoT (NB-IoT) networks also support device-initiated wake-and-send transmission by the IoT device. However, in these cases, the device must first contact the controller node or base station upon waking to first be allocated channel transmission slots in which to send its data. See [Sauter 2021] for details.
 
@@ -10617,9 +10731,13 @@ Figure 7.40 5G Core: key network functions
 
 ![](media/page-546-img-01.png)
 
-5G Network Functions If one were to identify the “top three” most centrally important Network Func- tions in the 5G Core, these three functions would be leading candidates: • The User Plane Function (UPF) is responsible for the data-plane for- warding of traffic between the RAN and the larger Internet.
+5G Network Functions
 
-As the only 5G network function in the data plane, it clearly plays a central role. As we’ll see in Section 7.4.2, the User Plane Function is structured as a tun- neled relay that forwards user IP datagrams between the base station and the larger Internet. Every datagram transmitted by a device to the larger Internet and vice versa will pass through the device’s User Plane Function. • The Access, Mobility Management Function (AMF) plays the key role in authorizing and establishing device access to a 5G network’s services and in managing device mobility (discussed in Section 7.5). The AMF is arguably the central Network Function in the 5G control plane. As we will see, the AMF works with many other network functions to implement its services. For example, the AMF interacts with the Authentication Server Function (AUSF) to authenticate a device that wants to join a 5G network. The AMF is also the only control-plane network function that exchanges control messages directly with a device, via the N1 interface shown in Figure 7.40, and is one of only two network functions that directly exchange control messages with a base station (via the N2 interface). A numbered interface such as N1 is known as a reference point in 3GPP parlance and defines the interaction between a 5G core function and another Core function (or device or base station). [3GPP 23.501 2024] standardizes more than 60 such reference points.
+If one were to identify the “top three” most centrally important Network Functions in the 5G Core, these three functions would be leading candidates:
+
+• The User Plane Function (UPF) is responsible for the data-plane forwarding of traffic between the RAN and the larger Internet. As the only 5G network function in the data plane, it clearly plays a central role. As we’ll see in Section 7.4.2, the User Plane Function is structured as a tunneled relay that forwards user IP datagrams between the base station and the larger Internet. Every datagram transmitted by a device to the larger Internet and vice versa will pass through the device’s User Plane Function.
+
+• The Access, Mobility Management Function (AMF) plays the key role in authorizing and establishing device access to a 5G network’s services and in managing device mobility (discussed in Section 7.5). The AMF is arguably the central Network Function in the 5G control plane. As we will see, the AMF works with many other network functions to implement its services. For example, the AMF interacts with the Authentication Server Function (AUSF) to authenticate a device that wants to join a 5G network. The AMF is also the only control-plane network function that exchanges control messages directly with a device, via the N1 interface shown in Figure 7.40, and is one of only two network functions that directly exchange control messages with a base station (via the N2 interface). A numbered interface such as N1 is known as a reference point in 3GPP parlance and defines the interaction between a 5G core function and another Core function (or device or base station). [3GPP 23.501 2024] standardizes more than 60 such reference points.
 
 • The Session Management Function (SMF) manages each device session, including IP address allocation and assignment (e.g., NAT and DHCP-like services) and the installation of per-device state for functions such as policy-based access control, charging, and establishing device data-plane forwarding via the UPF.
 
@@ -10647,13 +10765,13 @@ Recall from Chapters 4 and 6 that tunneling provides the abstraction of a virtua
 
 Having studied the RAN protocol stacks in detail in Section 7.3, let’s now focus on the data-plane protocol stacks at the base station and the User Plane Function in the 5G Core. As discussed in Section 7.4.3, the Session Management Function will establish a tunnel between the base station and the device’s User Plane Function when a device joins the network. When a User Plane Function receives a datagram from the external Internet that is destined for a device in its data plane, the User Plane Function encapsulates that datagram within a UDP segment using the GPRS Tunneling Protocol (GTP) [3GPP TS
 
-29.281 2022]. The UDP datagram then becomes the payload in a new IP datagram, which is forwarded from the User Plane Function through the backhaul network to the base station, just like any other IP datagram addressed to the base station. On the receiving side, the base station decapsulates the tunneled UDP datagram from the User Plane Function, extracts the encapsulated IP within-a-datagram in Figure 7.41. The protocol details of the tunneling protocol are fairly straightforward and can be found in [3GPP TS 29.281 2022]. So rather than diving into those details here, let’s instead consider the more fundamental question of why tunneling is used in the first place. In Chapter 4, we learned that tunneling allowed IPv4 and IPv6 networks to interoperate. But what are the advantages to wrapping a datagram inside a datagram while operating in a pure 5G network? The answer lies in device mobility, i.e., a device changing the base station to which it is attached (Section 7.4) as it moves through the cellular provider’s network. Consider again the example in Figure 7.41. Without tunneling, all of the routers in the backhaul network would need to maintain up-to-date information about a device’s location (i.e., the base station to which the device is currently attached) in order to forward a datagram to that device. Indeed, the routers would need to maintain that information for all devices in the provider’s network! With tunneling, only the tunnel endpoint (i.e., the User Plane Function) needs to know the identity of the base station to which the device is attached; the backhaul routers need only know how to forward and route datagrams to and from the base stations. The UPF thus serves as an anchor point for forwarding datagrams from a device to the larger Internet, and vice versa, for the
+29.281 2022]. The UDP datagram then becomes the payload in a new IP datagram, which is forwarded from the User Plane Function through the backhaul network to the base station, just like any other IP datagram addressed to the base station. On the receiving side, the base station decapsulates the tunneled UDP datagram from the User Plane Function, extracts the encapsulated IP datagram destined for the device, and forwards that IP datagram over the RAN to the device. As with the use of tunneling in mixed IPv4/IPv6 networks (Section 4.3), you should carefully examine the addresses in the datagram-within-a-datagram in Figure 7.41.
 
-Figure 7.41 5G protocol stacks, with tunneling datagram destined for the device, and forwards that IP datagram over the RAN to the device. As with the use of tunneling in mixed IPv4 v6 networks (Section 4.3), you should carefully examine the addresses in the datagram-
+Figure 7.41 5G protocol stacks, with tunneling
 
 ![](media/page-549-img-01.png)
 
-duration of a device’s attachment to the 5G network, regardless of the particular base station to which the device happens to be attached at a given time.
+The protocol details of the tunneling protocol are fairly straightforward and can be found in [3GPP TS 29.281 2022]. So rather than diving into those details here, let’s instead consider the more fundamental question of why tunneling is used in the first place. In Chapter 4, we learned that tunneling allowed IPv4 and IPv6 networks to interoperate. But what are the advantages to wrapping a datagram inside a datagram while operating in a pure 5G network? The answer lies in device mobility, i.e., a device changing the base station to which it is attached (Section 7.4) as it moves through the cellular provider’s network. Consider again the example in Figure 7.41. Without tunneling, all of the routers in the backhaul network would need to maintain up-to-date information about a device’s location (i.e., the base station to which the device is currently attached) in order to forward a datagram to that device. Indeed, the routers would need to maintain that information for all devices in the provider’s network! With tunneling, only the tunnel endpoint (i.e., the User Plane Function) needs to know the identity of the base station to which the device is attached; the backhaul routers need only know how to forward and route datagrams to and from the base stations. The UPF thus serves as an anchor point for forwarding datagrams from a device to the larger Internet, and vice versa, for the duration of a device’s attachment to the 5G network, regardless of the particular base station to which the device happens to be attached at a given time.
 
 ##### 7.4.3 User Identity, Registration, and Session Establishment
 
@@ -10717,7 +10835,19 @@ Figure 7.43 Various degrees of mobility, as a device maintains connectivity
 
 ![](media/page-554-img-01.png)
 
-RANs. When handover occurs within access networks belonging to a single network provider, that single provider’s network orchestrates handover on its own. • Mobility among multiple network providers. When a mobile device roams between multiple provider networks, as in scenario (c) in Figure 7.43, the providers must coordinate handover to ensure uninterrupted ongoing communication. This inter-provider handoff significantly complicates the process. As scenario (c) is more complex and occurs less often as cellular network providers increase their geographical footprints, we’ll focus our attention here on case (b). See Chapter 7 in earlier editions of this book, available on our pub- lisher’s and authors’ Web sites, for a discussion of scenario (c). Mobility: challenges and approaches Any approach toward supporting device mobility among access networks within a single provider network (case (b) in Figure 7.43) must consider three fundamental questions: • Is device mobility supported only at the link layer, or is the network layer involved as well? If mobility is supported only at the link layer, a device may be able to move among wireless access (link-layer) networks, but this may restrict a device’s mobility range while communicating without interruption to be within its current subnet (in the addressing sense of Section 4.3). This is because, with only link-layer mobility support, incoming datagrams from the larger Internet that are destined to the device will always be forwarded to this subnet for delivery to the device. As we will see in Section 7.5.3, this is the approach taken in enterprise WiFi networks. • On the other hand, if device mobility is supported across the provider’s entire network, network-layer (and/or higher-layer) support will be needed. For example, the core network will need to know the particular access network to which the mobile device is currently attached, so that incoming datagrams from the larger Internet can be forwarded to that subnet for delivery to the device. As we will see in Section 7.5.3, this is the approach taken in 5G (and 3G and 4G) cellular networks.
+RANs. When handover occurs within access networks belonging to a single network provider, that single provider’s network orchestrates handover on its own.
+
+• Mobility among multiple network providers. When a mobile device roams between multiple provider networks, as in scenario (c) in Figure 7.43, the providers must coordinate handover to ensure uninterrupted ongoing communication. This inter-provider handoff significantly complicates the process.
+
+As scenario (c) is more complex and occurs less often as cellular network providers increase their geographical footprints, we’ll focus our attention here on case (b). See Chapter 7 in earlier editions of this book, available on our publisher’s and authors’ Web sites, for a discussion of scenario (c).
+
+Mobility: challenges and approaches
+
+Any approach toward supporting device mobility among access networks within a single provider network (case (b) in Figure 7.43) must consider three fundamental questions:
+
+• Is device mobility supported only at the link layer, or is the network layer involved as well? If mobility is supported only at the link layer, a device may be able to move among wireless access (link-layer) networks, but this may restrict a device’s mobility range while communicating without interruption to be within its current subnet (in the addressing sense of Section 4.3). This is because, with only link-layer mobility support, incoming datagrams from the larger Internet that are destined to the device will always be forwarded to this subnet for delivery to the device. As we will see in Section 7.5.3, this is the approach taken in enterprise WiFi networks.
+
+• On the other hand, if device mobility is supported across the provider’s entire network, network-layer (and/or higher-layer) support will be needed. For example, the core network will need to know the particular access network to which the mobile device is currently attached, so that incoming datagrams from the larger Internet can be forwarded to that subnet for delivery to the device. As we will see in Section 7.5.3, this is the approach taken in 5G (and 3G and 4G) cellular networks.
 
 • Why is handover initiated, and who initiates handover? When a device changes its point of attachment to the network from one base station to another, why is that change made in the first place? As we saw in Section 7.2, as a device moves, the quality of the radio signal between itself and the base station (and hence packet throughput and latency) can change. A device might thus change access networks to improve its performance. However, the network itself may choose to move the device from one access network to another in order to load-balance devices among its access networks. The WiFi and 5G standards do not specify specific algorithms to be used by a base station to determine whether or not to perform handover, or which target base station to choose. That decision is left up to network operators and remains an active area of research [Haghrah 2023].
 
@@ -10757,9 +10887,11 @@ Figure 7.45, adapted from Figures 4.9.1.2.2-1 in [3GPP TS 23.502 2024] and 9.2.3
 
 This process begins with the source base station sending two messages: a reconfiguration message to the device and a transfer status message to the target base station that transfers device state to the target base station. The device and the target base station can then set up a new RAN connection.
 
-The process completes when the device sends a reconfiguration complete message to the target base station and the target and source base stations perform a final handshake. Note that the endpoint of the tunnel between the base station and the User Plane Function remains unchanged during this process. However, rather than delivering datagrams to the device over the source RAN, the source base station instead begins forwarding datagrams addressed to the device to the target base station. The target the handover process. • Updating device state and UPF tunnel in the Core. Handover activity now shifts to the Core. The target base station, which is now fully in charge of the device’s RAN connection, signals to the Session Management Func- tion (SMF) via the AMF that it is the new base station for the device being handed over. The SMF then signals to the User Plane Function to change the device’s tunnel to be terminated at the target base station. The User Plane Function then sends a data-end marker to the source base station, which then knows that the device tunnel endpoint has been switched and informs the target base station. At this point, the target base station can deliver to the device any buffered datagrams forwarded to it from the source base station during handover. Additionally, datagrams will now flow directly from the device’s User Plane Function to the target base station. Following some cleanup handshaking, the handover process is now complete!
+The process completes when the device sends a reconfiguration complete message to the target base station and the target and source base stations perform a final handshake. Note that the endpoint of the tunnel between the base station and the User Plane Function remains unchanged during this process. However, rather than delivering datagrams to the device over the source RAN, the source base station instead begins forwarding datagrams addressed to the device to the target base station. The target base station will buffer these datagrams for later delivery to the device, ensuring that no incoming datagrams destined for the device are lost in the handover process.
 
-Figure 7.45 Device handover: RAN and Core actions base station will buffer these datagrams for later delivery to the device, ensuring that no incoming datagrams destined for the device are lost in
+• Updating device state and UPF tunnel in the Core. Handover activity now shifts to the Core. The target base station, which is now fully in charge of the device’s RAN connection, signals to the Session Management Function (SMF) via the AMF that it is the new base station for the device being handed over. The SMF then signals to the User Plane Function to change the device’s tunnel to be terminated at the target base station. The User Plane Function then sends a data-end marker to the source base station, which then knows that the device tunnel endpoint has been switched and informs the target base station. At this point, the target base station can deliver to the device any buffered datagrams forwarded to it from the source base station during handover. Additionally, datagrams will now flow directly from the device’s User Plane Function to the target base station. Following some cleanup handshaking, the handover process is now complete!
+
+Figure 7.45 Device handover: RAN and Core actions
 
 ![](media/page-558-img-01.png)
 
@@ -10865,7 +10997,9 @@ Because of their relatively low altitude, LEO satellites are not geostationary b
 
 ![](media/page-565-img-01.png)
 
-Figure 7.49 Components of a LEO satellite network links (ISLs), although this type of infrastructure link is not yet widely used in practice.
+Figure 7.49 Components of a LEO satellite network
+
+links (ISLs), although this type of infrastructure link is not yet widely used in practice.
 
 • Ground stations. On or near the Earth’s surface are the ground stations that transmit and receive datagrams over the satellite link. These ground stations may be connected only to the satellite or may be connected both to the satellite and to the terrestrial Internet, in which case the ground station serves as a gateway between the satellite network and the terrestrial Internet. LEO ground stations often have small dish or flat panel antennas for satellite communication. However, a low-bandwidth SOS emergency texting service via satellite is currently available for some (Apple) cellphones, and the provision of additional 5G-like data services via LEO satellites are under study.
 
@@ -11789,7 +11923,7 @@ As you might expect, a number of different standards for MACs have been proposed
 
 Figure 8.9 Message authentication code (MAC)
 
-There still remains an important issue. How do we distribute the shared authentication key to the communicating entities? For example, in the linkstate routing algorithm, we would somehow need to distribute the secret authentication key to each of the routers in the autonomous system. (Note that the routers can all use the same authentication key.) A network administrator could actually accomplish this by physically visiting each of the routers. Or, if the network administrator is a lazy guy, and if each router has its own public key, the network administrator could distribute the authentication key to any one of the routers by encrypting it with the router’s public key and then sending the encrypted key over the network to the router.
+There still remains an important issue. How do we distribute the shared authentication key to the communicating entities? For example, in the link-state routing algorithm, we would somehow need to distribute the secret authentication key to each of the routers in the autonomous system. (Note that the routers can all use the same authentication key.) A network administrator could actually accomplish this by physically visiting each of the routers. Or, if the network administrator is a lazy guy, and if each router has its own public key, the network administrator could distribute the authentication key to any one of the routers by encrypting it with the router’s public key and then sending the encrypted key over the network to the router.
 
 ##### 8.3.3 Digital Signatures
 
@@ -11855,17 +11989,19 @@ Public Key Certification An important application of digital signatures is publi
 
 To gain insight into this problem, let’s consider an Internet-commerce version of the classic “pizza prank.” Alice is in the pizza delivery business and accepts orders over the Internet. Bob, a pizza lover, sends Alice a plaintext message that includes his home address and the type of pizza he wants. In this message, Bob also includes a digital signature (that is, a signed hash of the original plaintext message) to prove to Alice that he is the true source of the message. To verify the signature, Alice obtains Bob’s public key (perhaps from a public key server or from the e-mail message) and checks the digital signature. In this manner she makes sure that Bob, rather than some adolescent prankster, placed the order.
 
-This all sounds fine until clever Trudy comes along. As shown in  Figure 8.13, Trudy is indulging in a prank. She sends a message to Alice in which she says she is Bob, gives Bob’s home address, and orders a pizza. In this message she vies to his home! We see from this example that for public key cryptography to be useful, you need to be able to verify that you have the actual public key of the entity (person, router, browser, and so on) with whom you want to communicate. For example, when Alice wants to communicate with Bob using public key cryptography, she needs to verify that the public key that is supposed to be Bob’s is indeed Bob’s. Binding a public key to a particular entity is typically done by a Certification Authority (CA), whose job is to validate identities and issue certificates. A CA has the following roles: 1. A CA verifies that an entity (a person, a router, and so on) is who it says it is. There are no mandated procedures for how certification is done. When dealing with a CA, one must trust the CA to have performed a suitably rigorous identity verification. For example, if Trudy were able to walk into the Fly-by-Night CA and simply announce “I am Alice” and receive cer- tificates associated with the identity of Alice, then one shouldn’t put much faith in public keys certified by the Fly-by-Night CA. On the other hand, one might (or might not!) be more willing to trust a CA that is part of a federal or state program. You can trust the identity associated with a
+This all sounds fine until clever Trudy comes along. As shown in Figure 8.13, Trudy is indulging in a prank. She sends a message to Alice in which she says she is Bob, gives Bob’s home address, and orders a pizza. In this message she also includes her (Trudy’s) public key, although Alice naturally assumes it is Bob’s public key. Trudy also attaches a digital signature, which was created with her own (Trudy’s) private key. After receiving the message, Alice applies Trudy’s public key (thinking that it is Bob’s) to the digital signature and concludes that the plaintext message was indeed created by Bob. Bob will be very surprised when the delivery person brings a pizza with pepperoni and anchovies to his home!
 
-Figure 8.13 Trudy masquerades as Bob using public key cryptography also includes her (Trudy’s) public key, although Alice naturally assumes it is Bob’s public key. Trudy also attaches a digital signature, which was created with her own (Trudy’s) private key. After receiving the message, Alice applies Trudy’s public key (thinking that it is Bob’s) to the digital signature and concludes that the plaintext message was indeed created by Bob. Bob will be very surprised when the delivery person brings a pizza with pepperoni and ancho-
+Figure 8.13 Trudy masquerades as Bob using public key cryptography
 
 ![](media/page-605-img-01.png)
+
+We see from this example that for public key cryptography to be useful, you need to be able to verify that you have the actual public key of the entity (person, router, browser, and so on) with whom you want to communicate. For example, when Alice wants to communicate with Bob using public key cryptography, she needs to verify that the public key that is supposed to be Bob’s is indeed Bob’s. Binding a public key to a particular entity is typically done by a Certification Authority (CA), whose job is to validate identities and issue certificates. A CA has the following roles:
+
+1. A CA verifies that an entity (a person, a router, and so on) is who it says it is. There are no mandated procedures for how certification is done. When dealing with a CA, one must trust the CA to have performed a suitably rigorous identity verification. For example, if Trudy were able to walk into the Fly-by-Night CA and simply announce “I am Alice” and receive certificates associated with the identity of Alice, then one shouldn’t put much faith in public keys certified by the Fly-by-Night CA. On the other hand, one might (or might not!) be more willing to trust a CA that is part of a federal or state program. You can trust the identity associated with a public key only to the extent to which you can trust a CA and its identity verification techniques. What a tangled web of trust we spin!
 
 ![](media/page-606-img-01.png)
 
 Figure 8.14 Bob has his public key certified by the CA
-
-public key only to the extent to which you can trust a CA and its identity verification techniques. What a tangled web of trust we spin!
 
 2.  Once the CA verifies the identity of the entity, the CA creates a certificate that binds the public key of the entity to the identity. The certificate contains the public key and globally unique identifying information about the owner of the public key (for example, a human name or an IP address). The certificate is digitally signed by the CA. These steps are shown in  Figure 8.14.
 
@@ -11971,7 +12107,7 @@ In previous sections, we examined fundamental issues in network security, includ
 
 Interestingly, it is possible to provide security services in any of the top four layers of the Internet protocol stack. When security is provided for a specific application-layer protocol, the application using the protocol will enjoy one or more security services, such as confidentiality, authentication, or integrity.
 
-When security is provided for a transport-layer protocol, all applications that use that protocol enjoy the security services of the transport protocol. When security is provided at the network layer on a host-to-host basis, all transportlayer segments (and hence all application-layer data) enjoy the security services of the network layer. When security is provided on a link basis, then the data in all frames traveling over the link receive the security services of the link.
+When security is provided for a transport-layer protocol, all applications that use that protocol enjoy the security services of the transport protocol. When security is provided at the network layer on a host-to-host basis, all transport-layer segments (and hence all application-layer data) enjoy the security services of the network layer. When security is provided on a link basis, then the data in all frames traveling over the link receive the security services of the link.
 
 In Sections 8.5 through 8.8, we examine how security tools are being used in the application, transport, network, and link layers. Being consistent with the general structure of this book, we begin at the top of the protocol stack and discuss security at the application layer. Our approach is to use a specific application, e-mail, as a case study for application-layer security. We then move down the protocol stack. We’ll examine the TLS protocol (which provides security at the transport layer), IPsec (which provides security at the network layer), and the security of the IEEE 802.11 wireless LAN protocol.
 
@@ -11989,25 +12125,25 @@ So let’s begin by addressing the foremost concern, confidentiality. The most s
 
 As discussed in Section 8.2, if the symmetric key is long enough, and if only Alice and Bob have the key, then it is extremely difficult for anyone else (including Trudy) to read the message. Although this approach is straightforward, it has the fundamental difficulty that we discussed in Section 8.2—distributing a symmetric key so that only Alice and Bob have copies of it. So we naturally consider an alternative approach—public key cryptography (using, for example, RSA). In the public key approach, Bob makes his public key publicly available (e.g., in a public key server or on his personal Web page), Alice encrypts her message with Bob’s public key, and she sends the encrypted message to Bob’s e-mail address. When Bob receives the message, he simply decrypts it with his private key. Assuming that Alice knows for sure that the public key is Bob’s public key, this approach is an excellent means to provide the desired confidentiality. One problem, however, is that public key encryption is relatively inefficient, particularly for long messages.
 
-To overcome the efficiency problem, let’s make use of a session key (discussed in Section 8.2.2). In particular, Alice (1) selects a random symmetric session key, K , (2) encrypts her message, m, with the symmetric key, S (3) encrypts the symmetric key with Bob’s public key, K + , (4) concatenates the B encrypted message and the encrypted symmetric key to form a “package,” and (5) sends the package to Bob’s e-mail address. The steps are illustrated in Figure 8.19. (In this and the subsequent figures, the circled “ + ” represents con-
-
-catenation and the circled “ − ” represents deconcatenation.) When Bob receives
-
-the package, he (1) uses his private key, K − , to obtain the symmetric key, K , B S and (2) uses the symmetric key K to decrypt the message m. S Having designed a secure e-mail system that provides confidentiality, let’s now design another system that provides both sender authentication and message integrity. We’ll suppose, for the moment, that Alice and Bob are no longer s
+To overcome the efficiency problem, let’s make use of a session key (discussed in Section 8.2.2). In particular, Alice (1) selects a random symmetric session key, KS, (2) encrypts her message, m, with the symmetric key, (3) encrypts the symmetric key with Bob’s public key, KB+, (4) concatenates the encrypted message and the encrypted symmetric key to form a “package,” and (5) sends the package to Bob’s e-mail address. The steps are illustrated in Figure 8.19.
 
 ![](media/page-612-img-01.png)
 
-Figure 8.19 Alice used a symmetric session key, , to send a secret e-mail K to Bob one!), and are concerned only about sender authentication and message integrity. To accomplish this task, we use digital signatures and message digests, as described in Section 8.3. Specifically, Alice (1) applies a hash function, H (e.g., MD5), to her message, m, to obtain a message digest, (2) signs the result of the hash function with her private key, K − , to create a digital signa- A ture, (3) concatenates the original (unencrypted) message with the signature to create a package, and (4) sends the package to Bob’s e-mail address. When Bob receives the package, he (1) applies Alice’s public key, K + , to the signed mes- A sage digest and (2) compares the result of this operation with his own hash, H, of the message. The steps are illustrated in Figure 8.20. As discussed in message came from Alice and is unaltered. Now let’s consider designing an e-mail system that provides confidentiality, sender authentication, and message integrity. This can be done by combining the procedures in Figures 8.19 and 8.20. Alice first creates a preliminary package, exactly as in Figure 8.20, that consists of her original message along with a digitally signed hash of the message. She then treats this preliminary package as a message in itself and sends this new message through the sender steps in Figure 8.19, creating a new package that is sent to Bob. The steps applied by Alice are shown in Figure 8.21. When Bob receives the package, he first applies his side of Figure 8.19 and then his side of Figure 8.20. It should be clear that this design achieves the goal of providing confidentiality,
+Figure 8.19 Alice used a symmetric session key, KS, to send a secret e-mail to Bob
 
-Figure 8.20 Using hash functions and digital signatures to provide sender
+(In this and the subsequent figures, the circled “+” represents concatenation and the circled “−” represents deconcatenation.) When Bob receives the package, he (1) uses his private key, KB−, to obtain the symmetric key, KS, and (2) uses the symmetric key KS to decrypt the message m.
+
+Having designed a secure e-mail system that provides confidentiality, let’s now design another system that provides both sender authentication and message integrity. We’ll suppose, for the moment, that Alice and Bob are no longer concerned with confidentiality (they want to share their feelings with everyone!), and are concerned only about sender authentication and message integrity. To accomplish this task, we use digital signatures and message digests, as described in Section 8.3. Specifically, Alice (1) applies a hash function, H (e.g., MD5), to her message, m, to obtain a message digest, (2) signs the result of the hash function with her private key, KA−, to create a digital signature, (3) concatenates the original (unencrypted) message with the signature to create a package, and (4) sends the package to Bob’s e-mail address. When Bob receives the package, he (1) applies Alice’s public key, KA+, to the signed message digest and (2) compares the result of this operation with his own hash, H, of the message. The steps are illustrated in Figure 8.20. As discussed in Section 8.3, if the two results are the same, Bob can be pretty confident that the message came from Alice and is unaltered.
 
 ![](media/page-613-img-01.png)
 
-authentication and message integrity concerned with confidentiality (they want to share their feelings with every- Section 8.3, if the two results are the same, Bob can be pretty confident that the
+Figure 8.20 Using hash functions and digital signatures to provide sender authentication and message integrity
 
 ![](media/page-613-img-02.png)
 
-Figure 8.21 Alice uses symmetric key cyptography, public key cryptography, a hash function, and a digital signature to provide secrecy, sender authentication, and message integrity sender authentication, and message integrity. Note that, in this scheme, Alice uses public key cryptography twice: once with her own private key and once with Bob’s public key. Similarly, Bob also uses public key cryptography twice— once with his private key and once with Alice’s public key.
+Figure 8.21 Alice uses symmetric key cyptography, public key cryptography, a hash function, and a digital signature to provide secrecy, sender authentication, and message integrity
+
+Now let’s consider designing an e-mail system that provides confidentiality, sender authentication, and message integrity. This can be done by combining the procedures in Figures 8.19 and 8.20. Alice first creates a preliminary package, exactly as in Figure 8.20, that consists of her original message along with a digitally signed hash of the message. She then treats this preliminary package as a message in itself and sends this new message through the sender steps in Figure 8.19, creating a new package that is sent to Bob. The steps applied by Alice are shown in Figure 8.21. When Bob receives the package, he first applies his side of Figure 8.19 and then his side of Figure 8.20. It should be clear that this design achieves the goal of providing confidentiality, sender authentication, and message integrity. Note that, in this scheme, Alice uses public key cryptography twice: once with her own private key and once with Bob’s public key. Similarly, Bob also uses public key cryptography twice—once with his private key and once with Alice’s public key.
 
 The secure e-mail design outlined in Figure 8.21 probably provides satisfactory security for most e-mail users for most occasions. However, there is still one important issue that remains to be addressed. The design in Figure 8.21 requires Alice to obtain Bob’s public key, and requires Bob to obtain Alice’s public key. The distribution of these public keys is a nontrivial problem. For example, Trudy might masquerade as Bob and give Alice her own public key while saying that it is Bob’s public key, enabling her to receive the message meant for Bob. As we learned in Section 8.3, a popular approach for securely distributing public keys is to certify the public keys using a CA.
 
@@ -12320,7 +12456,7 @@ As of 2018, WiFi devices wanting to have the WiFi Alliance’s “WiFi certified
 
 ![](media/page-631-img-01.png)
 
-Figure 8.30 WPA3- Personal security
+Figure 8.30 WPA3-Personal security
 
 WPA3-Personal uses password-based authentication between the AP and the client device wanting to join the WiFi network. As you’ve probably experienced, the same password is used by all devices attaching to the WiFi network.
 
@@ -12374,7 +12510,7 @@ the client will only reveal its itentity itself within the encrypted TLS tunnel 
 
 • Recall that as a result of TLS tunnel establishment, the client has authenticated the server via the server’s public-key certificate, and the client and server have agreed on a shared secret. However, the client has not yet been authenticated to the server; this authentication is performed in steps 5–8. Here, the authentication server requests and receives the true identity of the client device, and the client’s shared secret. Once the client’s identity and password have been verified, the server tears down the TLS tunnel, informs the AP that the client has been authenticated, and provides a PMK to the AP so that the AP and the client (which will also derive the same PMK) can establish the encryption keys for the WiFi channel.
 
-#### 802.11 Security Messaging Protocols
+802.11 Security Messaging Protocols
 
 Figure 8.32 shows the protocols used to implement the 802.11 security framework discussed above. The Extensible Authentication Protocol (EAP) [RFC 3748] defines the end-to-end message formats used in a simple request/ response mode of interaction between the mobile device and authentication server. As shown in Figure 8.32, EAP messages are encapsulated using EAPoL (EAP over LAN) and sent over the 802.11 wireless link. These EAP messages are then decapsulated at the access point, and then re-encapsulated using the RADIUS protocol for transmission over UDP/IP to the authentication server.
 
@@ -12396,15 +12532,21 @@ Figure 8.33 (adapted from Figures 6.1.2-1 and 6.1.3.1-1 in [3GPP TS 33.501]) sho
 
 • The EAP protocol is used in both settings to carry authentication messages between the device and the authentication server. One EAP protocol used in 5G is EAP-AKA' (Extensible Authentication Protocol—Authentication and Key Agreement Prime), which is used in Figure 8.33.
 
-• G 5  and WiFi authentication both make use of a secret that has been pre-shared between the device and the authentication server. In 5G, that shared secret is contained on the device’s SIM card and on the authentication server in the device’s home (not visited) network.
+• 5G and WiFi authentication both make use of a secret that has been pre-shared between the device and the authentication server. In 5G, that shared secret is contained on the device’s SIM card and on the authentication server in the device’s home (not visited) network.
 
-• TLS is used to securely transport authentication messages in both WPA3- Enterprise and 5G EAP-AKA’.
+• TLS is used to securely transport authentication messages in both WPA3-Enterprise and 5G EAP-AKA’.
 
-Figure 8.33 5G Authentication with EAP-AKA’ One difference between Wi-Fi and 5G is, of course, that there is no notion of a home network in Wi-Fi. This is a critically important difference. Note that the 5G authentication decision is made by the Authentication Server (AUSF) in the device’s home network, not in the visited network. This is because the only two places where the device’s identity and cryptographic information are stored are on the device’s SIM card and in the home network. This is a significant change from 4G authentication, where the visited network played a more significant role. This change reflects the belief that only the home network should be trusted to explicitly use, store, and manage sensitive information
+Figure 8.33 5G Authentication with EAP-AKA’
 
 ![](media/page-636-img-01.png)
 
-such as the device’s shared secret key. Now let’s consider the steps involved in 5G authentication in more detail: 1. In step 1, the device sends a Registration Request message to the Access and Mobility Management Function (AMF) in the 5G Core of the network that it wants to join. The device includes its International Mobile Subscriber Identity (IMSI), which identifies the device’s home network, as well as its identity in that network. The Security Anchor Function (SEAF), a logical component of the 5G Core AMF, thus has enough information to locate the authentication server function (AUSF) in the 5G Core of the device’s home network, which (when the device is roaming) will be different from the network being joined. The SEAF first establishes a TLS tunnel (see Section 8.6) so that all messages between the SEAF and the Authentication Server will themselves be authenticated and encrypted. 2. In step 2, the AUSF contacts the Unified Data Management function (UDM) in the device’s home network. We learned in Chapter 7 that the UDM contains the IMSI, encryption keys, and service authorizations for the home network’s subscribers. The UDM creates four important pieces of information, stored in an authentication vector (AV), that it returns to the AUSF:
+One difference between Wi-Fi and 5G is, of course, that there is no notion of a home network in Wi-Fi. This is a critically important difference. Note that the 5G authentication decision is made by the Authentication Server (AUSF) in the device’s home network, not in the visited network. This is because the only two places where the device’s identity and cryptographic information are stored are on the device’s SIM card and in the home network. This is a significant change from 4G authentication, where the visited network played a more significant role. This change reflects the belief that only the home network should be trusted to explicitly use, store, and manage sensitive information such as the device’s shared secret key.
+
+Now let’s consider the steps involved in 5G authentication in more detail:
+
+1. In step 1, the device sends a Registration Request message to the Access and Mobility Management Function (AMF) in the 5G Core of the network that it wants to join. The device includes its International Mobile Subscriber Identity (IMSI), which identifies the device’s home network, as well as its identity in that network. The Security Anchor Function (SEAF), a logical component of the 5G Core AMF, thus has enough information to locate the authentication server function (AUSF) in the 5G Core of the device’s home network, which (when the device is roaming) will be different from the network being joined. The SEAF first establishes a TLS tunnel (see Section 8.6) so that all messages between the SEAF and the Authentication Server will themselves be authenticated and encrypted.
+
+2. In step 2, the AUSF contacts the Unified Data Management function (UDM) in the device’s home network. We learned in Chapter 7 that the UDM contains the IMSI, encryption keys, and service authorizations for the home network’s subscribers. The UDM creates four important pieces of information, stored in an authentication vector (AV), that it returns to the AUSF:
 
 •  A random nonce value.
 
@@ -12542,7 +12684,13 @@ Stateful Packet Filters In a traditional packet filter, filtering decisions are 
 
 To understand stateful filters, let’s reexamine the access control list in Table 8.6. Although rather restrictive, the access control list in Table 8.6
 
-Table 8.7 Connection table for stateful filter source address dest address source port dest port 222.22.1.7/37.96.87.123 12699 80 222.22.93.2 199.1.205.23 37654 80 222.22.65.143 203.77.240.43 48712 80
+Table 8.7 Connection table for stateful filter
+
+| source address | dest address | source port | dest port |
+|---|---|---|---|
+| 222.22.1.7 | 37.96.87.123 | 12699 | 80 |
+| 222.22.93.2 | 199.1.205.23 | 37654 | 80 |
+| 222.22.65.143 | 203.77.240.43 | 48712 | 80 |
 
 nevertheless allows any packet arriving from the outside with ACK = 1 and
 
@@ -12610,9 +12758,9 @@ To obtain privacy and anonymity, you can instead use a combination of a trusted 
 
 Many companies today (such as proxify.com) make available such proxy services.
 
-Of course, in this solution, your proxy knows everything: It knows your IP address and the IP address of the site you’re surfing; and it can see all the When a user connects to a server using TOR, TOR randomly chooses (from its proxy pool) a chain of three proxies and routes all traffic between client and server over the chain. In this manner, assuming the proxies do not collude, no one knows that communication took place between your IP address and the target Web site. Furthermore, although cleartext is sent between the last proxy and the server, the last proxy doesn’t know what IP address is sending and receiving the cleartext.
+Of course, in this solution, your proxy knows everything: It knows your IP address and the IP address of the site you’re surfing; and it can see all the traffic in cleartext exchanged between you and the Web site. Such a solution, therefore, is only as good as the trustworthiness of the proxy. A more robust approach, taken by the TOR anonymizing and privacy service, is to route your traffic through a series of non-colluding proxy servers [TOR 2020]. In particular, TOR allows independent individuals to contribute proxies to its proxy pool. When a user connects to a server using TOR, TOR randomly chooses (from its proxy pool) a chain of three proxies and routes all traffic between client and server over the chain. In this manner, assuming the proxies do not collude, no one knows that communication took place between your IP address and the target Web site. Furthermore, although cleartext is sent between the last proxy and the server, the last proxy doesn’t know what IP address is sending and receiving the cleartext.
 
-Figure 8.36 Providing anonymity and privacy with a proxy traffic in cleartext exchanged between you and the Web site. Such a solution, therefore, is only as good as the trustworthiness of the proxy. A more robust approach, taken by the TOR anonymizing and privacy service, is to route your traffic through a series of non-colluding proxy servers [TOR 2020]. In particular, TOR allows independent individuals to contribute proxies to its proxy pool.
+Figure 8.36 Providing anonymity and privacy with a proxy
 
 ![](media/page-645-img-01.png)
 
@@ -12872,15 +13020,27 @@ c.  Assume now that shared keys S and S are now established. Using 1 2 a timing 
 
 Wireshark Lab: TLS
 
-IPsec Lab In this lab (available from this book’s Web site), we investigate the Transport Layer Security (TLS) pro- In this lab (available from the book Web site), we tocol. Recall from Section 8.6 that TLS is used for will explore how to create IPsec SAs between linux securing a TCP connection, and that it is extensively boxes. You can do the first part of the lab with two used in practice for secure Internet transactions. In ordinary linux boxes, each with one Ethernet this lab, we will focus on the TLS records sent over adapter. But for the second part of the lab, you will the TCP connection. We will attempt to delineate need four linux boxes, two of which having two and classify each of the records, with a goal of Ethernet adapters. In the second half of the lab, understanding the why and how for each record. you will create IPsec SAs using the ESP protocol in We investigate the various TLS record types as well the tunnel mode. You will do this by first manuas the fields in the TLS messages. We do so by anaally creating the SAs, and then by having IKE lyzing a trace of the TLS records sent between your create the SAs. host and an e-commerce server.
+In this lab (available from this book’s Web site), we investigate the Transport Layer Security (TLS) protocol. Recall from Section 8.6 that TLS is used for securing a TCP connection, and that it is extensively used in practice for secure Internet transactions. In this lab, we will focus on the TLS records sent over the TCP connection. We will attempt to delineate and classify each of the records, with a goal of understanding the why and how for each record. We investigate the various TLS record types as well as the fields in the TLS messages. We do so by analyzing a trace of the TLS records sent between your host and an e-commerce server.
+
+IPsec Lab
+
+In this lab (available from the book Web site), we will explore how to create IPsec SAs between linux boxes. You can do the first part of the lab with two ordinary linux boxes, each with one Ethernet adapter. But for the second part of the lab, you will need four linux boxes, two of which having two Ethernet adapters. In the second half of the lab, you will create IPsec SAs using the ESP protocol in the tunnel mode. You will do this by first manually creating the SAs, and then by having IKE create the SAs.
 
 AN INTERVIEW WITH...
 
 ![](media/page-657-img-01.png)
 
-Lorrie Faith Cranor Lorrie Faith Cranor is a professor in the Software and Societal Systems Depart- ment S3D and in the Engineering and Public Policy Department (EPP) at Carn-  egie Mellon University, where she directs the CyLab Security and Privacy Institute. Her research focuses on “usable privacy and security,” and has included studies of usability issues associated with password policies, access control systems, privacy notices, mobile app privacy labels, and more. She founded the Symposium On Usable Privacy and Security (SOUPS) in 2005 and co-founded the Conference on Privacy Engineering Practice and Respect (PEPR) in 2019.
+Lorrie Faith Cranor
 
-In 2016, she served as Chief Tech Courtesy of Lorrie Faith Cranor nologist at the U.S. Federal Trade Commission. She is also a co-founder of Wombat Security Technologies, Inc., a security awareness training company. She is a Fel- low of ACM, IEEE, and AAAS. She was also elected to the ACM CHI Academy and received the 2018 ACM CHI Social Impact Award, the 2018 International Association of Privacy Professionals Privacy Leadership Award, and (with colleagues) the 2018 IEEE Cybersecurity Award for Practice. She was previously a researcher at AT&T Labs-Research and taught in the Stern School of Business at New York University. She holds a doctorate in Engineering and Policy from Washington University in St. Louis. What inspired you to start research in usable privacy and security? One of the first projects I got involved with at AT&T Labs-Research aimed at developing a standard computer-readable language for website privacy policies called the Platform for Privacy Preferences P3P . I chaired the P3P working group at the  World Wide Web Consortium W3C , and we spent over 5 years working out the  details. The more I worked on P3P, the more I realized that it would only be useful if Web browsers that read the P3P metadata did something helpful to users. The major browser vendors would not commit to building the full P3P protocol, so I led a project to build a P3P browser plugin called Privacy Bird at AT&T. I looked for research papers on building usable privacy or security tools and didn’t find much. As the project was winding down, I met other researchers interested in the nascent field of usable security at a workshop. Around that time, I decided to do an academic job search. In my job talk, I described my work on P3P and Privacy Bird and my plan for more research around usable privacy and security. CMU hired me, and I started a usable privacy and security lab at CMU and then the SOUPS conference. You’ve served in government and are interested in policy as well as technology. How did that come about? Did those interests evolve, or were they always there? I have three degrees from the (now defunct) Engineering and Public Policy Depart- ment at Washington University (WashU) in St. Louis. I worked on a technology assessment on video telephones back in the 1990s and then did a master’s thesis on electronic newspapers. My dissertation was on electronic voting. What really cemented my interest in technology policy issues was when I attended the Computers, Freedom, and Privacy Conference in 1993. It was an eye-opening experience to hear about the emerging Internet policy issues of the time and to meet the people who were on the front lines of Internet policy debates, including the board of the newly formed Electronic Frontier Foundation. I came back to WashU and asked my advisor, Ron Cytron, why we didn’t have any courses I could take to learn more about Internet policy issues. He suggested I could teach one, and that ended up being a great learning experience for me. Of course, I had to go back to CFP 94 and CFP 95.
+Lorrie Faith Cranor is a professor in the Software and Societal Systems Department (S3D) and in the Engineering and Public Policy Department (EPP) at Carnegie Mellon University, where she directs the CyLab Security and Privacy Institute. Her research focuses on “usable privacy and security,” and has included studies of usability issues associated with password policies, access control systems, privacy notices, mobile app privacy labels, and more. She founded the Symposium On Usable Privacy and Security (SOUPS) in 2005 and co-founded the Conference on Privacy Engineering Practice and Respect (PEPR) in 2019.
+
+In 2016, she served as Chief Technologist at the U.S. Federal Trade Commission. She is also a co-founder of Wombat Security Technologies, Inc., a security awareness training company. She is a Fellow of ACM, IEEE, and AAAS. She was also elected to the ACM CHI Academy and received the 2018 ACM CHI Social Impact Award, the 2018 International Association of Privacy Professionals Privacy Leadership Award, and (with colleagues) the 2018 IEEE Cybersecurity Award for Practice. She was previously a researcher at AT&T Labs-Research and taught in the Stern School of Business at New York University. She holds a doctorate in Engineering and Policy from Washington University in St. Louis.
+
+What inspired you to start research in usable privacy and security?
+
+One of the first projects I got involved with at AT&T Labs-Research aimed at developing a standard computer-readable language for website privacy policies called the Platform for Privacy Preferences (P3P). I chaired the P3P working group at the World Wide Web Consortium (W3C), and we spent over 5 years working out the details. The more I worked on P3P, the more I realized that it would only be useful if Web browsers that read the P3P metadata did something helpful to users. The major browser vendors would not commit to building the full P3P protocol, so I led a project to build a P3P browser plugin called Privacy Bird at AT&T. I looked for research papers on building usable privacy or security tools and didn’t find much. As the project was winding down, I met other researchers interested in the nascent field of usable security at a workshop. Around that time, I decided to do an academic job search. In my job talk, I described my work on P3P and Privacy Bird and my plan for more research around usable privacy and security. CMU hired me, and I started a usable privacy and security lab at CMU and then the SOUPS conference.
+
+You’ve served in government and are interested in policy as well as technology. How did that come about? Did those interests evolve, or were they always there? I have three degrees from the (now defunct) Engineering and Public Policy Depart- ment at Washington University (WashU) in St. Louis. I worked on a technology assessment on video telephones back in the 1990s and then did a master’s thesis on electronic newspapers. My dissertation was on electronic voting. What really cemented my interest in technology policy issues was when I attended the Computers, Freedom, and Privacy Conference in 1993. It was an eye-opening experience to hear about the emerging Internet policy issues of the time and to meet the people who were on the front lines of Internet policy debates, including the board of the newly formed Electronic Frontier Foundation. I came back to WashU and asked my advisor, Ron Cytron, why we didn’t have any courses I could take to learn more about Internet policy issues. He suggested I could teach one, and that ended up being a great learning experience for me. Of course, I had to go back to CFP 94 and CFP 95.
 
 I went every year after that for a while and by the time we got to CFP 2000 I was the conference chair, and in 2007 I joined the EFF board.
 
@@ -12906,9 +13066,7 @@ This site allows you to search for a specific RFC by title, number, or authors, 
 
 [3GPP TS 29.281 2022] 3GPP, “TS 29.281: General Packet Radio System (GPRS) Tunnelling Protocol User Plane (GTPv1-U)”, V17.4.0, 2022.
 
-[3GPP TS 29.512] 3GPP, “Session Management Policy Control Service,” TS
-
-#### 29.512 version 17.6.0, 2022.
+[3GPP TS 29.512] 3GPP, “Session Management Policy Control Service,” TS 29.512 version 17.6.0, 2022.
 
 [3GPP TS 33.501] 3GPP, “Security architecture and procedures for 5G System,” 3GPP TS 33.501 version 17.5.0 Release 17.
 
@@ -12916,9 +13074,7 @@ This site allows you to search for a specific RFC by title, number, or authors, 
 
 [3GPP TS 38.* specifications 2024] 3GPP, 3GPP Specification series, https:// www.3gpp.org/dynareport?code=38-series.htm [3GPP TS 38.101-1 2024] 3GPP, “NR; User Equipment (UE) radio transmission and reception; Part 1: Range 1 Standalone”, Available at [3GPP TS38.* specifications 2024].
 
-[3GPP 38.214 2024] 3GPP, “5G; NR; “Physical layer procedures for data,” (3GPP TS
-
-#### 38.214 version 17.1.0 Release 17). Available at [3GPP TS38.* specifications 2024].
+[3GPP 38.214 2024] 3GPP, “5G; NR; “Physical layer procedures for data,” (3GPP TS 38.214 version 17.1.0 Release 17). Available at [3GPP TS38.* specifications 2024].
 
 [3GPP TS 38.300] NR and NG-RAN Overall description; Stage-2. Available at [3GPP TS38.* specifications 2024].
 
