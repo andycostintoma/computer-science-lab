@@ -2238,122 +2238,201 @@ The course adds one teaching motivation for doing Chapter 4 before Chapter 5: be
 
 ##### 4.1.1 Hardware Elements
 
-Any machine language assumes three basic ingredients:
+Machine language is written for a specific physical machine.
+
+So the language has to name the key hardware things that exist at runtime:
 
 ```text
-memory
-processor
-registers
+memory     -> where most values live
+processor  -> the thing that does operations
+registers  -> small, fast storage inside the processor
 ```
 
-**Memory** is a sequence of addressable storage locations.
+**Memory** is the computer's big table of storage cells.
+
+Each cell has an **address** (a number) and holds a fixed-width value (for Hack, 16 bits).
 
 Mental model:
 
 ```text
-address 0 -> some 16-bit value
-address 1 -> some 16-bit value
-address 2 -> some 16-bit value
+RAM[0] = some 16-bit value
+RAM[1] = some 16-bit value
+RAM[2] = some 16-bit value
 ...
 ```
 
-To use memory, the program supplies an address and then reads or writes the value stored there.
+To use memory, a program must (1) pick an address, then (2) read or write the value stored at that address.
 
-**Processor** means the CPU.
-
-The CPU performs primitive operations such as:
+**Processor (CPU)** is the device that repeatedly:
 
 ```text
-add
-subtract
-and
-or
-not
-test conditions
-branch
+fetch an instruction
+decode what it means
+execute it (ALU work, memory access, or a jump)
 ```
 
-The CPU does not invent its own work.
+It can do only a fixed set of primitive operations (add, and, not, compare, branch, etc.).
 
-It follows instructions.
+It does not "decide" what to do.
 
-**Registers** are small storage locations inside the CPU itself.
+It follows the program's instruction stream.
 
-They are much closer to the ALU than main memory, so they are used as fast working storage.
+**Registers** are a few storage cells built into the CPU chip.
 
-The chapter distinguishes two useful roles:
+They are much faster than main memory, so machine languages use them as the CPU's working area.
+
+Two roles matter a lot:
 
 ```text
-data registers    -> hold values being processed
-address registers -> hold memory addresses
+data registers    -> hold values being computed
+address registers -> hold a value that is treated as a memory address
 ```
 
-This distinction matters because memory access is indirect.
+One subtle point that often causes confusion:
 
-You normally do not say "change memory cell 123" in one magical step.
+An "address register" does not contain some special "address substance".
 
-Instead, you first place `123` in an address register, which selects that memory cell, and then you act on the selected cell.
+It contains an ordinary bit-pattern, like any other register.
+
+Whether that bit-pattern is interpreted as:
+
+```text
+the number 17
+```
+
+or as:
+
+```text
+the address of memory cell 17
+```
+
+depends entirely on what the next instruction chooses to do with it.
+
+Concrete mental example (we will see this exactly in Hack later with the `A` register):
+
+```text
+If A = 17:
+
+use A as data:     D = A    // D gets the value 17
+use A as address:  D = M    // D gets RAM[A] (i.e., RAM[17])
+```
+
+This distinction matters because many machines access memory **indirectly**.
+
+Instead of a single magical instruction "write RAM[123]", you typically do it in two steps:
+
+```text
+1) put 123 in an address register  (this selects RAM[123])
+2) read/write the selected memory cell
+```
+
+That pattern is the core mental model for low-level programming:
+
+```text
+address register selects a memory cell
+then the next instruction acts on that selected cell
+```
 
 ##### 4.1.2 Languages
 
-Machine language can be written in two equivalent forms:
+Machine language programs can be written in two equivalent notations:
 
 ```text
-binary
-symbolic
+binary   -> what the CPU actually executes
+symbolic -> a human-friendly spelling of the same instructions
 ```
 
-The binary form is what the hardware executes.
+The binary form is literally the bits that sit in instruction memory.
 
-The symbolic form is what humans prefer to read and write.
+The symbolic form is what we call **assembly language**.
 
-The basic pattern is:
+The bridge between them is a translation program:
 
 ```text
-symbolic instruction -> assembler -> binary instruction
+assembly (symbolic) -> assembler -> machine code (binary)
 ```
 
-Why is symbolic form better for humans?
+The key idea is that these are not two different languages.
 
-Because raw binary hides meaning.
+They are two different *representations* of the same underlying instruction set.
 
-For example, a 16-bit pattern like `1010110001000001` is hard to remember, hard to debug, and hard to reason about.
+Concrete example:
 
-A symbolic instruction like `add R2,R1` is not pleasant either, but at least you can see the intended operation.
-
-This is the key bridge:
+Suppose we want the abstract operation:
 
 ```text
-assembly language = symbolic machine language
-assembler         = translator to binary
+set R1 to (R1 + R2)
 ```
 
-Unlike high-level languages, assembly language is tightly tied to a specific hardware platform.
+As machine designers, we can decide an encoding scheme like:
 
-The available operations, registers, and addressing rules all depend on the actual machine.
+```text
+add op-code = 101011
+R1 code     = 00001
+R2 code     = 00010
+```
+
+Then the CPU's binary instruction could be:
+
+```text
+101011 00010 00001
+```
+
+Since `6 + 5 + 5 = 16`, concatenating these fields left-to-right gives:
+
+```text
+1010110001000001
+```
+
+Humans don't want to write or debug long bit-patterns.
+
+So we choose a symbolic spelling for the same instruction, like:
+
+```text
+add R2,R1
+```
+
+And we let the assembler do the mechanical work:
+
+```text
+look up "add"  -> write 101011
+look up "R2"   -> write 00010
+look up "R1"   -> write 00001
+pack fields into the 16-bit instruction format
+```
+
+In other words: symbols are not magic.
+
+They are just names that stand for agreed-upon bit patterns.
+
+Unlike high-level languages, assembly language is tied to a specific hardware platform.
+
+Change the CPU (instruction formats, op-codes, registers), and you necessarily change the assembly language too.
 
 ##### 4.1.3 Instructions
 
-Every machine language must support a few broad kinds of actions.
+This subsection is still staying general.
 
-This subsection groups instructions by purpose.
+The book is not yet saying, "Here is the exact Hack syntax."
 
-The book is not yet giving the exact Hack instruction set.
-
-It is first answering a simpler question:
+It is first answering a more basic question:
 
 ```text
-what kinds of things must any machine language be able to do?
+what jobs must any machine language be able to do?
 ```
 
-The answer is:
+The answer is a short list:
 
 ```text
-compute on values
-access memory
-change control flow
-use symbolic names instead of raw addresses when possible
+1) compute on values
+2) access memory
+3) control which instruction executes next
+4) use symbols so humans can manage the code
 ```
+
+That list is almost a definition of what low-level programming is.
+
+If a language could not do these things, it could not control a general-purpose computer.
 
 **Arithmetic and logical operations** let the computer transform data that is already inside the machine.
 
@@ -2365,11 +2444,11 @@ subtract one value from another
 and/or/not values
 ```
 
-These instructions are the programming view of the ALU.
+These instructions are the programmer's view of the ALU.
 
-At the hardware level, the ALU computes.
+At the hardware level, the ALU is a circuit.
 
-At the machine-language level, the programmer asks for those computations using instruction mnemonics.
+At the machine-language level, it appears as a menu of primitive operations that instructions can request.
 
 ![](media/figure_wo_caption_4.1.png)
 
@@ -2413,34 +2492,62 @@ Since `true And false = false`, the final value in `R1` is false.
 
 The important point is not these particular mnemonics.
 
-The important point is that machine language must expose primitive computations directly.
+The important point is that machine language exposes primitive computation directly.
 
-There is no expression parser, no rich type system, and no hidden runtime here.
+There is no expression parser, no rich type system, and no hidden runtime.
 
-There are just small instructions that tell the processor exactly which low-level operation to perform.
+If you want a computation, you ask for it in small explicit steps.
 
-The course adds a design perspective here: an instruction set is always a cost/performance trade-off.
+The design lesson here is important:
 
-If you add richer operations, larger data types, or more elaborate addressing features, the language becomes more convenient for programmers, but the hardware becomes more expensive in chip area and execution time.
+an instruction set is always a cost/performance trade-off.
 
-**Memory access** lets the computer read from or write to selected memory locations.
+If you add richer operations, larger data types, or more elaborate addressing features, programming becomes nicer, but the hardware becomes more expensive and often slower.
 
-Registers are small, fast storage cells inside the CPU.
+**Memory access** exists because computation alone is not enough.
 
-Memory is the larger storage outside the CPU.
+The CPU must also be able to fetch values from memory and store results back into memory.
 
-So machine language needs a way to move between:
+Registers are the CPU's fast workspace.
+
+Memory is the larger storage area outside that workspace.
+
+So machine language needs instructions that move between:
 
 ```text
 values in registers
 values in memory
 ```
 
-The usual pattern is:
+The usual pattern is indirect addressing:
 
 ```text
 put an address in an address register
 then operate on the selected memory cell
+```
+
+The easiest mental model is:
+
+```text
+A = a pointer to one memory address
+M = the memory word currently selected by A
+```
+
+So:
+
+```text
+M = RAM[A]
+```
+
+This means `M` is not one fixed place.
+
+Its meaning changes whenever `A` changes.
+
+Example:
+
+```text
+if A = 17, then M means RAM[17]
+if A = 200, then M means RAM[200]
 ```
 
 This section is still speaking in general machine-language terms, not yet in exact Hack syntax.
@@ -2475,7 +2582,14 @@ means:
 store 1 into memory[17]
 ```
 
-The bigger example follows the same logic.
+Read the two instructions as:
+
+```text
+load A,17   -> make A point to address 17
+load M,1    -> write 1 into the memory cell A points to
+```
+
+The bigger example follows exactly the same logic.
 
 To set memory locations `200..249` to `1`, the machine first selects the start address and then repeatedly writes through the selected memory word while advancing the address:
 
@@ -2497,7 +2611,17 @@ increment A
 repeat
 ```
 
-So the main lesson is:
+Tiny trace:
+
+```text
+load A,200   -> A = 200, so M means RAM[200]
+load M,1     -> RAM[200] = 1
+add A,A,1    -> A = 201, so now M means RAM[201]
+load M,1     -> RAM[201] = 1
+add A,A,1    -> A = 202
+```
+
+So the main memory-access lesson is:
 
 ```text
 first select an address
@@ -2521,9 +2645,9 @@ store 1 there
 
 This is why address registers matter so much in low-level programming.
 
-They let the CPU focus on one memory word at a time.
+They let the CPU point at one memory word, and then operate on that selected word.
 
-**Flow control** lets a program avoid strict one-line-after-another execution.
+**Flow control** exists because a useful program cannot just march forward forever.
 
 Without flow control, a program would be trapped in straight-line execution:
 
@@ -2535,9 +2659,11 @@ instruction 4
 ...
 ```
 
-That would make loops, decisions, and repeated work impossible.
+Without jumps, every program would be one fixed straight line.
 
-With jumps and tests, machine language can express higher-level patterns like:
+That would make loops, conditionals, early exits, and repeated work impossible.
+
+With jumps and tests, machine language can build higher-level patterns like:
 
 ```text
 if
@@ -2546,9 +2672,9 @@ for
 goto
 ```
 
-At the machine-language level, these are not separate magical features.
+At the machine-language level, these are not special language constructs.
 
-They are built from instructions that change which instruction executes next.
+They are all built from instructions that decide what the next instruction address will be.
 
 ![](media/figure_4.1.png)
 
@@ -2573,7 +2699,7 @@ keep incrementing R1
 when execution reaches instruction 27, jump back to instruction 13
 ```
 
-So the loop is controlled by a raw number.
+So the loop is controlled by a raw numeric address.
 
 This works, but it is fragile.
 
@@ -2591,7 +2717,7 @@ load R1,0
   goto LOOP
 ```
 
-The logic is the same, but the meaning is clearer:
+The logic is identical, but the meaning is clearer:
 
 ```text
 jump back to the place named LOOP
@@ -2599,9 +2725,9 @@ jump back to the place named LOOP
 
 This is much easier for humans to read and maintain.
 
-**Symbols** are the last major idea in this subsection.
+**Symbols** are the usability layer on top of all this.
 
-The book uses figure 4.1 to show that symbolic names are not just pretty labels.
+The book uses figure 4.1 to show that symbolic names are not just cosmetic.
 
 They solve a real low-level programming problem.
 
@@ -2620,17 +2746,17 @@ If code says `goto 13`, then it assumes the target instruction really is at addr
 
 If the whole program gets shifted in memory, that assumption can break.
 
-If code says `goto LOOP`, an assembler can translate `LOOP` to whichever physical address is correct in the final loaded program.
+If code says `goto LOOP`, an assembler can translate `LOOP` to whichever physical address is correct in the final program.
 
 This is what the book means by *relocatable* code.
 
 So the full message of `4.1.3` is:
 
 ```text
-machine language needs instructions for computation
-machine language needs instructions for memory access
-machine language needs instructions for jumps and tests
-machine language benefits enormously from symbolic references
+machine language must let us compute
+machine language must let us access memory
+machine language must let us change control flow
+machine language becomes usable for humans when symbols replace raw addresses
 ```
 
 The next section, `4.2`, takes these general ideas and shows exactly how the Hack computer realizes them.
@@ -2647,13 +2773,17 @@ This is the language the Hack computer will execute in Chapter 5.
 
 ##### 4.2.1 Background
 
-Hack follows the von Neumann style.
+This section answers a practical question:
 
-It is a 16-bit computer.
+```text
+what hardware picture should you keep in your head while reading Hack assembly?
+```
 
-That means values typically move around the system in 16-bit chunks.
+Hack follows the von Neumann style and is a 16-bit computer.
 
-The chapter begins with the memory model.
+So the machine stores, moves, and computes using 16-bit values.
+
+The easiest way to understand the language is to first understand the memory model.
 
 Hack uses two memories:
 
@@ -2676,7 +2806,9 @@ So each one can hold:
 
 The key purpose of this figure is semantic, not electrical.
 
-It tells you what Hack assembly language is allowed to talk about:
+It is not trying to show every wire.
+
+It is trying to show what Hack programs can talk about and manipulate:
 
 ```text
 instruction memory
@@ -2686,11 +2818,20 @@ D register
 selected memory word M
 ```
 
-The conceptual picture is:
+The core split is:
 
 ```text
-ROM stores instructions
-RAM stores data
+ROM = the program
+RAM = the program's data
+```
+
+That separation is central.
+
+When a Hack program runs, it is constantly doing two things at once:
+
+```text
+reading the next instruction from ROM
+reading/writing data in RAM
 ```
 
 Hack machine language manipulates three named storage targets:
@@ -2701,11 +2842,22 @@ D
 M
 ```
 
-`D` is a plain data register.
+`D` is the straightforward one.
 
-`A` is the hard-working mixed-purpose register.
+It is just a 16-bit data register.
 
-`M` is not a separate physical register inside the CPU.
+`A` is the unusual one.
+
+It can act as:
+
+```text
+a data register
+an address register
+```
+
+`M` is the trickiest one.
+
+It is not a separate physical register inside the CPU.
 
 Instead:
 
@@ -2717,20 +2869,30 @@ So when `A = 100`, the symbol `M` refers to `RAM[100]`.
 
 This single idea explains a huge part of the Hack language.
 
-The `@xxx` instruction sets `A` to `xxx`.
+The instruction `@xxx` sets `A` to `xxx`.
 
-Once that happens, two things become selected at the same time:
+Important: `A` always holds one plain 16-bit number.
+
+It is not storing multiple meanings at once.
+
+What changes is how the *next* instruction uses that same number.
+
+`@xxx` does have two *side effects* in the hardware model:
 
 ```text
-RAM[xxx]
-ROM[xxx]
+it makes RAM[xxx] the selected data memory word (so M would mean RAM[xxx])
+it makes ROM[xxx] the selected instruction (so a jump could go there)
 ```
 
-Then the next instruction decides which of those selections matters.
+But you normally act on only one of these.
 
-If the next instruction talks about `M`, we are using `A` as a data-memory address.
+The next instruction reveals which role `A` is playing:
 
-If the next instruction performs a jump, we are using `A` as an instruction-memory address.
+```text
+use A as a number:         D=A
+use A as a RAM address:    M=... or D=M        // because M = RAM[A]
+use A as a jump target:    ...;JMP / ...;JEQ   // because the jump sets PC = A
+```
 
 Examples:
 
@@ -2739,7 +2901,14 @@ Examples:
 D=A
 ```
 
-means "put the constant 17 into `D`".
+means:
+
+```text
+put 17 into A
+then copy that 17 into D
+```
+
+So here `A` is being used like a data register.
 
 And:
 
@@ -2748,7 +2917,14 @@ And:
 M=D
 ```
 
-means "store `D` into RAM address 100".
+means:
+
+```text
+select RAM[100]
+store D into that selected memory word
+```
+
+So here `A` is being used as an address register.
 
 Branching uses the same register:
 
@@ -2757,28 +2933,359 @@ Branching uses the same register:
 0;JMP
 ```
 
-means "jump to instruction 29".
+means:
+
+```text
+put 29 into A              // set up the jump target
+jump: set PC = A           // so the next instruction fetched is ROM[A]
+```
+
+So here `A` is being used as a jump target.
+
+Hack also supports **conditional branching**.
+
+For example, the logic:
+
+```text
+if D==0 goto 52
+```
+
+is written as:
+
+```text
+@52
+D;JEQ
+```
+
+Read it as:
+
+```text
+put 52 into A
+evaluate D
+if D equals 0, jump to the instruction whose address is A
+```
+
+So branching in Hack follows one basic pattern:
+
+```text
+1) put the destination in A
+2) execute either an unconditional or conditional jump instruction
+```
 
 This dual use of `A` may feel strange at first, but it keeps the architecture small and economical.
 
-Variables are handled symbolically.
+That is the main trade-off:
 
-Instead of remembering physical addresses yourself, you can write:
+```text
+slightly more conceptual confusion
+in exchange for simpler hardware and a smaller instruction set
+```
+
+Variables are where symbols start to matter in a serious way.
+
+In Hack, the `xxx` in `@xxx` can be either:
+
+```text
+a constant
+a symbol
+```
+
+So:
+
+```text
+@23
+```
+
+means:
+
+```text
+set A to the numeric value 23
+```
+
+But:
+
+```text
+@x
+```
+
+means:
+
+```text
+set A to whatever numeric address the assembler assigned to x
+```
+
+If the assembler decided that `x` lives at address `513`, then `@x` ends up behaving like `@513`.
+
+This is what lets Hack programs use variables instead of hard-coded physical addresses.
+
+For example, the high-level idea:
+
+```text
+let x = 17
+```
+
+can be implemented as:
+
+```text
+@17
+D=A
+@x
+M=D
+```
+
+Read it step by step:
+
+```text
+put 17 into D
+select the RAM location bound to x
+store 17 there
+```
+
+So the symbol `x` is not the value itself.
+
+It is a name that the assembler resolves to some RAM address.
+
+That is the assembler's job:
+
+```text
+take symbolic names like x or count
+bind them to sensible, consistent RAM addresses
+replace the symbols with those addresses during translation
+```
+
+This is why programmers can write:
 
 ```text
 @count
 M=M+1
 ```
 
-and let the assembler decide where `count` lives in RAM.
+instead of something like:
+
+```text
+@30
+M=M+1
+```
+
+The second version hard-codes a physical address.
+
+The first version says what the memory cell means, and lets the assembler decide where it should live.
+
+That is much easier to read, change, and maintain.
 
 The language also includes built-in symbols `R0` through `R15`, bound to addresses `0` through `15`.
 
-These act like convenient pre-named working slots.
+So:
+
+```text
+@R3
+M=0
+```
+
+ends up meaning:
+
+```text
+RAM[3] = 0
+```
+
+These built-in names act like convenient pre-named working slots.
+
+That is why the book calls them *virtual registers*.
 
 ![](media/figure_4.3.png)
 
 **Figure 4.3** Hack assembly code examples.
+
+This figure is like a compact tour of the whole language.
+
+It shows that most Hack code is built from the same repeating pattern:
+
+```text
+1) use @xxx to load or select something via A
+2) use a compute instruction to do something with D, M, or the jump logic
+```
+
+The left column shows **memory access examples**.
+
+First:
+
+```text
+// D = 17
+@17
+D=A
+```
+
+Meaning:
+
+```text
+put the value 17 into the A register // used as data
+copy A into D
+```
+
+So this is how Hack gets a constant into `D`.
+
+There is no direct `D=17` instruction.
+
+Second:
+
+```text
+// RAM[100] = 17
+@17
+D=A
+@100
+M=D
+```
+
+Meaning:
+
+```text
+put the value 17 into the A register // used as data
+copy A into D
+put 100 into A // used as address -> select RAM[100]
+store D into M // M = RAM[A]
+```
+
+This shows a very common two-stage pattern:
+
+```text
+first prepare a value
+then select a memory address
+then write the value there
+```
+
+Third:
+
+```text
+// RAM[100] = RAM[200]
+@200
+D=M
+@100
+M=D
+```
+
+Meaning:
+
+```text
+put 200 into A // used as address -> select RAM[200]
+copy M into D // M = RAM[A]
+put 100 into A // used as address -> select RAM[100]
+store D into M // M = RAM[A]
+```
+
+So `D` is often used as a temporary holding place when moving data from one memory cell to another.
+
+The middle column shows **branching examples**.
+
+First:
+
+```text
+// goto 29
+@29
+0;JMP
+```
+
+Meaning:
+
+```text
+put 29 into A                    // set up the jump target
+jump to the instruction at A     // equivalently: set PC = A, so next fetch is ROM[A]
+```
+
+So unconditional jumping is also a two-step process:
+
+```text
+select target address
+issue jump instruction
+```
+
+Second:
+
+```text
+// if D>0 goto 63
+@63
+D;JGT
+```
+
+Meaning:
+
+```text
+put 63 into A                    // set up the jump target
+if D is greater than 0, jump to the instruction at A
+```
+
+So conditional branching works by:
+
+```text
+testing some computed value
+and using A as the jump destination if the condition passes
+```
+
+The right column shows **variable use examples**.
+
+First:
+
+```text
+// x = -1
+@x
+M=-1
+```
+
+Meaning:
+
+```text
+put the address of x into A          // x is a symbol; the assembler resolves it
+store -1 into M                      // M = RAM[A]
+```
+
+The important point is that the program never needs to know the physical address of `x`.
+
+Second:
+
+```text
+// count = count - 1
+@count
+M=M-1
+```
+
+Meaning:
+
+```text
+put the address of count into A      // assembler resolves the symbol
+decrement M in-place                 // M = RAM[A]
+```
+
+This is an in-place update of one variable.
+
+Third:
+
+```text
+// sum = sum + x
+@sum
+D=M
+@x
+D=D+M
+@sum
+M=D
+```
+
+Meaning:
+
+```text
+put the address of sum into A        // select RAM[sum]
+copy M into D                        // D = RAM[sum]
+put the address of x into A          // select RAM[x]
+add M into D                         // D = D + RAM[x]
+put the address of sum into A        // select RAM[sum] again
+store D into M                       // RAM[sum] = D
+```
+
+This example shows the general pattern for combining two variables:
+
+```text
+load one value into D
+combine it with another value
+store the result back somewhere
+```
 
 These examples are worth scanning slowly because each one highlights a different role of `A`:
 
@@ -2788,33 +3295,60 @@ as a way to select RAM
 as a way to select a jump destination
 ```
 
-Figure 4.3 is worth reading slowly because it shows the same few ideas recurring again and again:
+Across all the snippets, the same small vocabulary repeats:
 
 ```text
-set A
-use D
-operate on M
-jump via A
-use symbols instead of raw addresses when possible
+@value or @address   // set A (as a number, RAM address, or jump target)
+use D                // temporary storage
+operate on M         // M = RAM[A]
+jump via A           // jumps set PC = A
+use symbols when possible
 ```
 
 ##### 4.2.2 Program Example
 
-Before giving the formal instruction format, the chapter shows a full Hack program.
+Before giving the formal instruction format, the chapter throws you into a complete Hack program.
 
-The example computes:
+The task is to compute:
 
 ```text
 1 + 2 + 3 + ... + n
 ```
 
-with input stored in `RAM[0]` and output written to `RAM[1]`.
+The contract is:
+
+```text
+input:  n is already in RAM[0] (R0)
+output: write the sum into RAM[1] (R1)
+```
+
+Instead of using the closed-form formula, the program uses a loop and repeated addition.
+That is deliberate: it is a vehicle for showing conditional jumps and iteration in Hack.
 
 ![](media/figure_4.4.png)
 
 **Figure 4.4** A Hack assembly program (example). Note that `RAM[0]` and `RAM[1]` can be referred to as `R0` and `R1.`
 
-If the full listing feels intimidating, read it structurally instead of line by line.
+The figure puts pseudocode on the left and Hack assembly on the right.
+When the assembly looks mystifying, use the left-hand pseudocode as your roadmap.
+
+Here is the pseudocode in one compact view:
+
+```text
+i = 1
+sum = 0
+LOOP:
+  if (i > R0) goto STOP
+  sum = sum + i
+  i = i + 1
+  goto LOOP
+STOP:
+  R1 = sum
+END:
+  goto END
+```
+
+Now read the Hack listing structurally instead of line by line.
 
 Look for these blocks:
 
@@ -2828,9 +3362,109 @@ termination loop
 
 That is the low-level version of ordinary structured programming.
 
-At this point in the chapter, the details still look dense.
+If the details still look dense, that is normal.
+What matters most right now is seeing how each pseudocode line expands into a few primitive moves.
 
-That is normal.
+**Initialization** (set up working variables):
+
+```text
+@i
+M=1
+@sum
+M=0
+```
+
+Meaning:
+
+```text
+RAM[i]   = 1
+RAM[sum] = 0
+```
+
+**Loop condition** (`if (i > R0) goto STOP`):
+
+```text
+@i
+D=M
+@R0
+D=D-M
+@STOP
+D;JGT
+```
+
+Meaning:
+
+```text
+D = RAM[i]
+D = D - RAM[0]          // i - n
+if D > 0: jump to STOP  // i > n
+```
+
+Notice the style: the condition is implemented by computing a difference, then jumping based on the ALU output.
+
+**Loop body** (`sum = sum + i`):
+
+```text
+@sum
+D=M
+@i
+D=D+M
+@sum
+M=D
+```
+
+Meaning:
+
+```text
+D = RAM[sum]
+D = D + RAM[i]
+RAM[sum] = D
+```
+
+**Increment and jump back** (`i = i + 1; goto LOOP`):
+
+```text
+@i
+M=M+1
+@LOOP
+0;JMP
+```
+
+Meaning:
+
+```text
+RAM[i] = RAM[i] + 1
+jump to LOOP
+```
+
+**Stop and write output** (`R1 = sum`):
+
+```text
+@sum
+D=M
+@R1
+M=D
+```
+
+Meaning:
+
+```text
+RAM[1] = RAM[sum]
+```
+
+**Termination loop** (keep the CPU contained after finishing):
+
+```text
+(END)
+@END
+0;JMP
+```
+
+Meaning:
+
+```text
+loop forever
+```
 
 The important pattern to notice is this:
 
