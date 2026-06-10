@@ -2,92 +2,64 @@
 
 #### 1.1 What Is the Internet?
 
-Two useful ways to define “the Internet”:
+You can answer “what is the Internet?” from two angles:
 
-- a nuts-and-bolts view: the concrete components (hosts, links, routers/switches, protocols)
-- a services view: an infrastructure that applications use to communicate
-
-Course material used for this section:
-
-- Book: section `1.1` in `Computer_Networking_A_Top-Down_Approach.md`
-- Slides: `course/slides/Chapter_1_v9.0.pptx`
-- Video transcript: auto-captions from YouTube video `74sEFYBBRAY` (may contain minor captioning errors)
+- the concrete pieces (what it’s made of)
+- the services it provides to applications (what it does)
 
 ##### 1.1.1 A Nuts-and-Bolts Description
 
-At a concrete level, the Internet is a giant interconnection of end systems (hosts) plus the network equipment that moves data between them.
+The Internet is a huge collection of *end systems* (also called *hosts*) connected by a network that moves data between them.
 
-The main pieces:
+Hosts are no longer just PCs and servers. They include phones, tablets, and a growing set of Internet-connected “things” (cameras, appliances, sensors, vehicles, and so on). The important point is: hosts sit at the edge, run applications, and are the source and destination of the data that the network carries.
 
-- Hosts (end systems): laptops, phones, servers, and lots of “things” (IoT devices).
-- Communication links: physical media that carry bits (fiber, copper, radio, satellite). Each link has a transmission rate (bandwidth, in bits/second).
-- Packets: when you send data, it is segmented into chunks and each chunk gets header bytes; these chunks are what the network forwards.
-- Packet switches: devices that forward packets toward their destinations.
-  - Routers: prominent in the network core.
-  - Link-layer switches: prominent in access networks.
-- Routes/paths: the sequence of links and switches that a packet traverses.
+Between hosts, data moves through:
 
-The “trucks on highways” analogy is useful:
+- Communication links: the physical media that carry bits (fiber, copper, radio, satellite). Each link has a transmission rate (bandwidth, in bits/second).
+- Packets: data is broken into chunks; each chunk gets header bytes; the network forwards these chunks independently.
+- Packet switches: devices that forward packets from an incoming link to an outgoing link.
+  - Routers: typically used in the network core.
+  - Link-layer switches: typically used in access networks.
+
+The sequence of links and switches a packet traverses is its *path* (or *route*).
+
+The “trucks on highways” analogy is worth keeping in your head:
 
 - packets are trucks
 - links are roads
 - switches/routers are intersections
 - hosts are buildings
 
-End systems typically connect through ISPs. The Internet is a network of networks: many independently managed ISP networks interconnect to let any host reach any other.
+In practice, hosts don’t usually plug directly into the global Internet. They connect through an Internet Service Provider (ISP). Each ISP is itself a network, and the Internet is formed by interconnecting many independently managed networks. That is what people mean by “a network of networks.”
 
-Protocols and standards matter because everything has to interoperate. Many Internet standards come from the IETF as RFCs.
-
-From course transcript (high-signal points):
-
-- The “nuts-and-bolts” viewpoint is an engineering viewpoint: describe the pieces (hosts, links, packet switches) and how they fit together.
-- The set of “hosts” is broader than PCs and phones: lots of everyday devices can be Internet-connected (the course calls out things like security cameras, appliances, even novelty examples like an Internet-connected toaster that downloads the weather forecast).
-- The phrase “network of networks” is literal: multiple separately owned/operated networks interconnect to form the Internet.
-- Protocols are everywhere inside the network, and standards bodies like the IETF publish RFCs so independently built systems can interoperate.
+To make all these independently built devices and networks work together, everyone needs to agree on protocols. Many Internet protocol standards are published by the IETF as RFCs.
 
 ![](media/page-027-img-01.png)
 
 Figure 1.1 Some pieces of the Internet
 
-From course slides (Chapter_1_v9.0.pptx):
-
-- Packet switches forward packets; routers and switches are the key examples.
-- Links include fiber/copper/radio/satellite; bandwidth measures transmission rate.
-- “Hosts = end systems” are the devices running network apps.
-- The Internet is a “network of networks” made of interconnected ISPs.
-
 ##### 1.1.2 A Services Description
 
-From a programmer’s viewpoint, the Internet is a platform that provides communication services to distributed applications (apps running on different hosts that exchange messages).
+From the services viewpoint, the Internet is a platform that applications use to exchange data.
 
-Key idea: applications run at the edge (on end systems), not inside the core switches/routers.
+Applications are *distributed* when they run on multiple hosts and communicate across the network (Web browsing, email, streaming video, messaging, video calls, multiplayer games, and so on). Importantly, these applications run on end systems. The devices in the network core don’t “run the app”; they just move packets.
 
-The interface between an application and the Internet is a socket interface: a set of rules the application follows to have the network deliver data to a specific destination process on another host.
+For a program to use the Internet, it uses an interface (eventually made concrete as an API) that lets it send data to, and receive data from, another program running elsewhere. In Internet terminology, this interface is provided as a *socket*.
 
-The postal-service analogy:
+The postal-service analogy captures the idea:
 
-- your message is the letter
-- the socket interface is like the envelope/address/stamp/dropbox rules you must follow
-
-From course slides (Chapter_1_v9.0.pptx):
-
-- The Internet provides services for Web, streaming video, video conferencing, email, games, e-commerce, and more.
-- Applications interact with the network via a programming interface.
-
-From course transcript (high-signal points):
-
-- The “services” viewpoint frames the Internet as a service platform.
-- From this view, the Internet is fundamentally about delivering information from one point in the network to another via an interface applications use.
+- you provide the letter (your data)
+- the “rules of the interface” tell you how to address/package it so the infrastructure can deliver it
 
 ##### 1.1.3 What Is a Protocol?
 
 Protocols are rules for communication.
 
-Human analogies help: greetings, turn-taking, what you do if you get no response, and so on.
+Human analogies help because they have the same shape: there are expected messages, a typical ordering, and specific actions based on what you receive (or whether you receive anything at all).
 
-In networks, the “entities” following protocols are hardware/software components (hosts, NICs, routers, etc.). Protocols exist at many places and layers (examples you’ll see throughout the book include HTTP, TCP, IP, WiFi, and Ethernet).
+In networks, the communicating “entities” are hardware/software components (hosts, network interface cards, routers, and so on). Protocols appear at many layers (HTTP, TCP, IP, WiFi, Ethernet), and a big part of networking is understanding how these protocols compose.
 
-Core definition (book):
+Definition:
 
 A protocol defines the format and the order of messages exchanged between two or more communicating entities, as well as the actions taken on the transmission and/or receipt of a message or other event.
 
@@ -95,11 +67,4 @@ A protocol defines the format and the order of messages exchanged between two or
 
 Figure 1.2 A human protocol and a computer network protocol
 
-From course slides (Chapter_1_v9.0.pptx):
-
-- Protocols define message format, message order, and the actions on send/receive.
-- “All communication activity in the Internet is governed by protocols.”
-
-From course transcript (high-signal points):
-
-- Protocols are a “standard way of doing things”: they let independently implemented systems communicate because they agree on message formats and behavior.
+The practical payoff: if two systems implement the same protocol, they can interoperate; if they don’t, communication fails or becomes meaningless.

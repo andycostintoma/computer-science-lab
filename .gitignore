@@ -9,7 +9,3 @@ compiled
 # JetBrains IDEs
 .idea
 *.iml
-
-# Course assets
-core_systems/computer_networking_a_top_down_approach/course/lectures/
-core_systems/computer_networking_a_top_down_approach/course/slides/

@@ -18,9 +18,7 @@ Book source of truth:
 Course source material:
 
 - YouTube playlist: `https://www.youtube.com/watch?v=74sEFYBBRAY&list=PL1ya5dD_M8uX-BLUF1FEvUNsYWQL5_l0O`
-- Local slides under `course/slides/` when available.
-
-The slides directory is intentionally gitignored. Use it as local source material, but do not try to force slides into git unless the user changes that rule.
+- Local slides under `slides/`.
 
 ## Current Progress
 
