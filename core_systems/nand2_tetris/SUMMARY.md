@@ -3487,6 +3487,8 @@ This simple rhythm is one of the defining traits of Hack.
 
 Now the chapter turns from examples to a formal contract.
 
+Every Hack instruction is exactly 16 bits wide.
+
 Hack has exactly two instruction families:
 
 ```text
@@ -3508,9 +3510,22 @@ This figure is the chapter's central reference table.
 
 It tells you exactly which symbolic spellings are legal and which binary bit patterns they mean.
 
-##### The A-instruction
+###### The A-instruction
 
 The `A`-instruction loads a 15-bit value into the `A` register.
+
+Symbolic form:
+
+```text
+@xxx
+```
+
+Where `xxx` can be:
+
+```text
+a constant (like 17)
+a symbol that the assembler will resolve (like sum or LOOP)
+```
 
 Binary shape:
 
@@ -3543,7 +3558,15 @@ So `@n` does not by itself add, store, or jump.
 
 It prepares the stage.
 
-##### The C-instruction
+For example, if `A` ends up holding 17:
+
+```text
+use A as data:     D = A        // D gets 17
+use A as address:  D = M        // D gets RAM[A] (RAM[17])
+use A as jump:     0;JMP        // jump sets PC = A
+```
+
+###### The C-instruction
 
 The `C`-instruction performs actual work.
 
@@ -3564,9 +3587,26 @@ Binary shape:
 The fields mean:
 
 ```text
-comp -> ALU computation
-dest -> destination(s)
-jump -> next-instruction rule
+comp -> what the ALU should compute
+dest -> where to store the ALU result
+jump -> whether to jump (and on what condition)
+```
+
+Symbolic shape:
+
+```text
+dest=comp;jump
+```
+
+Where `dest` and `jump` are optional, but `comp` is always present.
+
+Examples:
+
+```text
+D=M        // dest=D, comp=M
+0;JMP      // comp=0, jump=JMP
+D;JGT      // comp=D, jump=JGT
+MD=D+1     // dest=MD, comp=D+1
 ```
 
 The `comp` field chooses an ALU function.
@@ -3636,6 +3676,15 @@ The standard unconditional jump is:
 
 ```text
 0;JMP
+```
+
+This looks odd until you remember that `comp` is mandatory.
+
+So `0;JMP` means:
+
+```text
+compute 0 (ignored)
+unconditionally jump by setting PC = A
 ```
 
 One subtle best practice appears here.

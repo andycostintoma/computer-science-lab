@@ -1272,13 +1272,13 @@ The Hack machine language consists of two instructions, specified in figure 4.5.
 ![](media/figure_4.5.png)
 **Figure 4.5**    The Hack instruction set, showing symbolic mnemonics and their corresponding binary codes.
 
-##### The A-instruction
+###### The A-instruction
 
 The *A*-instruction sets the `A` register to some 15-bit value. The binary version consists of two fields: an operation code, also known as *op-code*, which is `0` (the leftmost bit), followed by fifteen bits that code a nonnegative binary number. For example, the symbolic instruction `@5`, whose binary version is `0000000000000101`, stores the binary representation of 5 in the `A` register.
 
 The *A*-instruction is used for three different purposes. First, it provides the only way to enter a constant into the computer under program control. Second, it sets the stage for a subsequent *C*-instruction that manipulates a selected RAM register, referred to as `M`, by first setting `A` to the address of that register. Third, it sets the stage for a subsequent *C*-instruction that specifies a jump by first setting `A` to the address of the jump destination.
 
-##### The C-instruction
+###### The C-instruction
 
 The *C*-instruction answers three questions: what to compute (an ALU operation, denoted *comp*), where to store the computed value (*dest*), and what to do next (*jump*). Along with the *A*-instruction, the *C*-instruction specifies all the possible operations of the computer.
 
