@@ -7,7 +7,11 @@ Two useful ways to define “the Internet”:
 - a nuts-and-bolts view: the concrete components (hosts, links, routers/switches, protocols)
 - a services view: an infrastructure that applications use to communicate
 
-Course transcript note: I could not retrieve the YouTube transcript programmatically (the timed-text endpoints returned empty), so this section is based on the book + local slide deck only.
+Course material used for this section:
+
+- Book: section `1.1` in `Computer_Networking_A_Top-Down_Approach.md`
+- Slides: `course/slides/Chapter_1_v9.0.pptx`
+- Video transcript: auto-captions from YouTube video `74sEFYBBRAY` (may contain minor captioning errors)
 
 ##### 1.1.1 A Nuts-and-Bolts Description
 
@@ -33,6 +37,13 @@ The “trucks on highways” analogy is useful:
 End systems typically connect through ISPs. The Internet is a network of networks: many independently managed ISP networks interconnect to let any host reach any other.
 
 Protocols and standards matter because everything has to interoperate. Many Internet standards come from the IETF as RFCs.
+
+From course transcript (high-signal points):
+
+- The “nuts-and-bolts” viewpoint is an engineering viewpoint: describe the pieces (hosts, links, packet switches) and how they fit together.
+- The set of “hosts” is broader than PCs and phones: lots of everyday devices can be Internet-connected (the course calls out things like security cameras, appliances, even novelty examples like an Internet-connected toaster that downloads the weather forecast).
+- The phrase “network of networks” is literal: multiple separately owned/operated networks interconnect to form the Internet.
+- Protocols are everywhere inside the network, and standards bodies like the IETF publish RFCs so independently built systems can interoperate.
 
 ![](media/page-027-img-01.png)
 
@@ -63,6 +74,11 @@ From course slides (Chapter_1_v9.0.pptx):
 - The Internet provides services for Web, streaming video, video conferencing, email, games, e-commerce, and more.
 - Applications interact with the network via a programming interface.
 
+From course transcript (high-signal points):
+
+- The “services” viewpoint frames the Internet as a service platform.
+- From this view, the Internet is fundamentally about delivering information from one point in the network to another via an interface applications use.
+
 ##### 1.1.3 What Is a Protocol?
 
 Protocols are rules for communication.
@@ -83,3 +99,7 @@ From course slides (Chapter_1_v9.0.pptx):
 
 - Protocols define message format, message order, and the actions on send/receive.
 - “All communication activity in the Internet is governed by protocols.”
+
+From course transcript (high-signal points):
+
+- Protocols are a “standard way of doing things”: they let independently implemented systems communicate because they agree on message formats and behavior.
