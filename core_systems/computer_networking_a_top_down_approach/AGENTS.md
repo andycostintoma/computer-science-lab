@@ -36,7 +36,7 @@ When updating `NOTES.md`:
 - Preserve figure captions near their figures.
 - Integrate the matching course transcript and slide material into the same section notes.
 - Treat the book as the structural spine unless the user asks for a different organization.
-- Summarize the prose in a friendlier teaching style, similar to `core_systems/nand2_tetris/SUMMARY.md`.
+- Summarize the prose in a friendlier teaching style, similar to `core_systems/nand2_tetris/NOTES.md`.
 - Prefer short paragraphs, concrete examples, and simple mental models.
 - Explain mechanisms step by step instead of compressing them into vague prose.
 - Keep technical terms precise: do not oversimplify protocol names, layer names, measurements, or definitions.

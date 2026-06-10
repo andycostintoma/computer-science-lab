@@ -4,20 +4,21 @@
 
 This folder tracks study progress through "The Elements of Computing Systems" (Nand2Tetris) using hand-maintained learning notes:
 
-- `SUMMARY.md`: chapter-by-chapter teaching summary of the book.
+- `NOTES.md`: subsection-by-subsection notes (book + slides + video transcripts).
 - `projects/`: one Markdown file per project containing HDL solutions and explanations.
 - `DFF_DEEP_DIVE.md`: supplemental explanation of feedback, latches, flip-flops, and the DFF abstraction.
+- `slides/`: downloaded lecture slide PDFs.
 
 ## Current Progress
 
-- `SUMMARY.md` is intentionally stopped at Chapter 3 (`3.6 Perspective`).
-- Existing `SUMMARY.md` content through Chapter 3 has been rewritten into a step-by-step explanatory style; this is intentional.
+- `NOTES.md` contains the ongoing learning notes.
 - `projects/` currently includes Project 1, Project 2, and Project 3 notes.
+- We work subsection-by-subsection and only move on when the current subsection is fully clear.
 - Do not jump ahead or bulk-append full-book indexes unless the user explicitly asks for that exact operation.
 
-## `SUMMARY.md` Style
+## `NOTES.md` Style
 
-The summary should read like a clear teaching chapter, not like dense academic notes.
+The notes should read like clear teaching material, not like dense academic notes.
 
 Use this style consistently:
 
@@ -27,17 +28,39 @@ Use this style consistently:
 - Explain behavior with simple rules like `if load = 0: hold` and `if load = 1: store`.
 - Use construction ladders such as `DFF -> Bit -> Register -> RAM` when a chapter builds layers.
 - Include mental models after technical details when helpful.
-- Preserve all headings and relevant image references from the source chapter being summarized.
+- Preserve all headings and relevant image references from the book subsection being covered.
 - Do not collapse explanations into vague prose; show how the mechanism works.
 - Put implementation links in each chapter's `Project` subsection, and link directly to the exact chip headings inside `projects/`.
 
+## Concrete, Traceable Notes Style
+
+In general (across all chapters), keep the notes in the same style as our Chapter 4 writeup:
+
+- Start with the concrete implementation picture for the subsection: what components/state exist and what the reader should imagine physically (chips, memory, registers, wires, etc.).
+- Define the notation early, especially anything that can be misread.
+- When a symbol can be interpreted in multiple ways, state the rule for how to disambiguate it in context.
+- When showing any code-like snippet (HDL, assembly, pseudocode), follow it immediately with a `Meaning:` block that is line-by-line and explicitly states what changes.
+- For figures and program examples, explain by blocks (initialization, loop condition, loop body, increment/jump, termination) and use short pseudocode as a roadmap before diving into snippets.
+- Use tiny traces when helpful (one or two iterations, a few key state values) to make pointer-like or stateful behavior concrete.
+- Keep `NOTES.md` self-contained: do not add meta lines like `Sources:` or `Slides + transcript emphasis:` inside the notes.
+
+Hack-specific example of the above (only when relevant): `A` and `D` are registers; `M` is not a register, it means `RAM[A]`, and `A` is always one 16-bit value whose interpretation depends on the next instruction.
+
+## Sources
+
+Each subsection in `NOTES.md` is a synthesis of:
+
+- The book: `The_Elements_of_Computing_Systems_2021.md` (source of truth for headings/figures).
+- The slides: `slides/lecture-XX.pdf` (reinforces mental models and examples).
+- The video course transcript: https://www.youtube.com/watch?v=LqirVc5SlW0&list=PLrDd_kMiAuNmSb-CKWQqq9oBFN_KNMTaI
+
 ## Working Rules For Future Agents
 
-1. Continue summaries incrementally, in order, from the current stopping point.
-2. Preserve existing heading hierarchy and the step-by-step teaching style in `SUMMARY.md`.
-3. Keep image markdown references when they are part of the chapter content being summarized.
-4. Treat `The_Elements_of_Computing_Systems_2021.md` as the source of truth.
-5. Before large edits, confirm current stopping point by checking existing headings in `SUMMARY.md`.
+1. Work subsection-by-subsection, in order.
+2. Preserve existing heading hierarchy and the step-by-step teaching style in `NOTES.md`.
+3. Keep image markdown references when they are part of the book subsection being covered.
+4. Treat `The_Elements_of_Computing_Systems_2021.md` as the source of truth for headings/figures.
+5. Before edits, confirm the exact subsection boundaries in `NOTES.md`.
 6. Do not create extra documentation files unless explicitly requested.
 
 ## Safety And Scope
