@@ -1434,3 +1434,519 @@ The big takeaway from Chapter 1 is not a single formula or device. It is the ove
 - many protocols
 - many independently run networks
 - one shared goal: move data between applications correctly and efficiently
+
+## Chapter 2: Application Layer
+
+#### 2.1 Principles of Network Applications
+
+The core idea: a network application is a set of programs running on different end systems that exchange messages over the network.
+
+When you build an application, you can mostly treat the “inside of the network” as an abstraction. Two things matter most:
+
+- what service the transport layer gives you (reliability, etc.)
+- what programming interface you use to access that service (sockets)
+
+Importantly, you write application software for end systems, not for routers and switches in the network core.
+
+![](media/slides/chapter-2/slide-05-creating-network-app.png)
+
+Network apps run on end systems; the network core forwards packets at lower layers.
+
+![](media/page-099-img-01.png)
+
+Figure 2.1 Communication for a network application takes place between end systems at the network edge
+
+##### 2.1.1 Network Application Architectures
+
+An application’s architecture is how you arrange the application across end systems. The two common paradigms are:
+
+- client-server
+- peer-to-peer (P2P)
+
+Client-server:
+
+- one (or a cluster acting like one) always-on server provides service
+- clients initiate contact with the server
+- clients generally do not communicate directly with each other
+- the server has a stable, well-known address (in practice, often a name that maps to one or more IP addresses)
+- popular services typically run in data centers for scale
+
+![](media/slides/chapter-2/slide-06-client-server-paradigm.png)
+
+The client-server pattern: many clients reach an always-on server, often hosted in data centers.
+
+Peer-to-peer:
+
+- minimal or no dedicated always-on server
+- peers (user machines) talk directly to other peers
+- each peer can be both a “client” (requesting) and a “server” (serving)
+- a key benefit is self-scalability: as more peers join, they can add capacity
+- key challenges are security, performance, and reliability in a decentralized system
+
+![](media/slides/chapter-2/slide-07-peer-to-peer-architecture.png)
+
+The P2P pattern: end systems communicate directly, exchanging service with each other.
+
+![](media/page-101-img-01.png)
+
+Figure 2.2 (a) Client-server architecture; (b) P2P architecture
+
+##### 2.1.2 Processes Communicating
+
+In operating systems terms, network applications are made of communicating *processes* (running programs), not just “programs” as static code.
+
+Processes on different hosts communicate by exchanging messages over the network.
+
+Client vs server is defined per communication session:
+
+- client process: initiates contact
+- server process: waits to be contacted
+
+Even in P2P applications, a peer can play the client role in one interaction and the server role in another.
+
+The interface between a process and the network is the *socket*.
+
+- a process sends messages into the network via its socket, and receives messages from the network via its socket
+- you can think of the socket as the “door” between the application and the transport layer
+
+![](media/page-103-img-01.png)
+
+Figure 2.3 Application processes, sockets, and underlying transport protocol
+
+Addressing processes
+
+To send to a specific destination process, you need:
+
+- the destination host’s IP address
+- a destination port number (to identify the receiving process/socket on that host)
+
+Examples of well-known ports:
+
+- HTTP server: `80`
+- SMTP mail server: `25`
+
+##### 2.1.3 Transport Services Available to Applications
+
+Choosing a transport protocol is mostly choosing a bundle of services. Common service dimensions:
+
+- reliable data transfer: do you need every byte to arrive correctly and in order?
+- throughput: do you need a minimum rate, or can you use whatever is available?
+- timing: do you need low delay (or a delay bound) to be effective?
+- security: do you need confidentiality, integrity, authentication?
+
+The “shape” of applications differs:
+
+- file transfer / web / email: typically require reliability; elastic throughput
+- interactive audio/video, games: can tolerate some loss but often need low delay; may need minimum throughput
+
+##### 2.1.4 Transport Services Provided by the Internet
+
+The Internet offers two main transport protocols to applications: TCP and UDP.
+
+TCP provides:
+
+- connection-oriented service (handshake before data flows)
+- reliable, in-order byte-stream delivery
+- flow control and congestion control
+
+UDP provides:
+
+- connectionless service (no handshake)
+- best-effort delivery of messages (loss and reordering are possible)
+- minimal additional services (no reliability, flow control, congestion control guarantees)
+
+![](media/page-106-img-01.png)
+
+Figure 2.4 Requirements of selected network applications
+
+Security note (TLS)
+
+TCP and UDP by themselves do not encrypt; confidentiality/integrity/authentication are commonly added with TLS on top of TCP.
+
+##### 2.1.5 Application-Layer Protocols
+
+An application-layer protocol defines how the application’s processes exchange messages, including:
+
+- message types (for example, request/response)
+- message syntax (fields and encoding)
+- message semantics (meaning of fields)
+- rules for when messages are sent and how to respond
+
+Protocols can be:
+
+- open (standardized, often in RFCs, enabling interoperability), e.g. HTTP
+- proprietary (not publicly specified), e.g. many real-time communication protocols
+
+It helps to separate the ideas:
+
+- the *application* is the full system (clients, servers, data, UI, storage, etc.)
+- the *application-layer protocol* is the message format and sequencing between components
+
+##### 2.1.6 Network Applications Covered in This Book
+
+Rather than covering everything, the focus is on a small set of pervasive applications and the key ideas they teach:
+
+- the Web (HTTP)
+- electronic mail (multiple protocols)
+- DNS (name-to-address translation implemented as an application-layer service)
+- video streaming on demand (including CDNs)
+
+![](media/page-109-img-01.png)
+
+Figure 2.5 Popular Internet applications, their application-layer protocols, and their underlying transport protocols
+
+#### 2.2 The Web and HTTP
+
+The Web is the Internet application that made the Internet feel useful to everyone, not just to researchers and engineers. It gives people an on-demand way to fetch information, publish information, watch media, use apps, and interact with remote services.
+
+Under the hood, the Web is still a network application: browsers and servers exchange messages, and the protocol that organizes those messages is HTTP.
+
+##### 2.2.1 Overview of HTTP
+
+HTTP (`HyperText Transfer Protocol`) is the application-layer protocol of the Web.
+
+A few core terms make the whole section easier to follow:
+
+- a `Web page` is a collection of `objects`
+- an `object` is a file addressable by a single URL, such as HTML, CSS, JavaScript, an image, or a video clip
+- a page usually has one `base HTML file` plus many `referenced objects`
+- a URL identifies both the `hostname` of the server and the `path` of the object on that server
+
+That means loading one page usually means loading many objects.
+
+![](media/slides/chapter-2/slide-18-http-overview.png)
+
+Fetching one page usually means retrieving a base HTML file and then many additional referenced objects.
+
+HTTP is implemented by two programs:
+
+- the `client`, usually the browser
+- the `server`, which stores and returns Web objects
+
+The client sends an `HTTP request`. The server sends back an `HTTP response` containing the requested object or some status explaining what happened.
+
+![](media/page-112-img-01.png)
+
+Figure 2.6 HTTP request-response behavior
+
+In the traditional setup, HTTP runs over TCP:
+
+- the browser opens a TCP connection to the server
+- the browser and server use sockets to send and receive HTTP messages
+- TCP handles reliable delivery, so HTTP does not need to manage packet loss itself
+
+One of HTTP's most important design choices is that it is `stateless`.
+
+That means the server does not remember client state just because it served a previous request. If the same browser asks for the same object again a few seconds later, the server treats it like a fresh request and sends the object again.
+
+This sounds limited, but it keeps the basic protocol simple and scalable. The state that Web applications need is added by mechanisms such as cookies, which appear later in this section.
+
+Version-wise:
+
+- `HTTP 1.0`, `HTTP 1.1`, and `HTTP 2` run over TCP
+- `HTTP 3` runs over QUIC, which itself uses UDP underneath
+
+##### 2.2.2 Non-Persistent and Persistent Connections
+
+When a browser needs many objects from the same server, the application designer has to decide whether each request/response pair should use its own TCP connection or whether many requests should share one connection.
+
+That gives two styles:
+
+- `non-persistent HTTP`: one TCP connection per object
+- `persistent HTTP`: one TCP connection reused across many objects
+
+![](media/slides/chapter-2/slide-20-http-connections-types.png)
+
+HTTP can either create a fresh TCP connection for each object or keep one connection open and reuse it.
+
+With `non-persistent HTTP`, the flow for one object is roughly:
+
+1. the client opens a TCP connection to the server
+2. the client sends one HTTP request
+3. the server sends one HTTP response carrying one object
+4. the connection closes
+
+If the page has 1 base HTML file and 10 images, that can mean 11 separate TCP connections.
+
+The response-time estimate is a key intuition:
+
+- about `1 RTT` to establish the TCP connection
+- about `1 RTT` for the request to go to the server and for the first part of the response to come back
+- plus the `transmission time` for the object itself
+
+So the rough cost for one object is:
+
+`2 RTT + transmission time`
+
+![](media/page-115-img-01.png)
+
+Figure 2.7 Back-of-the-envelope calculation for the time needed to request and receive an HTML file
+
+![](media/slides/chapter-2/slide-23-nonpersistent-http-response-time.png)
+
+For non-persistent HTTP, each object pays for connection setup and the request-response round trip again.
+
+This repeated setup is expensive. Every new TCP connection needs socket state, buffers, and handshake time.
+
+`Persistent HTTP` reduces that overhead by leaving the TCP connection open after a response. The browser can then request more objects over that same connection.
+
+Benefits of persistent connections:
+
+- fewer TCP handshakes
+- fewer sockets and buffers to maintain
+- lower delay for pages with many objects
+- support for `pipelining`, where requests can be sent back-to-back
+
+This is why persistent connections became the normal direction for modern HTTP.
+
+##### 2.2.3 HTTP Message Format
+
+HTTP has two message types:
+
+- `request messages`
+- `response messages`
+
+In classic HTTP, these messages are human-readable text. That is useful because the protocol is easy to inspect and reason about.
+
+An HTTP request message has:
+
+- a `request line`
+- zero or more `header lines`
+- an optional `entity body`
+
+The request line contains:
+
+- the `method`
+- the `URL`
+- the `HTTP version`
+
+Common methods:
+
+- `GET`: fetch an object
+- `POST`: submit data, often in the entity body
+- `HEAD`: ask for headers only, without the object body
+- `PUT`: upload/store an object at a path
+- `DELETE`: remove an object
+
+![](media/page-117-img-01.png)
+
+Figure 2.8 General format of an HTTP request message
+
+Useful request headers from the example:
+
+- `Host`: which server the object belongs to
+- `Connection: close`: do not keep the TCP connection open afterward
+- `User-Agent`: which browser/client is making the request
+- `Accept-Language`: which language version the user prefers
+
+`POST` usually carries user-supplied data in the message body. A `GET` request can also carry user input, but it places that data in the URL query string instead.
+
+An HTTP response message has:
+
+- a `status line`
+- header lines
+- an entity body containing the object data
+
+The status line contains:
+
+- the `HTTP version`
+- a `status code`
+- a short `status message`
+
+Common response codes:
+
+- `200 OK`: success
+- `301 Moved Permanently`: object now lives at a different URL
+- `400 Bad Request`: malformed request
+- `404 Not Found`: object does not exist at this server
+- `505 HTTP Version Not Supported`: server does not support that version
+
+![](media/page-118-img-01.png)
+
+Figure 2.9 General format of an HTTP response message
+
+Useful response headers from the example:
+
+- `Date`: when the response was created/sent
+- `Server`: which server software generated the response
+- `Last-Modified`: when the object last changed
+- `Content-Length`: number of bytes in the object
+- `Content-Type`: type of the returned object
+
+The big picture is simple: HTTP messages say `what is being requested`, `what happened`, and `what metadata the other side needs to interpret the object correctly`.
+
+##### 2.2.4 User-Server Interaction: Cookies
+
+Basic HTTP is stateless, but many real applications need continuity across requests.
+
+Examples:
+
+- keeping a user logged in
+- remembering a shopping cart
+- saving user preferences
+- tracking past activity to personalize content
+
+`Cookies` are the mechanism commonly used to add that continuity.
+
+Cookie-based state has four pieces:
+
+- a cookie header in an HTTP response
+- a cookie header in later HTTP requests
+- a cookie file stored in the browser
+- a back-end database at the site
+
+![](media/page-120-img-01.png)
+
+Figure 2.10 Keeping user state with cookies
+
+The flow works like this:
+
+1. the browser visits a site
+2. the server creates a unique identifier
+3. the server returns that identifier in `Set-Cookie`
+4. the browser stores it
+5. later requests send it back in a `Cookie` header
+6. the server uses that identifier to look up state in its database
+
+![](media/slides/chapter-2/slide-33-cookie-state-flow.png)
+
+Cookies let a site reconnect a new HTTP request to an older user session.
+
+This is what makes things like shopping carts, saved sessions, and one-click checkout possible.
+
+The tradeoff is privacy. Cookies can be helpful for user experience, but they can also be used to build detailed behavior profiles. A useful distinction is:
+
+- `first-party cookies`: set by the site the user intentionally visited
+- `third-party cookies`: set by another embedded domain, such as an ad or tracking service
+
+Third-party cookies are especially controversial because they can track behavior across many different sites.
+
+##### 2.2.5 Browser Caching
+
+If every page load had to fetch everything again from the origin server, the Web would feel much slower than it does.
+
+`Browser caching` improves performance by storing previously fetched objects locally.
+
+When the user requests an object, the browser first checks its local cache:
+
+- if the object is still valid, the browser can use it immediately
+- if the browser is unsure whether it is still fresh, it can ask the server conditionally
+
+This can cut the apparent delay below one RTT, and in the best case all the way to essentially zero network delay for that object.
+
+The two key HTTP tools here are:
+
+- `Cache-Control`: tells the browser whether and how long it may cache an object
+- `If-Modified-Since`: lets the browser ask whether its cached copy is still current
+
+For example:
+
+- `Cache-Control: no-store` means do not cache locally
+- `Cache-Control: max-age=3600` means the browser may reuse the object for one hour
+
+If the browser sends a conditional GET and the object has not changed, the server can reply:
+
+- `304 Not Modified`
+
+That response says, in effect, "your cached copy is still good; use that one."
+
+![](media/slides/chapter-2/slide-48-browser-caching-conditional-get.png)
+
+Conditional GET avoids retransmitting an object that the browser already has.
+
+The course also emphasizes the broader caching idea: keeping popular content closer to the user reduces both delay and network load.
+
+![](media/slides/chapter-2/slide-42-web-cache-overview.png)
+
+Caching helps twice: users wait less, and repeated traffic across the network is reduced.
+
+##### 2.2.6 HTTP 2
+
+HTTP 1.1 already improved efficiency by reusing persistent TCP connections, but it still had an important performance problem: `head-of-line (HOL) blocking`.
+
+Imagine one large video object and many tiny page objects sharing one TCP connection. If the large object gets in front, the small objects can be delayed behind it even though they could have been rendered earlier.
+
+Browsers often worked around this by opening multiple parallel TCP connections, but that increases socket overhead and can unfairly grab more bandwidth.
+
+HTTP 2 was designed to improve this situation while keeping the familiar high-level HTTP model.
+
+HTTP 2 keeps:
+
+- methods
+- status codes
+- URLs
+- most header semantics
+
+What it changes is how data is carried between client and server.
+
+The most important idea is `framing`:
+
+- large messages are broken into smaller frames
+- frames from different objects can be interleaved on one TCP connection
+- the receiver reassembles frames into the original messages
+
+![](media/slides/chapter-2/slide-52-http2-frame-interleaving.png)
+
+HTTP 2 reduces head-of-line delay by interleaving frames from large and small objects on one connection.
+
+This lets small objects arrive much earlier instead of waiting behind one large transfer.
+
+HTTP 2 also adds:
+
+- `prioritization`, so the client can indicate which responses matter more
+- `server push`, so the server can proactively send objects the client will likely need
+- more efficient binary framing and compressed headers
+
+The theme of HTTP 2 is not "invent a new Web," but "keep the Web model and remove avoidable latency."
+
+##### 2.2.7 HTTP 3 and QUIC
+
+HTTP 3 keeps the HTTP message model but changes the transport underneath it.
+
+Instead of running over TCP, HTTP 3 runs over `QUIC`, which itself uses UDP.
+
+Strictly speaking, QUIC is implemented as an application-layer sublayer over UDP rather than as a traditional Internet transport-layer protocol. But from the application developer's point of view, it behaves a lot like a transport protocol because applications can use QUIC sockets and rely on QUIC to provide transport-like services.
+
+Why move away from TCP?
+
+One big reason is connection setup delay. In secure Web communication based on `TLS over TCP`, the client traditionally pays for:
+
+- a TCP handshake
+- then a separate TLS handshake
+
+QUIC integrates `TLS 1.3` directly into the connection setup, so secure setup can happen faster.
+
+Important performance benefits:
+
+- `1-RTT` setup for a new connection in common cases
+- `0-RTT` data for returning clients in some cases
+- built-in encryption by default
+
+![](media/page-126-img-01.png)
+
+Figure 2.11 a. traditional secure HTTP protocol stack; b. secure QUIC-based HTTP 3 protocol stack
+
+QUIC also attacks a second kind of HOL blocking.
+
+HTTP 2 can interleave frames from many objects, but it still rides on a single TCP connection. If one TCP packet is lost, TCP holds back later data until that missing piece is repaired. So one loss can delay unrelated HTTP messages.
+
+QUIC avoids that by managing multiple independent `streams` inside one QUIC connection. If one stream loses data, the others can continue moving.
+
+![](media/slides/chapter-2/slide-56-quic-connection-establishment.png)
+
+QUIC folds security and connection setup together so secure HTTP can start with fewer round trips.
+
+From the application's perspective, QUIC provides:
+
+- connection-oriented communication
+- reliable delivery
+- flow control and congestion control
+- built-in encryption
+- independent streams
+- support for fast reconnects and connection migration
+
+So the short summary is:
+
+- `HTTP 1.x`: simple request/response over TCP
+- `HTTP 2`: reduce delay with framing, multiplexing, prioritization, and push
+- `HTTP 3`: keep those gains, but move to QUIC to reduce setup delay and avoid TCP-level HOL blocking
