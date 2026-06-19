@@ -1,5 +1,9 @@
 ## Preface
 
+> What I hear, I forget; What I see, I remember; What I do, I understand.
+>
+> --Confucius (551-479 B.C.)
+
 The book's promise is simple:
 
 ```text
@@ -8,9 +12,31 @@ Build a complete computer system.
 Run real programs on it.
 ```
 
-The point is not only to learn hardware or software separately. The point is to understand how the whole stack fits together.
+The point is not only to learn hardware or software separately. The point is to understand how the whole stack fits together by building it.
 
-Modern computers feel mysterious because each layer hides the layer below it. The book reverses that experience. Instead of accepting the machine as magic, we build each layer from the previous one.
+The opening frame is BANG:
+
+```text
+Bits
+Atoms
+Neurons
+Genes
+```
+
+Atoms, neurons, and genes may never be fully understood from top to bottom. Bits are different. A modern computer can look impossibly complex, but the ideas underneath it can be laid bare.
+
+That is the opportunity of Nand to Tetris: take the machine apart conceptually, then rebuild it from first principles.
+
+Modern computers feel mysterious because each layer hides the layer below it. Interfaces are useful, but they also hide implementations. Proprietary systems hide even more. The result is specialization: one course for programming, another for hardware, another for theory, another for systems.
+
+The book reverses that experience. Instead of accepting the machine as magic, we build each layer from the previous one. Each layer becomes an abstraction with a clear contract:
+
+```text
+interface: what the layer promises to do
+implementation: how the layer keeps that promise
+```
+
+In concrete course terms, the goal is to build a complete, general-purpose, working computer from the ground up, hardware and software. The first course focuses on the hardware computer, called Hack; the second course completes the software hierarchy above it.
 
 The construction path is:
 
@@ -27,49 +53,135 @@ Nand gate
   -> applications
 ```
 
+This path is large, so the educational point is also about method. A complex system becomes manageable when it is split into modules, when each module has a precise interface, and when every implementation is built from simpler parts.
+
+Richard Feynman's line captures the spirit of the course:
+
+> What I cannot create, I do not understand.
+
+Nand to Tetris takes that literally. Understanding comes through creation: start with Nand, build the hardware platform, build the software hierarchy, and end with a machine that can run Tetris and other programs.
+
 The second edition clarifies this path and aligns the book more closely with the online course materials.
 
 ### Scope
 
-The book covers the minimal set of ideas needed to build a working general-purpose computer.
+The scope is not "all of computer science." It is the connected path needed to build a working general-purpose computer, then run high-level programs on it.
 
-That includes:
+The selection rule is:
 
-- Boolean logic
+```text
+include a topic if it is needed to build the machine,
+run programs on the machine,
+or support the next abstraction layer
+```
+
+That path covers hardware first:
+
 - Boolean arithmetic
-- memory
-- machine language
-- computer architecture
-- assemblers
-- virtual machines
-- high-level languages
-- compilers
-- operating systems
-- algorithms, data structures, and software engineering ideas
+- combinational logic and sequential logic
+- logic gates, multiplexers, flip-flops, registers, RAM units, and counters
+- HDL, chip simulation, verification, and testing
 
-The key word is minimal. The book does not try to cover every industrial detail. It keeps only what is needed to make the whole system understandable and buildable.
+Then it moves into computer architecture:
+
+- ALU and CPU design
+- clocks and cycles
+- addressing modes
+- fetch/execute logic
+- instruction sets
+- memory-mapped input/output
+
+Once the hardware platform exists, the scope shifts upward through the software stack:
+
+- binary and symbolic machine language
+- assembly programming and assemblers
+- stack-based virtual machines
+- function call and return, including recursion
+- a simple object-based, Java-like high-level language
+- lexical analysis, parsing, symbol tables, and code generation
+- arrays, objects, and two-tier compilation
+
+The programming work is not just to study these abstractions. It is to implement the assembler, virtual machine, and compiler, using supplied APIs and any programming language.
+
+The operating-system layer supplies the services that high-level programs expect:
+
+- memory management
+- math routines
+- input/output drivers
+- string processing
+- text output and graphics output
+- high-level language support
+
+The course framing makes the split concrete. The first half builds the Hack hardware platform from the ground up. The second half builds the software hierarchy on top of it. In the first course, that means seven weeks, six projects, one computer, and no assumed CS or engineering background.
+
+Each chapter is meant to connect three things: the idea, the tool, and the construction task. For example, Chapter 1 introduces basic Boolean ideas and Nand, then uses HDL and hardware simulation to build elementary logic gates. Later chapters repeat the same pattern at larger scales.
+
+The key word is still minimal. The book does not try to cover every industrial detail. It keeps the smallest cohesive set of topics needed to make the whole system understandable and buildable. That set still includes many central ideas: data structures, algorithms, modular design, interface/implementation contracts, API design, documentation, unit testing, proactive test planning, quality assurance, and programming at large.
 
 ### Courses
 
-The material can serve different kinds of courses.
+The material can serve different kinds of learners because it is not a normal single-topic course.
 
-It can be used as:
+Most courses move along one track:
+
+```text
+programming course
+  or architecture course
+  or compilers course
+  or operating systems course
+```
+
+Nand to Tetris cuts across those tracks. The book calls this "perpendicular" to the typical computer science curriculum: it can be taken early, late, or outside a formal CS program, because the organizing question is always the same:
+
+```text
+What do we need next in order to build the computer?
+```
+
+That makes it useful as:
 
 - an early systems course
 - a late synthesis course
-- a hardware-focused course
-- a software-focused course
+- a combined architecture-and-compilation course
+- a hardware-only course using Part I
+- a software-only course using Part II
 - a full semester-long build-the-computer experience
+- two separate semester-long experiences, depending on pace and depth
 
-The hardware half assumes almost no background. The software half assumes basic programming.
+The top-level split is modular:
 
-The reason the course works for many audiences is that the main skill is systems thinking:
+```text
+Part I: Hardware
+  chapters 1-6
+  projects 1-6
+  builds the Hack computer
+
+Part II: Software
+  chapters 7-12
+  projects 7-12
+  builds the software hierarchy above Hack
+```
+
+Part I requires no prerequisite knowledge. That is why the course introduction can frame the first half as seven weeks, six projects, one computer, and zero assumed CS or engineering background.
+
+Part II does require programming, but not a specific language. The programming prerequisite matters because the learner will implement translators and system software: the VM translator, compiler, and operating-system services.
+
+The course also works for different audiences:
+
+- computer science students who want a systems-oriented introduction
+- advanced students who want to synthesize earlier courses
+- nonmajors who have learned some programming and want to go deeper
+- software developers who want to "go below" their usual high-level tools
+- compact applied-CS programs that need a focused systems component
+
+The reason this works is that the main skill is systems thinking:
 
 ```text
 understand an abstraction
 implement it from simpler parts
 use it as a building block for the next layer
 ```
+
+So the same material can be adjusted by pace and depth without changing the central experience: build the stack, one abstraction at a time.
 
 ### Resources
 
@@ -134,15 +246,6 @@ Part II -> software
 It also improves explanations, figures, examples, appendices, and project alignment with the online materials.
 
 The main improvement is conceptual clarity: the book keeps returning to the difference between abstraction and implementation.
-
-### Acknowledgments
-
-The authors credit the students, teaching assistants, editors, tool builders, and course-material contributors who shaped the project over many years.
-
-Special attention is given to Mark Armbrust, who supported learners through the Q&A forum, fixed bugs, wrote scripts, and became central to the community.
-
-The larger point is that Nand to Tetris became more than a book. It became an open educational ecosystem around the idea that the computer can be understood by building it.
-
 ## I Hardware
 
 ### Introduction
@@ -233,6 +336,33 @@ software translates downward
 
 Hardware starts with gates and rises toward a machine. Software starts with high-level programs and is translated down into machine instructions.
 
+The first half of the course stops at a working Hack computer and a low-level assembly language. That is enough to run programs, but it is not how most programmers want to work.
+
+The second half asks what must be added to make Hack feel like a normal programming platform:
+
+```text
+high-level language
+  -> compiler
+  -> virtual machine layer
+  -> assembler
+  -> Hack machine language
+  -> Hack hardware
+```
+
+The high-level language is Jack. Jack is deliberately simple, but it has the features expected in an introductory programming language: loops, data types, methods, objects, and abstractions.
+
+The missing services are supplied by a standard library, also called the Jack OS:
+
+```text
+math operations
+string processing
+memory management
+input and output
+text and graphics output
+```
+
+So "Hack to Tetris" means closing the gap between a bare computer that understands only low-level instructions and a platform where a programmer can write a game in a high-level language.
+
 #### Abstraction and Implementation
 
 Every module has two views.
@@ -273,6 +403,29 @@ how their pins are connected
 
 The hardware simulator then tests the design before any physical hardware exists.
 
+That is the practical method of the hardware half:
+
+```text
+read the chip abstraction
+design a lower-level implementation
+write the implementation in HDL
+run the supplied test script
+debug in the hardware simulator
+```
+
+This is how hardware engineers work in practice: they use computers to design, test, and debug hardware before building physical chips.
+
+For a chip like `Xor`, the workflow is concrete:
+
+```text
+abstraction: Xor outputs 1 when its two inputs differ
+design: choose lower-level gates that realize that behavior
+HDL: describe how those gates are connected
+test: run the chip against supplied scripts and compare files
+```
+
+The same pattern repeats for every chip in the hardware journey.
+
 Part II later uses the completed hardware platform to build the software stack: assembler, virtual machine, compiler, and operating system.
 
 #### The Road Ahead
@@ -290,22 +443,84 @@ Across projects, we start from Nand and build toward applications.
 
 Within each project, we first understand the desired abstraction, then implement it using already available parts.
 
+In Part I, the concrete destination is the Hack computer. At a high level, Hack has the same core shape as other stored-program computers:
+
+```text
+ROM: holds the program instructions
+CPU: executes instructions
+RAM: stores data
+keyboard: supplies input
+screen: displays output
+```
+
+Once these pieces are connected, the computer can execute programs: Pong, Space Invaders, Sokoban, Tetris, or any other program that can be expressed for the platform.
+
 Part I builds:
 
 ```text
-logic gates
-  -> ALU
-  -> memory
-  -> machine language
+Nand
+  -> elementary logic gates
+  -> arithmetic logic unit (ALU)
+  -> registers and memory units
+  -> Hack machine language programs
   -> CPU and computer architecture
-  -> assembler
+  -> assembler for Hack machine language
 ```
+
+The course splits this into six hardware-side projects:
+
+```text
+Project 1: build elementary logic gates
+Project 2: build the ALU
+Project 3: build memory systems
+Project 4: write programs in Hack machine language
+Project 5: build the Hack computer
+Project 6: build an assembler for Hack machine language
+```
+
+Notice the pause in project 4. Before building the full computer, you learn the language that the computer will execute. Then project 5 builds the machine that can run that language, and project 6 builds the tool that translates symbolic assembly into executable binary code.
 
 That completed hardware/software boundary becomes the foundation for the higher-level software stack in Part II.
 
+Part II then builds the missing software layers:
+
+```text
+Jack program
+  -> compiler
+  -> VM code
+  -> VM translator
+  -> Hack assembly
+  -> assembler
+  -> Hack machine code
+  -> Hack computer
+```
+
+Meaning:
+
+- the Jack language gives programmers a comfortable high-level notation
+- the compiler translates Jack into VM code
+- the VM translator translates VM code into Hack assembly
+- the assembler translates Hack assembly into binary machine code
+- the Hack computer executes that machine code
+
+The operating system and standard library provide the high-level operations that programs assume already exist: printing text, reading input, drawing graphics, doing math, and managing memory. Without this layer, even `Hello World` would require too much low-level work.
+
 ### 1 Boolean Logic
 
+> Such simple things, and we make of them something so complex it defeats us, Almost.
+>
+> --John Ashbery (1927-2017)
+
 Digital hardware stores and processes binary values.
+
+At the physical level, chips can be built from many different technologies. At this level, we ignore those physical details and keep only the logical abstraction:
+
+```text
+each signal has one of two values
+each chip computes a rule over those values
+```
+
+That is why the chapter starts with Boolean logic instead of electronics. We first learn how to describe behavior over `0` and `1`; later we implement that behavior with gates and HDL.
 
 Chapter 1 builds the basic vocabulary of hardware:
 
@@ -316,6 +531,8 @@ Nand
   -> 16-bit versions
   -> multi-way versions
 ```
+
+These chips become the standard parts used in the next layers: arithmetic in chapter 2, memory in chapter 3, and eventually the Hack computer.
 
 The main idea is:
 
@@ -335,9 +552,7 @@ Boolean algebra works with two values:
 1
 ```
 
-The course adds a practical motivation for this choice.
-
-Real hardware settles on two states because two stable values are the simplest to maintain reliably.
+The practical motivation is simple: computers use two values because that is the easiest thing for hardware to maintain reliably, and two values are already enough to build everything else.
 
 The names can change:
 
@@ -350,6 +565,20 @@ no / yes
 
 But they all refer to the same abstraction: a signal is in one of two distinguishable states.
 
+One binary variable can describe `2` possible states. Two binary variables can describe `4` states. Three binary variables can describe `8` states.
+
+In general:
+
+```text
+n binary variables -> 2^n possible input combinations
+```
+
+Meaning:
+
+- each variable doubles the number of possible states
+- a complete truth table must include one row for each possible state
+- this finiteness is what makes Boolean functions easier to exhaustively describe than functions over ordinary numbers
+
 A Boolean function maps binary inputs to a binary output.
 
 Example:
@@ -361,6 +590,12 @@ And(1, 0) = 0
 And(1, 1) = 1
 ```
 
+Meaning:
+
+- `And` takes two Boolean inputs
+- it returns `1` only when both inputs are `1`
+- every other input combination returns `0`
+
 The common Boolean operators are:
 
 ```text
@@ -369,7 +604,23 @@ Or
 Not
 ```
 
-They can be written mathematically as $x \cdot y$, $x + y$, and $\bar{x}$, or as $x \land y$, $x \lor y$, and Not(`x`).
+They can be written mathematically as $x \cdot y$, $x + y$, and $\bar{x}$, or as $x \land y$, $x \lor y$, and `Not(x)`.
+
+There are other named Boolean functions too:
+
+```text
+Nand = Not-And
+Nor  = Not-Or
+Xor  = exclusive-or
+```
+
+Meaning:
+
+- `Nand(x, y)` is the opposite of `And(x, y)`
+- `Nor(x, y)` is the opposite of `Or(x, y)`
+- `Xor(x, y)` is `1` exactly when one input is `1` and the other is `0`
+
+The names are useful shorthand, but the important thing is always the behavior: for each input combination, what output should the function produce?
 
 ![](media/figure_1.1.png)
 
@@ -401,7 +652,23 @@ The key theoretical fact is that every Boolean function can be built from Nand a
 
 That is why Nand can be the primitive starting point for the whole computer.
 
-The number of possible Boolean functions grows very quickly. With *n* input variables, there are $2^{2^n}$ possible Boolean functions.
+The idea is:
+
+```text
+Not(x)   = x Nand x
+And(x,y) = Not(x Nand y)
+Or(x,y)  = Not(Not(x) And Not(y))
+```
+
+Meaning:
+
+- once `Nand` can create `Not`, `And`, and `Or`, it can create the usual Boolean vocabulary
+- once the usual Boolean vocabulary can express any truth table, `Nand` can express any Boolean function
+- this is the first concrete reason that the whole course can start from one primitive gate
+
+The number of possible Boolean functions grows very quickly. With `n` input variables, there are $2^{2^n}$ possible Boolean functions.
+
+For example, with two inputs there are `2^2 = 4` input rows. Each row's output can independently be `0` or `1`, so there are `2^4 = 16` different two-input Boolean functions.
 
 ##### Boolean Functions
 
@@ -430,6 +697,27 @@ The figure shows that the same function can be described by a table or by an exp
 (x OR y) AND NOT(z)
 ```
 
+Meaning:
+
+- first check whether `x` or `y` is `1`
+- then check whether `z` is `0`
+- the whole expression is `1` only when both conditions are true
+
+For example:
+
+```text
+NOT(0 OR (1 AND 1))
+  = NOT(0 OR 1)
+  = NOT(1)
+  = 0
+```
+
+Meaning:
+
+- `1 AND 1` becomes `1`
+- `0 OR 1` becomes `1`
+- `NOT(1)` becomes `0`
+
 When reading figure `1.3`, do not think of the expression and the truth table as two different functions.
 
 They are two descriptions of the same mapping.
@@ -444,9 +732,50 @@ Hardware designers constantly move between these two views.
 
 Truth tables and expressions are two views of the same thing.
 
-You can go from expression to truth table by evaluating the expression for every input combination.
+Going from expression to truth table is mechanical: evaluate the expression for every input combination and record the output.
 
-You can go from truth table to expression by finding the rows where the output is `1` and writing logic that detects those rows.
+Going from truth table to expression is less obvious, but there is a standard method.
+
+**From truth table to Boolean expression (DNF)**
+
+Scan the truth table row by row. Focus only on rows where the output is `1`.
+
+For each such row, write a clause that is `1` exactly on that row and `0` everywhere else. You do this by:
+
+- using the variable as-is if it is `1` in that row
+- using `Not(variable)` if it is `0` in that row
+- And-ing all the variable terms together
+
+Then Or all the clauses together. The result is `1` for exactly the rows you care about.
+
+Example: suppose a function `f(x, y, z)` has output `1` at two rows:
+
+```text
+row 1: x=0, y=0, z=0  ->  Not(x) And Not(y) And Not(z)
+row 2: x=0, y=1, z=0  ->  Not(x) And     y  And Not(z)
+```
+
+Meaning:
+
+- the first clause is `1` only when all three inputs are `0`
+- the second clause is `1` only when `x=0`, `y=1`, `z=0`
+- Or-ing them gives `1` exactly on those two rows
+
+The complete expression is:
+
+```text
+f(x,y,z) = (Not(x) And Not(y) And Not(z)) Or (Not(x) And y And Not(z))
+```
+
+This is called **disjunctive normal form (DNF)**. It is always a valid starting point. It can then be simplified using Boolean laws.
+
+The two clauses above both have `Not(x) And Not(z)` in common. Since the only difference is whether `y` or `Not(y)` appears, and both possibilities are covered, the `y` term drops out:
+
+```text
+f(x,y,z) = Not(x) And Not(z)
+```
+
+Simplification is not always this easy. Finding the shortest equivalent expression is an NP-hard problem in general. But Boolean algebra laws give tools to make progress.
 
 This matters because hardware design often starts with desired behavior and ends with gates.
 
@@ -455,12 +784,66 @@ The practical path is:
 ```text
 desired behavior
   -> truth table
-  -> Boolean expression
+  -> Boolean expression (DNF is one safe starting point)
   -> simpler expression
   -> gate implementation
 ```
 
 Simplification matters because simpler expressions usually mean fewer gates.
+
+**The remarkable fact behind all of this**
+
+Any Boolean function, no matter how many variables, can always be expressed using only `And`, `Or`, and `Not`. The DNF construction proves it: any truth table produces a valid DNF expression, and DNF only uses those three operations.
+
+But `{And, Or, Not}` can be reduced further. De Morgan's law shows that `Or` can be expressed using `And` and `Not`:
+
+```text
+x Or y = Not(Not(x) And Not(y))
+```
+
+So `{And, Not}` is enough to express any Boolean function.
+
+And `Nand` alone is enough to express `{And, Not}`:
+
+```text
+Not(x)   = x Nand x
+And(x,y) = Not(x Nand y)
+```
+
+Therefore any Boolean function can be expressed using only `Nand` gates. This is the theoretical foundation of the whole course: start from one primitive gate, build everything.
+
+Boolean algebra gives rules for proving that two expressions are equivalent and for making expressions smaller.
+
+Common laws include:
+
+```text
+x AND y = y AND x
+x OR y  = y OR x
+
+x AND (y AND z) = (x AND y) AND z
+x OR  (y OR  z) = (x OR  y) OR  z
+
+x AND (y OR  z) = (x AND y) OR  (x AND z)
+x OR  (y AND z) = (x OR  y) AND (x OR  z)
+
+NOT(NOT(x)) = x
+x AND x = x
+x OR  x = x
+
+NOT(x AND y) = NOT(x) OR  NOT(y)
+NOT(x OR  y) = NOT(x) AND NOT(y)
+```
+
+Meaning:
+
+- commutative laws say input order does not matter for `And` and `Or`
+- associative laws say grouping does not matter when chaining the same operation
+- distributive laws say one operation can be spread across the other
+- double negation says flipping twice returns the original value
+- idempotence says repeating the same input does not add new information
+- De Morgan's laws show how `Not` moves across `And` and `Or`
+
+These laws can be checked by truth tables. If two expressions produce the same output for every possible input row, they describe the same Boolean function.
 
 #### 1.2 Logic Gates
 

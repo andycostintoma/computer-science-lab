@@ -106,6 +106,91 @@ The Web example has the same structure:
 - your computer sends a `GET` request for the page
 - the server returns the file
 
+A more complete HTTP/HTTPS request flow looks like this. The HTTP and HTTPS paths are almost the same; HTTPS adds a TLS handshake before the HTTP request is sent.
+
+```text
+User clicks a link or enters a URL
+  |
+  v
+Browser parses the URL
+  - scheme: http or https
+  - host: example.com
+  - path: /page
+  - default port: 80 for HTTP, 443 for HTTPS
+  |
+  v
+DNS lookup
+  - translate example.com into the server's IP address
+  |
+  v
+TCP connection
+  - browser opens a TCP connection to IP + port
+  |
+  v
+Is the scheme HTTPS?
+  |
+  +-- no: continue directly to HTTP
+  |
+  +-- yes: perform TLS handshake
+          - ClientHello: supported TLS versions, cipher suites, random value, SNI host
+          - ServerHello: selected TLS version and cipher suite
+          - server certificate: proves the server's identity
+          - certificate validation: domain, expiration, trusted CA
+          - key exchange: browser and server derive shared encryption keys
+          - result: encrypted channel over the TCP connection
+  |
+  v
+HTTP request
+  - HTTP: request travels in cleartext over TCP
+  - HTTPS: request is encrypted inside TLS
+
+  Example:
+    GET /page HTTP/1.1
+    Host: example.com
+    User-Agent: browser
+    Cookie: ...
+  |
+  v
+Network transports the data
+  - application data is broken into packets
+  - packets cross links and packet switches/routers
+  - routers forward packets toward the destination
+  - delay, queueing, throughput limits, and packet loss can occur
+  - TCP helps with ordering and retransmission when packets are lost
+  |
+  v
+Server receives the request
+  - HTTPS traffic is decrypted after TLS processing
+  - the web application receives the HTTP request
+  - it checks the path, headers, cookies, and authentication
+  - it may call a database, cache, or other services
+  |
+  v
+HTTP response
+  - HTTP: response travels in cleartext
+  - HTTPS: response is encrypted inside TLS
+
+  Example:
+    HTTP/1.1 200 OK
+    Content-Type: text/html
+    Body: <html>...</html>
+  |
+  v
+Browser processes the response
+  - decrypts it first if HTTPS was used
+  - parses the HTML
+  - requests extra resources such as CSS, JavaScript, images, and fonts
+  - renders the page for the user
+```
+
+The short mental model is:
+
+```text
+URL -> DNS -> TCP -> optional TLS for HTTPS -> HTTP request -> server processing -> HTTP response -> browser render
+```
+
+At the application level, HTTP defines the request/response messages. At the transport and network levels, those messages are carried as packets through the Internet. This is why the same web action involves multiple protocols composing together: DNS to find the server, TCP to create reliable transport, optional TLS to secure the channel, HTTP for the web request itself, IP for addressing/routing, and link-layer protocols such as WiFi or Ethernet for each physical hop.
+
 So a protocol is not just “some messages.” It is the message formats, the order they must happen in, and the actions triggered by each event.
 
 ![](media/slides/chapter-1/slide-08-protocol-example.png)
@@ -1673,6 +1758,8 @@ The response-time estimate is a key intuition:
 - about `1 RTT` to establish the TCP connection
 - about `1 RTT` for the request to go to the server and for the first part of the response to come back
 - plus the `transmission time` for the object itself
+
+RTT = round-trip time
 
 So the rough cost for one object is:
 
