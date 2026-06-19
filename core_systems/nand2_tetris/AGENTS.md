@@ -11,7 +11,7 @@ This folder tracks study progress through "The Elements of Computing Systems" (N
 
 ## Current Progress
 
-- `NOTES.md` contains the ongoing learning notes.
+- `NOTES.md` contains the ongoing learning notes. Currently finished up to and including **1.3 Hardware Construction**.
 - `projects/` currently includes Project 1, Project 2, and Project 3 notes.
 - We work subsection-by-subsection and only move on when the current subsection is fully clear.
 - Do not jump ahead or bulk-append full-book indexes unless the user explicitly asks for that exact operation.
@@ -58,10 +58,12 @@ Each subsection in `NOTES.md` is a synthesis of:
 
 1. Work subsection-by-subsection, in order.
 2. Preserve existing heading hierarchy and the step-by-step teaching style in `NOTES.md`.
-3. Keep image markdown references when they are part of the book subsection being covered.
+3. Keep image markdown references when they are part of the book subsection being covered. Also add high-quality, value-adding diagrams from the lecture slides (e.g., schematics, interface/implementation splits, simulation GUI callouts, test script comparisons) that map to our text and code snippets.
 4. Treat `The_Elements_of_Computing_Systems_2021.md` as the source of truth for headings/figures.
 5. Before edits, confirm the exact subsection boundaries in `NOTES.md`.
 6. Do not create extra documentation files unless explicitly requested.
+7. **Strict Slide Hygiene:** Never add navigation slides (e.g., outlining chapters or dividers like Slide 36), agenda slides, or purely decorative slides. Always view each slide image first to confirm it contains actual educational content.
+8. **Balanced Feedback Response:** If a user flags a specific slide as useless or having no value, do not overreact by deleting all slide figures from the section. Carefully review the slide deck, remove only the low-value/redundant slide, and retain or add other slide diagrams that genuinely clarify the text.
 
 ## Safety And Scope
 

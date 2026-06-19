@@ -545,544 +545,420 @@ Tests verify the implementation.
 
 #### 1.1 Boolean Algebra
 
-Boolean algebra works with two values:
+Every digital device is built from physical chips designed to store and process binary information. At the physical level, hardware represents signals using two distinct states (typically voltage levels) because two stable values are the easiest and most robust to maintain reliably. 
+
+While the physical representation involves electrical circuits, the logical mapping can use many conceptual labels:
 
 ```text
-0
-1
-```
-
-The practical motivation is simple: computers use two values because that is the easiest thing for hardware to maintain reliably, and two values are already enough to build everything else.
-
-The names can change:
-
-```text
-0 / 1
-off / on
-false / true
-no / yes
-```
-
-But they all refer to the same abstraction: a signal is in one of two distinguishable states.
-
-One binary variable can describe `2` possible states. Two binary variables can describe `4` states. Three binary variables can describe `8` states.
-
-In general:
-
-```text
-n binary variables -> 2^n possible input combinations
+0 / 1          (numerical representation)
+off / on       (electrical switch state)
+false / true   (logical propositions)
+no / yes       (decision logic)
 ```
 
 Meaning:
+- all these labels refer to the same logical abstraction: a binary signal is in one of two distinguishable states
+- we use `0` and `1` as the standard mathematical symbols for these states
 
-- each variable doubles the number of possible states
-- a complete truth table must include one row for each possible state
-- this finiteness is what makes Boolean functions easier to exhaustively describe than functions over ordinary numbers
+One binary variable describes `2` possible states. Two binary variables describe `4` possible states. Three binary variables describe `8` states.
 
-A Boolean function maps binary inputs to a binary output.
-
-Example:
+In general, the number of states grows exponentially:
 
 ```text
-And(0, 0) = 0
-And(0, 1) = 0
-And(1, 0) = 0
-And(1, 1) = 1
+N binary variables -> 2^N possible input states
 ```
 
 Meaning:
+- each additional variable doubles the number of possible states in our system
+- because this state space is finite, Boolean functions can be described exhaustively by truth tables, unlike functions over infinite numbers
 
-- `And` takes two Boolean inputs
-- it returns `1` only when both inputs are `1`
-- every other input combination returns `0`
+A Boolean function maps binary inputs to a binary output. In prefix notation, we write a function over two variables as $f(x, y)$. In infix notation, we can write $x\ f\ y$, where $x$ and $y$ are called **operands** and $f$ is the **operator**.
 
-The common Boolean operators are:
+![](media/slides/chapter-1/slide-14-boolean-function-gate.png)
 
-```text
-And
-Or
-Not
-```
+**Figure (Slide 14)** Three equivalent representations of the `And` function: truth table (explicit output for each input combination), gate diagram (the physical symbol used in circuit diagrams), and piecewise definition (a compact rule).
 
-They can be written mathematically as $x \cdot y$, $x + y$, and $\bar{x}$, or as $x \land y$, $x \lor y$, and `Not(x)`.
+The three basic Boolean operators are:
 
-There are other named Boolean functions too:
+- **And** (written mathematically as $x \cdot y$, $x \land y$, or $x \text{ And } y$)
+- **Or** (written mathematically as $x + y$, $x \lor y$, or $x \text{ Or } y$)
+- **Not** (written mathematically as $\bar{x}$, $\lnot x$, or $\text{Not}(x)$)
 
-```text
-Nand = Not-And
-Nor  = Not-Or
-Xor  = exclusive-or
-```
+Behavior rules:
 
-Meaning:
-
-- `Nand(x, y)` is the opposite of `And(x, y)`
-- `Nor(x, y)` is the opposite of `Or(x, y)`
-- `Xor(x, y)` is `1` exactly when one input is `1` and the other is `0`
-
-The names are useful shorthand, but the important thing is always the behavior: for each input combination, what output should the function produce?
+- **And(x, y)** is `1` only when both inputs are `1`
+- **Or(x, y)** is `1` when at least one input is `1`
+- **Not(x)** is the inverse of the input (outputs `1` only when `x = 0`)
 
 ![](media/figure_1.1.png)
 
+**Figure 1.1** Three elementary Boolean functions.
+
 ![](media/figure_1.2.png)
 
-These two figures do complementary jobs.
+**Figure 1.2** All the Boolean functions of two binary variables.
 
-`Figure 1.1` introduces the three basic Boolean operators.
+To see the complete landscape of two-variable operators, we can look at Slide 21:
 
-You should read it as the small algebraic vocabulary from which larger logical statements are built.
+![](media/slides/chapter-1/slide-21-two-input-functions.png)
 
-`Figure 1.2` then shows the corresponding truth tables.
+**Figure (Slide 21)** Truth table enumeration of the 16 possible two-input Boolean functions.
 
-Each row answers the question:
+Meaning:
+- with 2 inputs, there are $2^2 = 4$ possible input combinations (rows)
+- since each row's output can be independently chosen as `0` or `1`, there are $2^{2^2} = 2^4 = 16$ possible functions
+- these 16 functions include common named operators like:
+  - `Nand(x, y)`: Not-And, evaluates to `0` only when both inputs are `1`
+  - `Nor(x, y)`: Not-Or, evaluates to `1` only when both inputs are `0`
+  - `Xor(x, y)`: Exclusive-Or, evaluates to `1` exactly when the inputs are different
 
-```text
-if the inputs are exactly this combination,
-what must the output be?
-```
+![](media/slides/chapter-1/slide-22-how-many-functions.png)
 
-That is the first key move of the whole chapter:
+**Figure (Slide 22)** The general formula: *N* binary variables yield $2^{2^N}$ distinct Boolean functions. For $N = 2$: $2^{2^2} = 16$ functions.
 
-```text
-behavior first
-implementation later
-```
+**The Expressive Power of Nand**
 
-The key theoretical fact is that every Boolean function can be built from Nand alone.
-
-That is why Nand can be the primitive starting point for the whole computer.
-
-The idea is:
+A key theoretical fact of Boolean logic is that *any* Boolean function can be built using only And, Or, and Not. However, we can reduce this set even further:
 
 ```text
-Not(x)   = x Nand x
-And(x,y) = Not(x Nand y)
-Or(x,y)  = Not(Not(x) And Not(y))
+Not(x)    = x Nand x
+And(x, y) = Not(x Nand y)
+Or(x, y)  = Not(Not(x) And Not(y))
 ```
 
 Meaning:
+- `Not(x)` is implemented by feeding the same signal `x` to both inputs of a `Nand` gate
+- `And(x, y)` is implemented by inverting the output of a `Nand` gate
+- `Or(x, y)` is implemented using De Morgan's law: invert both inputs, feed them to an `And` gate, and invert the output (which simplifies to a combination of `Nand` operations)
 
-- once `Nand` can create `Not`, `And`, and `Or`, it can create the usual Boolean vocabulary
-- once the usual Boolean vocabulary can express any truth table, `Nand` can express any Boolean function
-- this is the first concrete reason that the whole course can start from one primitive gate
+Since And, Or, and Not are sufficient to express any Boolean function, and each can be constructed using only Nand, **any Boolean function can be realized using only Nand gates**. This is the theoretical foundation of the entire course: we start with one primitive gate and build a complete computer.
 
-The number of possible Boolean functions grows very quickly. With `n` input variables, there are $2^{2^n}$ possible Boolean functions.
+![](media/slides/chapter-1/slide-26-nand-expressive-power-proof.png)
 
-For example, with two inputs there are `2^2 = 4` input rows. Each row's output can independently be `0` or `1`, so there are `2^4 = 16` different two-input Boolean functions.
+**Figure (Slide 26)** Complete derivation: Nand truth table, the three identities for Not/And/Or in terms of Nand, and the theorem with its full proof sketch using DNF.
 
 ##### Boolean Functions
 
-A Boolean function can be represented in two main ways.
+Every Boolean function can be specified using two equivalent representations:
 
-Truth table:
+- **Truth Table:** an explicit, data-driven list showing the output value for every possible input combination.
+- **Boolean Expression:** a compact, compositional mathematical formula that computes the output.
 
-```text
-list every possible input
-show the output for each input
-```
-
-Boolean expression:
-
-```text
-write a formula that computes the output
-```
-
-For three inputs `(x, y, z)`, there are `2^3 = 8` possible input combinations.
+For three input variables $(x, y, z)$, there are $2^3 = 8$ possible input combinations.
 
 ![](media/figure_1.3.png)
 
-The figure shows that the same function can be described by a table or by an expression such as:
+**Figure 1.3** Truth table and functional definitions of a Boolean function (example).
+
+For example, the Boolean expression representing the function in Figure 1.3 is:
 
 ```text
-(x OR y) AND NOT(z)
+f(x, y, z) = (x Or y) And Not(z)
 ```
 
 Meaning:
+- first check if either `x` or `y` is `1`
+- then check if `z` is `0` (so `Not(z)` is `1`)
+- the entire expression evaluates to `1` only when both conditions are met
 
-- first check whether `x` or `y` is `1`
-- then check whether `z` is `0`
-- the whole expression is `1` only when both conditions are true
-
-For example:
+Evaluating this expression for a specific row, say $x = 0, y = 1, z = 1$:
 
 ```text
-NOT(0 OR (1 AND 1))
-  = NOT(0 OR 1)
-  = NOT(1)
+Not(0 Or (1 And 1))
+  = Not(0 Or 1)
+  = Not(1)
   = 0
 ```
 
 Meaning:
-
-- `1 AND 1` becomes `1`
-- `0 OR 1` becomes `1`
-- `NOT(1)` becomes `0`
-
-When reading figure `1.3`, do not think of the expression and the truth table as two different functions.
-
-They are two descriptions of the same mapping.
-
-The truth table is explicit and complete.
-
-The expression is compact and compositional.
-
-Hardware designers constantly move between these two views.
+- `1 And 1` evaluates to `1`
+- `0 Or 1` evaluates to `1`
+- `Not(1)` evaluates to `0` (matching the output in the truth table)
 
 ##### Truth Tables and Boolean Expressions
 
-Truth tables and expressions are two views of the same thing.
+Going from a Boolean expression to a truth table is a mechanical evaluation process. 
+Going from a truth table to a Boolean expression is achieved using **Disjunctive Normal Form (DNF)** synthesis:
 
-Going from expression to truth table is mechanical: evaluate the expression for every input combination and record the output.
+1. Scan the truth table row-by-row and identify only the rows where the output is `1`.
+2. For each `1` row, write a product clause (using `And`) containing all variables:
+   - Use the variable directly if it is `1` in that row
+   - Use `Not(variable)` if it is `0` in that row
+3. Combine all product clauses using `Or`.
 
-Going from truth table to expression is less obvious, but there is a standard method.
-
-**From truth table to Boolean expression (DNF)**
-
-Scan the truth table row by row. Focus only on rows where the output is `1`.
-
-For each such row, write a clause that is `1` exactly on that row and `0` everywhere else. You do this by:
-
-- using the variable as-is if it is `1` in that row
-- using `Not(variable)` if it is `0` in that row
-- And-ing all the variable terms together
-
-Then Or all the clauses together. The result is `1` for exactly the rows you care about.
-
-Example: suppose a function `f(x, y, z)` has output `1` at two rows:
+Example: Suppose a function $f(x, y, z)$ has output `1` in exactly two rows:
 
 ```text
-row 1: x=0, y=0, z=0  ->  Not(x) And Not(y) And Not(z)
-row 2: x=0, y=1, z=0  ->  Not(x) And     y  And Not(z)
+row 1: x = 0, y = 0, z = 0  ->  Not(x) And Not(y) And Not(z)
+row 2: x = 0, y = 1, z = 0  ->  Not(x) And y And Not(z)
 ```
 
 Meaning:
+- the first clause is `1` only when all inputs are `0`
+- the second clause is `1` only when `x = 0`, `y = 1`, and `z = 0`
+- the complete DNF expression is:
+  `f(x, y, z) = (Not(x) And Not(y) And Not(z)) Or (Not(x) And y And Not(z))`
 
-- the first clause is `1` only when all three inputs are `0`
-- the second clause is `1` only when `x=0`, `y=1`, `z=0`
-- Or-ing them gives `1` exactly on those two rows
-
-The complete expression is:
-
-```text
-f(x,y,z) = (Not(x) And Not(y) And Not(z)) Or (Not(x) And y And Not(z))
-```
-
-This is called **disjunctive normal form (DNF)**. It is always a valid starting point. It can then be simplified using Boolean laws.
-
-The two clauses above both have `Not(x) And Not(z)` in common. Since the only difference is whether `y` or `Not(y)` appears, and both possibilities are covered, the `y` term drops out:
+We can simplify this synthesized DNF expression using Boolean algebra laws. Because both clauses share `Not(x) And Not(z)`, and `y` or `Not(y)` covers all states of `y`, the variable `y` cancels out:
 
 ```text
-f(x,y,z) = Not(x) And Not(z)
-```
-
-Simplification is not always this easy. Finding the shortest equivalent expression is an NP-hard problem in general. But Boolean algebra laws give tools to make progress.
-
-This matters because hardware design often starts with desired behavior and ends with gates.
-
-The practical path is:
-
-```text
-desired behavior
-  -> truth table
-  -> Boolean expression (DNF is one safe starting point)
-  -> simpler expression
-  -> gate implementation
-```
-
-Simplification matters because simpler expressions usually mean fewer gates.
-
-**The remarkable fact behind all of this**
-
-Any Boolean function, no matter how many variables, can always be expressed using only `And`, `Or`, and `Not`. The DNF construction proves it: any truth table produces a valid DNF expression, and DNF only uses those three operations.
-
-But `{And, Or, Not}` can be reduced further. De Morgan's law shows that `Or` can be expressed using `And` and `Not`:
-
-```text
-x Or y = Not(Not(x) And Not(y))
-```
-
-So `{And, Not}` is enough to express any Boolean function.
-
-And `Nand` alone is enough to express `{And, Not}`:
-
-```text
-Not(x)   = x Nand x
-And(x,y) = Not(x Nand y)
-```
-
-Therefore any Boolean function can be expressed using only `Nand` gates. This is the theoretical foundation of the whole course: start from one primitive gate, build everything.
-
-Boolean algebra gives rules for proving that two expressions are equivalent and for making expressions smaller.
-
-Common laws include:
-
-```text
-x AND y = y AND x
-x OR y  = y OR x
-
-x AND (y AND z) = (x AND y) AND z
-x OR  (y OR  z) = (x OR  y) OR  z
-
-x AND (y OR  z) = (x AND y) OR  (x AND z)
-x OR  (y AND z) = (x OR  y) AND (x OR  z)
-
-NOT(NOT(x)) = x
-x AND x = x
-x OR  x = x
-
-NOT(x AND y) = NOT(x) OR  NOT(y)
-NOT(x OR  y) = NOT(x) AND NOT(y)
+f(x, y, z) = Not(x) And Not(z)
 ```
 
 Meaning:
+- the output depends only on `x` and `z` being `0`, regardless of what `y` is
 
-- commutative laws say input order does not matter for `And` and `Or`
-- associative laws say grouping does not matter when chaining the same operation
-- distributive laws say one operation can be spread across the other
-- double negation says flipping twice returns the original value
-- idempotence says repeating the same input does not add new information
-- De Morgan's laws show how `Not` moves across `And` and `Or`
+Simplifying expressions is the first step toward hardware optimization. Simpler expressions require fewer gates, leading to lower manufacturing costs, less silicon area, lower power consumption, and faster speed.
 
-These laws can be checked by truth tables. If two expressions produce the same output for every possible input row, they describe the same Boolean function.
+Boolean algebra provides rules for showing equivalence and simplifying logic:
+
+```text
+x And y = y And x                        (Commutative Law)
+x Or y = y Or x
+
+x And (y And z) = (x And y) And z        (Associative Law)
+x Or (y Or z) = (x Or y) Or z
+
+x And (y Or z) = (x And y) Or (x And z)  (Distributive Law)
+x Or (y And z) = (x Or y) And (x Or z)
+
+Not(Not(x)) = x                          (Double Negation)
+
+x And x = x                              (Idempotence)
+x Or x = x
+
+Not(x And y) = Not(x) Or Not(y)          (De Morgan's Law)
+Not(x Or y) = Not(x) And Not(y)
+```
+
+Meaning:
+- commutative and associative laws let us reorder and regroup inputs
+- distributive laws let us factor terms in and out of clauses
+- De Morgan's laws show how to distribute negation across binary operations, changing `And` to `Or` and vice versa
 
 #### 1.2 Logic Gates
 
 A logic gate is a physical or simulated device that implements a Boolean function.
 
-The physical details can vary, but the abstraction stays the same.
+At the physical level, gates can be constructed from a wide variety of technologies:
 
-For example, an And gate means:
+- silicon transistors (modern chips)
+- mechanical switches and electromagnetic relays (early computers)
+- optical, biological, hydraulic, pneumatic, quantum, or even domino-based systems
+
+The key architectural benefit is abstraction: by modeling logic gates as mathematical Boolean functions, computer scientists can treat them as black boxes. We ignore the low-level physical dynamics (e.g., voltages, currents, power supplies, or fluid dynamics) and focus entirely on the logical mapping of binary signals. 
+
+This conceptual mapping was first formulated by Claude Shannon in 1937, who showed that switching circuits can be modeled directly by Boolean algebra.
+
+For example, an And gate is defined by the following simple behavior:
 
 ```text
-out = 1 only when both inputs are 1
+And(a, b) = 1 only when a = 1 and b = 1; otherwise, 0
 ```
 
 ![](media/figure_1.4.png)
 
-Figure `1.4` is the first clear example of abstraction.
+**Figure 1.4** Standard gate diagrams of three elementary logic gates: `And`, `Or`, and `Not`.
 
-The gate symbol hides all physical implementation details and preserves only what matters at this level:
+![](media/slides/chapter-1/slide-32-elementary-gate-diagrams.png)
 
-```text
-which pins go in
-which pin comes out
-what logical behavior the box guarantees
-```
+**Figure (Slide 32)** All four elementary gate diagrams side by side: `Nand`, `And`, `Or`, and `Not`, each with their if/else behavioral specification and the rationale for why this specific set is chosen — either `{Nand}` alone or `{And, Or, Not}` together is sufficient to build any Boolean function, and all have efficient hardware implementations.
 
-This lets us reason at the gate level without thinking about transistors every time.
+To visualize how physical circuits relate to these symbols, the slides present conceptual switch/relay implementations:
 
-The course makes one more practical point here: a gate can be specified in several equivalent ways.
+![](media/slides/chapter-1/slide-33-circuit-conceptual.png)
 
-```text
-gate symbol
-truth table
-short verbal rule
-```
+**Figure (Slide 33)** Conceptual circuit switch configurations for `And` and `Or` gates.
 
-If all three describe the same input/output behavior, they are just different presentations of the same functional specification.
+Meaning:
+
+- **And circuit:** two switches are connected in series. Both switch `a` and switch `b` must close (set to `1`) for current to reach the output pin.
+- **Or circuit:** two switches are connected in parallel. If either switch `a` or switch `b` closes (set to `1`), a pathway is completed for current to reach the output pin.
 
 ##### Primitive and Composite Gates
 
-A primitive gate is given to us.
+Logic gates use the same binary data types (input signals and output signals are all `0`s and `1`s). This common interface allows us to connect gates together, chaining them to construct **composite gates** of arbitrary complexity.
 
-A composite gate is built from other gates.
+- **Primitive Gates:** the basic, atomic gates provided as the starting platform (such as `Nand`).
+- **Composite Gates:** gates constructed by wiring together primitive gates or other simpler gates.
 
-Example:
+For example, a three-way `And` gate takes three inputs and outputs `1` only when all three are `1`. We can implement it by nesting two-input `And` gates:
 
 ```text
 And(a, b, c) = And(And(a, b), c)
 ```
 
+Meaning:
+
+- first evaluate `And(a, b)`
+- pass that intermediate result as the first input to the second `And` gate
+- pass the third input `c` as the second input to the second `And` gate
+- the final output is `1` only if both `And(a, b)` was `1` (which means `a=1` and `b=1`) and `c` is `1`
+
 ![](media/figure_1.5.png)
 
-Figure `1.5` shows the difference between a black-box interface and an internal construction.
+**Figure 1.5** Composite implementation of a three-way `And` gate. The rectangular dashed outline defines the boundary of the gate interface.
 
-From the outside, the composite gate behaves like one logical unit.
+This modular structure allows any gate to be viewed from two distinct perspectives:
 
-Inside, it is a small network of simpler gates.
+- **External View (Interface):** the gate's black-box specification. It defines the input and output pins, and the logical contract/behavior they guarantee. This is the only level of detail needed by someone *using* the gate.
+- **Internal View (Implementation):** the internal architecture showing how smaller gates are wired together. This is relevant only to the gate *builder*.
 
-That is the same pattern the whole book will reuse:
+An interface is unique (specified by one truth table or Boolean expression), but it can be realized by many different internal implementations.
 
-```text
-clean outside behavior
-built from smaller inside parts
-```
+Consider the design of a Exclusive-Or (`Xor`) gate. The external interface is defined verbally: Xor is `1` exactly when the inputs are different. 
 
-The interface says what the gate looks like from the outside:
-
-```text
-inputs
-outputs
-behavior
-```
-
-The implementation says what is inside:
-
-```text
-which smaller gates are used
-how they are connected
-```
-
-Xor is a good example. Its behavior is:
-
-```text
-out = 1 when a and b are different
-```
-
-One implementation is:
+The symbolic expression for this interface is:
 
 ```text
 Xor(a, b) = Or(And(a, Not(b)), And(Not(a), b))
 ```
 
+Meaning:
+
+- `And(a, Not(b))` is `1` only when `a = 1` and `b = 0`
+- `And(Not(a), b)` is `1` only when `a = 0` and `b = 1`
+- the final `Or` gate outputs `1` if either of those two mismatch detectors output `1`
+
 ![](media/figure_1.6.png)
 
-Figure `1.6` is worth reading left to right.
+**Figure 1.6** `Xor` gate interface (left) and a possible implementation (right).
 
-One branch detects:
+As shown in the slides, the design process focuses purely on the logical architecture rather than the physical layout:
 
-```text
-a = 1 and b = 0
-```
+![](media/slides/chapter-1/slide-35-logical-vs-physical.png)
 
-The other branch detects:
+**Figure (Slide 35)** Logical vs. physical implementations of composite gates.
 
-```text
-a = 0 and b = 1
-```
+Meaning:
 
-Then the final `Or` says:
+- **Logical Implementation:** the abstract arrangement of logic gates and their connections (the CS focus).
+- **Physical Implementation:** the layout of transistors and electrical wiring in silicon (the EE focus). We do not deal with physical layouts in this course.
 
-```text
-output 1 if either of those mismatch cases happens
-```
+In logic design, the primary requirement is correctness (the implementation must match the interface). The secondary requirement is efficiency:
 
-So logic design means:
+- try to minimize the total number of gates used
+- fewer gates translate directly to lower manufacturing costs, less energy consumption, and faster computation speed (reduced signal propagation delay)
 
-```text
-given a desired behavior
-build it from gates that already exist
-```
+To sum up, the art of logic design is: given a target gate interface (specification), find an efficient way to implement it using other gates that have already been built.
 
 #### 1.3 Hardware Construction
 
-Building physical chips by hand would be too slow and error-prone.
+To understand the necessity of modern hardware design workflows, consider an intentionally naive construction approach: opening a home garage chip fabrication shop. Suppose we are contracted to build a hundred `Xor` gates. 
 
-Modern hardware design therefore uses descriptions and simulations first.
+Using a down payment, we purchase:
+- a soldering gun
+- a roll of copper wire
+- three component bins labeled "And gates," "Or gates," and "Not gates" (each logic gate pre-packaged in a plastic casing exposing its input/output pins and power supply ports)
 
-The workflow is:
+We mount two `And` gates, two `Not` gates, and one `Or` gate on a board and manually solder wires between their respective input and output pins following the Xor schematic. The result is a sealed plastic casing exposing three pins: inputs `a`, `b`, and output `out`. This composite chip can now be stored in a new bin labeled "Xor gates" and reused as a black-box building block for future designs.
 
-```text
-write HDL
-run simulator
-compare against expected behavior
-fix the design
-```
+However, this manual physical assembly suffers from severe limitations:
+- **No Correctness Guarantee:** There is no way to know if our logic diagram is correct without building it. In complex chips, we must resort to empirical testing (connecting power, manually toggling inputs, and checking outputs), which is slow and messy to fix if a connection is wrong.
+- **Scaling Issues:** Manually replicating this assembly process hundreds of times is slow, expensive, and highly error-prone.
 
-Only after the design is correct would real manufacturing matter.
+Modern hardware engineering bypasses these physical issues entirely by using **abstraction and simulation**. The workflow is:
+1. **Design:** The architect plans the logical gate layout (CS focus).
+2. **Specify:** The architecture is described textually in a Hardware Description Language (HDL).
+3. **Test:** The design is verified virtually in a software simulator.
+4. **Optimize:** The simulator quantifies speed, energy consumption, and cost to refine the design.
+5. **Realize:** The finalized HDL code acts as a blueprint, which is sent to a specialized robotic fabrication facility to be stamped into silicon.
 
 ##### 1.3.1 Hardware Description Language
 
-HDL describes chip structure.
+Hardware Description Language (HDL) is a declarative, functional language used to specify the static physical structure of a chip. Unlike procedural programming languages (e.g., Java or Python), HDL does not execute instructions sequentially; rather, it describes a static network of gates and their physical connections. 
 
-It says:
+When working with chips, developers wear two distinct hats:
+- **The Programmer (User) Hat:** Focuses on the **interface** (the header). The interface is unique, specifying the name of the chip and the inputs/outputs. It represents a strict contract that must be adhered to. This is the only view needed by someone *using* the chip.
+- **The Chip Builder Hat:** Focuses on the **implementation** (the `PARTS` section). The implementation can vary, and different designs can realize the same interface with varying efficiencies (fewer gates, lower cost, less power). This is relevant only to the chip *builder*.
+
+![](media/slides/chapter-1/slide-46-interface-vs-implementation.png)
+
+**Figure (Slide 46)** The interface/implementation distinction in HDL. The programmer only needs the interface contract (IN/OUT), while the chip builder implements it in the PARTS block using lower-level components. A logic gate has a single interface but can have many different implementations.
+
+The syntax of a stub (incomplete) chip file begins with the interface declaration, followed by a `PARTS` block to define its internal components.
 
 ```text
-this chip has these inputs and outputs
-this chip is built from these parts
-these pins are connected to those pins
+/** out = (a And Not(b)) Or (Not(a) And b)) */
+CHIP Xor {
+    IN a, b;
+    OUT out;
+
+    PARTS:
+    Not (in=a, out=nota);
+    Not (in=b, out=notb);
+    And (a=a, b=notb, out=aAndNotb);
+    And (a=nota, b=b, out=notaAndb);
+    Or (a=aAndNotb, b=notaAndb, out=out);
+}
 ```
+
+Meaning:
+- `CHIP Xor`: Names the chip `Xor`.
+- `IN a, b; OUT out;`: Declares the public inputs `a` and `b`, and output `out`.
+- `PARTS:`: Marks the start of the implementation, which instantiates existing components (parts) and wires them together.
+- `Not (in=a, out=nota);`: Instantiates a `Not` gate. It connects the chip's public input `a` to the `Not` gate's input pin `in`, and routes its output to an internal pin (wire) named `nota`.
+- `Or (a=aAndNotb, b=notaAndb, out=out);`: Connects the internal wires `aAndNotb` and `notaAndb` to the `Or` gate's inputs, and routes the result directly to the chip's public output pin `out`.
+
+Several core syntax rules and conventions govern HDL:
+- **No Degrees of Freedom for Part APIs:** When instantiating pre-built components (like `Not`, `And`, `Or`), we must use their official pin signatures (e.g., `in` and `out` for `Not`; `a`, `b`, and `out` for `And`) as defined by their interface contract.
+- **Automatic Internal Pins:** Internal connections (like `nota` or `aAndNotb`) represent internal wires. They are created automatically the first time they appear in the `PARTS` block.
+- **Unlimited Fan-Out (Simultaneous Branching):** A single signal can be copied and distributed to multiple destinations simultaneously. For instance, input `a` is routed simultaneously to both a `Not` gate and an `And` gate. HDL has unlimited fan-out.
+- **Declarative and Order-Insignificant:** Statements in the `PARTS` section can be written in any order because they describe a static physical layout rather than sequential steps. However, it is customary to order statements from left to right to match the schematic flow and improve readability.
+- **The `a=a`, `out=out` Syntax:** In the Hack architecture, two-input chips conventionally use inputs `a` and `b`, and output `out`. This leads to statements like `And(a=a, b=notb, out=aAndNotb)` or `Or(..., out=out)`. In these expressions, the name on the left of the equals sign refers to the *part's input/output pin*, while the name on the right refers to the *chip's input/output or internal pin* that is being wired to it.
+- **Simplified Educational Language:** Real-world hardware design uses industry-standard languages like VHDL and Verilog (which cover 90% of designs). The HDL in this course is a minimal, simplified subset that captures their essential concepts and can be learned in an hour, providing all the capabilities needed to build a computer.
+
+![](media/slides/chapter-1/slide-45-gate-diagram-and-hdl.png)
+
+**Figure (Slide 45)** Gate diagram and corresponding HDL implementation for the Xor chip. The internal wires (`nota`, `notb`, `aAndNotb`, `notaAndb`) in the schematic map directly to the output pins of the respective part instantiations in the HDL code.
 
 ![](media/figure_1.7.png)
 
-Figure `1.7` should be read in two passes.
-
-First read only the chip header:
-
-```text
-what are the public inputs and outputs?
-```
-
-Then read the `PARTS` section:
-
-```text
-which previously built gates are being instantiated?
-which internal wires connect them?
-```
-
-That is the basic rhythm of HDL throughout the course.
-
-For Xor, the HDL header defines the public interface. The `PARTS` section builds the implementation from lower-level gates.
-
-The course adds one more design rule here: the interface is fixed, but the implementation is not.
-
-Many different internal designs can satisfy the same input/output contract. Later on, engineering concerns like part count, wiring complexity, and energy use help decide which implementation is better.
-
-Internal pins name intermediate values.
-
-Example mental model:
-
-```text
-notA = Not(a)
-notB = Not(b)
-aAndNotB = And(a, notB)
-notAAndB = And(notA, b)
-out = Or(aAndNotB, notAAndB)
-```
+**Figure 1.7** Gate diagram and HDL implementation of the Boolean function $Xor(a, b) = Or(And(a, Not(b)), And(Not(a), b))$, used as an example. A test script and an output file generated by the test are also shown. Detailed descriptions of HDL and the testing language are given in appendices [2](#appendix-2-hardware-description-language) and [3](#appendix-3-test-description-language), respectively.
 
 ##### Testing
 
-Testing checks whether the implementation matches the specification.
+Quality assurance requires systematic and repeatable testing. Hardware simulators verify design correctness by running test scripts written in a scripting language.
 
-A test script usually does this:
+There are two primary modes of simulation:
+1. **Interactive Simulation:** The developer manually loads the HDL file, inputs test values into the GUI, evaluates the chip logic, and inspects the output and internal pins to debug failures.
+2. **Script-Based Simulation:** The developer loads a test script (`.tst` file) that automates the testing cycle. The script sets inputs, evaluates the logic, and records output values in an output file (`.out`).
 
-```text
-load chip
-set inputs
-evaluate output
-compare with expected output
-repeat
-```
+![](media/slides/chapter-1/slide-55-script-based-simulation-output.png)
 
-For small gates, every input combination can be tested.
+**Figure (Slide 55)** The logic and structure of script-based simulation with an output file. The test script initializes by loading the HDL, creating an empty output file, and specifying the pins to output. It then repeats the set, eval, and output cycle to construct the output file.
 
-For larger chips, tests still provide strong confidence even when exhaustive testing is too large.
+To automate validation, the simulator can load a **compare file** (`.cmp`) containing the expected outputs. The simulator compares the generated output file line-by-line against the compare file, throwing a comparison error if a mismatch occurs. This is critical for complex chips (like an ALU or CPU) where manual visual validation is impossible.
 
-The videos also distinguish two testing modes:
+![](media/slides/chapter-1/slide-60-script-based-simulation-compare.png)
 
-```text
-interactive probing
-script-based verification
-```
+**Figure (Slide 60)** Script-based simulation with a compare file. When the test script executes an `output` command, the simulator compares the generated line in `.out` against the corresponding line in `.cmp`, throwing a comparison error if a mismatch occurs.
 
-Interactive simulation is useful for quick experiments. But once you need to rerun the same checks repeatedly, test scripts are the practical default because they can generate an output file and compare it automatically against a compare file.
+**Behavioral Simulation:** Before implementing a chip in HDL, the system architect can define the chip's logic in a high-level language like Java. This executable logic can be run to generate compare files, allowing the entire computer architecture to be planned and validated before any HDL is written.
 
 ##### 1.3.2 Hardware Simulation
 
-The hardware simulator executes HDL designs.
+A hardware simulator is a software program that parses HDL code, builds a virtual, executable representation of the circuit, runs test scripts, and compares outputs. 
 
-It lets you inspect:
+![](media/slides/chapter-1/slide-52-interactive-simulation-gui.png)
 
-```text
-current input values
-internal behavior
-actual output
-expected output
-```
+**Figure (Slide 52)** The interactive simulation workflow in the Hardware Simulator GUI. The numbers map the sequential steps of loading a chip, manually setting input pin values, evaluating the logic, and inspecting the outputs and internal pins.
 
 ![](media/figure_1.8.png)
 
-Figure `1.8` shows why the simulator is so helpful pedagogically.
+**Figure 1.8** A hardware simulator executing a test script for the `Xor` chip. The simulator state displays the current pin values. The output file generated by the simulation is compared line-by-line against a supplied compare file to verify correctness.
 
-It places the intended behavior and the actual behavior side by side.
+The simulation flow operates as a structured cycle:
+1. Load the HDL program.
+2. Load the test script (`.tst` file).
+3. Execute the script to evaluate inputs and write outputs.
+4. Compare the resulting output file (`.out`) against the expected compare file (`.cmp`).
 
-So instead of guessing whether a circuit is correct, you can ask a precise question:
+This framework supports a clean **divide and conquer** methodology:
+- **The System Architect:** Designs the overall computer architecture, breaks it into modules, and provides stub HDL files, test scripts, and compare files.
+- **The Hardware Developer:** Takes these stubs and specifications, writes the HDL implementations, runs the simulator, and iterates until the tests pass.
 
-```text
-for this input, did my chip produce the specified output?
-```
-
-This makes hardware design feel like programming with tests, but the thing being described is a circuit, not a sequence of instructions.
+In the Nand to Tetris course, the instructors act as the system architects (providing the stubs and test resources for the 30 chips in the Hack chipset), while the student acts as the developer, writing the missing implementations.
 
 #### 1.4 Specification
 
