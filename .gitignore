@@ -9,3 +9,6 @@ compiled
 # JetBrains IDEs
 .idea
 *.iml
+
+# Generated Nand2Tetris transcripts
+core_systems/nand2_tetris/media/transcripts/
