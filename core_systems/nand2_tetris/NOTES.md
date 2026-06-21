@@ -1724,214 +1724,286 @@ The main idea is that many computer operations reduce to simple bit-level operat
 
 #### 2.1 Arithmetic Operations
 
-Computers need operations such as:
+General-purpose computers must perform a set of basic arithmetic operations on signed integers:
+* Addition
+* Sign conversion (negation)
+* Subtraction
+* Comparison ($<, >, =$)
+* Multiplication
+* Division
 
-```text
-addition
-subtraction
-negation
-comparison
-multiplication
-division
-```
+In Project 2, our hardware construction path moves systematically from simple adders to a fully functional Arithmetic Logic Unit (ALU):
 
-This chapter focuses on the operations needed to build the Hack ALU.
+![Hardware construction roadmap for Chapter 2, showing the path from Nand gates up to building arithmetic chips and the ALU](media/slides/chapter-2/slide-04-project-2-roadmap.png)
 
-The most important operation is addition.
-
-Why addition first?
-
-```text
-subtraction can be reduced to addition
-incrementing is addition by 1
-many higher operations can be built in software from simpler arithmetic
-```
+The most fundamental operation is addition. Subtraction can be modeled as addition by using negative representations (e.g. $x - y = x + (-y)$), incrementing is addition of a constant 1, and higher operations like multiplication and division can be reduced to successive additions in software or hardware. Therefore, building an efficient adder logic gate is the gateway to all processing capabilities.
 
 #### 2.2 Binary Numbers
 
-Binary numbers use base 2.
+A number is an abstract quantity, whereas a numeral is a code used to represent that quantity. Computers store everything as sequences of bits (binary codes).
 
-Decimal uses powers of 10:
+##### 2.2.1 The Positional System
+Like the decimal system, the binary system is a positional number system. The value of a digit is determined by its position from the right (starting at index 0) and the base of the system.
 
-```text
-345 = 3*100 + 4*10 + 5*1
-```
+* **Decimal (Base 10) system**: The positional base is 10. Each digit position has a weight of $10^i$.
+  * Example:
+    $$6507_{10} = 6 \cdot 10^3 + 5 \cdot 10^2 + 0 \cdot 10^1 + 7 \cdot 10^0 = 6000 + 500 + 0 + 7$$
+* **Binary (Base 2) system**: The positional base is 2. Each digit position has a weight of $2^i$.
+  * Example:
+    $$101_2 = 1 \cdot 2^2 + 0 \cdot 2^1 + 1 \cdot 2^0 = 4 + 0 + 1 = 5_{10}$$
 
-Binary uses powers of 2:
+![Comparison of the positional number systems between base 10 (decimal) and base 2 (binary)](media/slides/chapter-2/slide-18-decimal-vs-binary-positional.png)
 
-```text
-1011 = 1*8 + 0*4 + 1*2 + 1*1 = 11
-```
+##### 2.2.2 Mathematical Representation and Conversion
+To compute the decimal value of any binary sequence of bits $B$ of size $n+1$ (where $B_0$ is the LSB and $B_n$ is the MSB):
 
-![](media/2-1.png)
+$$\text{Value} = \sum_{i=0}^{n} B_i \cdot 2^i$$
 
-![](media/2-2.png)
+Inside computers, all information types (numbers, text, images, instructions) are represented using binary codes. Gottfried Wilhelm Leibniz first documented the binary system in 1679 (shown in his medallion), advocating that binary numerals are extremely easy to store, compare, add, subtract, multiply, and transmit in physical devices compared to decimal.
 
-These figures do for binary what the earlier Boolean figures did for logic: they connect notation to meaning.
+![Historical medallion of G.W. Leibniz showing his binary numeral system description](media/slides/chapter-2/slide-23-leibniz-binary-system.png)
 
-The key thing to notice is positional value.
+##### 2.2.3 Fixed Word Size and Integer Ranges
+In physical hardware, registers are finite and use a fixed word size ($k$ bits) to represent chunks of data.
+* **Nonnegative Integer Range**: Using $k$ bits, we can represent $2^k$ distinct patterns. If we interpret them only as nonnegative integers, the range is:
+  $$0 \text{ to } 2^k - 1$$
+* **Example**: An 8-bit register can code nonnegative integers from 0 to $2^8 - 1 = 255$.
+* **Signed Integer Range**: In signed systems (discussed in later units), half of the $2^k$ patterns are reserved to represent negative numbers. For example, in an 8-bit system, the positive numbers are restricted to the range $0$ to $127$ (total signed range: $-128$ to $127$).
 
-Moving one place to the left in binary does not multiply by 10.
+##### 2.2.4 Decimal-to-Binary Conversion Algorithm
+To convert a decimal number to its binary representation, we express the decimal value as a sum of powers of 2 using a greedy subtraction algorithm:
 
-It multiplies by 2.
+1. Identify the largest power of 2 ($2^p$) that is less than or equal to the decimal number.
+2. Place a `1` at bit position $p$ in the binary sequence.
+3. Subtract $2^p$ from the number to obtain the remainder.
+4. Repeat the process for the remainder until it becomes 0.
+5. Place a `0` in all bit positions that did not appear in the sum.
 
-So each bit position has a fixed weight:
+###### Tracing Example: Convert $87_{10}$ to Binary
+* The largest power of $2 \le 87$ is $2^6 = 64$. We set bit 6 to `1`. (Remainder: $87 - 64 = 23$)
+* The largest power of $2 \le 23$ is $2^4 = 16$. We set bit 4 to `1`. (Remainder: $23 - 16 = 7$)
+* The largest power of $2 \le 7$ is $2^2 = 4$. We set bit 2 to `1`. (Remainder: $7 - 4 = 3$)
+* The largest power of $2 \le 3$ is $2^1 = 2$. We set bit 1 to `1`. (Remainder: $3 - 2 = 1$)
+* The largest power of $2 \le 1$ is $2^0 = 1$. We set bit 0 to `1`. (Remainder: $1 - 1 = 0$, terminate)
 
-```text
-1, 2, 4, 8, 16, ...
-```
+Sum: $87 = 64 + 16 + 4 + 2 + 1 = 2^6 + 2^4 + 2^2 + 2^1 + 2^0$
+Result: `1010111` (bits at positions 6, 4, 2, 1, 0 are `1`; bits at positions 5, 3 are `0`).
 
-Computers store fixed-width binary words.
-
-With `n` bits, there are:
-
-```text
-2^n possible bit patterns
-```
-
-The course adds one useful interpretation point: these `2^n` patterns do not have to mean numbers.
-
-They can represent any `2^n` distinct things.
-
-In this chapter, we choose to interpret them as integers.
-
-If all values are nonnegative, the range is:
-
-```text
-0 through 2^n - 1
-```
-
-Example:
-
-```text
-4 bits -> 16 values -> 0 through 15
-```
+![Table listing powers of 2 and demonstrating binary-to-decimal and decimal-to-binary conversions with practice solutions](media/slides/chapter-2/slide-22-decimal-binary-conversions.png)
 
 #### 2.3 Binary Addition
 
-Binary addition works like decimal addition, but each digit is a bit.
+Binary addition is the foundational building block of all computer arithmetic. In hardware design, once we build a working addition circuit, other operations can be reduced to it:
+* **Subtraction**: Once negative numbers are represented in hardware (using two's complement, covered in Section 2.4), subtraction is achieved for free by adding a negative number: $A - B = A + (-B)$.
+* **Comparison**: Checking if $A > B$ can be reduced to checking if the difference $A - B > 0$, which uses the same addition-based subtraction circuit.
+* **Multiplication and Division**: Multiplication and division are mathematically and electronically complex to implement directly in hardware logic gates. To keep the hardware simple, these operations are postponed to software. The hardware does not include multiplication/division gates; instead, software libraries (such as operating system routines) implement them using loops of addition and bit shifting, written as small programs.
 
-You add from right to left:
+##### The Bitwise Addition Algorithm
 
-```text
-add current bit pair
-include carry from previous position
-produce sum bit
-send carry to next position
-```
+Binary addition works exactly like decimal addition learned in elementary school, but with a much simpler digit set: $\{0, 1\}$. 
 
-![](media/figure_wo_caption_2.1.png)
+We add two binary numbers bitwise from right to left, starting at the **least significant bit** (LSB, bit 0) and working towards the **most significant bit** (MSB, bit $n-1$). 
 
-Figure `2.1` without the caption should be read exactly like hand addition in decimal, but with a smaller digit set.
+At each bit column position, we:
+1. Combine the corresponding input bits from the two numbers.
+2. Include any carry-in bit from the previous (rightward) column addition.
+3. Calculate the sum bit for that position.
+4. Calculate any carry-out bit to be sent to the next (leftward) column.
 
-At each column you combine:
+![Side-by-side comparison of 2nd-grade decimal addition (5783 + 2456) with binary addition (1001 + 1100) showing carry bits](media/slides/chapter-2/slide-25-decimal-vs-binary-addition.png)
 
-```text
-the left input bit
-the right input bit
-the incoming carry
-```
+The basic bitwise addition cases are:
+* $0 + 0 = 0$ (Sum: `0`, Carry: `0`)
+* $0 + 1 = 1$ (Sum: `1`, Carry: `0`)
+* $1 + 0 = 1$ (Sum: `1`, Carry: `0`)
+* $1 + 1 = 10_2$ (Sum: `0`, Carry: `1`)
+* $1 + 1 + 1 \text{ (carry-in)} = 11_2$ (Sum: `1`, Carry: `1`)
 
-and produce:
+###### Column-by-Column Carry Tracing Example: $0101_2 + 0110_2$ ($5 + 6 = 11$)
 
-```text
-one sum bit
-one outgoing carry
-```
-
-The basic cases are:
+Let $A = 0101_2$ (decimal $5$) and $B = 0110_2$ (decimal $6$). We perform a 4-bit addition column-by-column, tracing the carry bits:
 
 ```text
-0 + 0 = 0
-0 + 1 = 1
-1 + 0 = 1
-1 + 1 = 10  meaning sum 0, carry 1
+    Carry:  1 1 0 0 (from right to left)
+    A:      0 1 0 1
+  + B:      0 1 1 0
+  -----------------
+    Sum:    1 0 1 1
 ```
 
-In fixed-width hardware, overflow is ignored.
+* **Column 0 (LSB)**:
+  * Inputs: $A_0 = 1$, $B_0 = 0$, Carry-in = $0$
+  * Computation: $1 + 0 + 0 = 1_{10} = 1_2$
+  * Outputs: Sum bit = `1`, Carry-out = `0`
+* **Column 1**:
+  * Inputs: $A_1 = 0$, $B_1 = 1$, Carry-in = `0` (from Column 0)
+  * Computation: $0 + 1 + 0 = 1_{10} = 1_2$
+  * Outputs: Sum bit = `1`, Carry-out = `0`
+* **Column 2**:
+  * Inputs: $A_2 = 1$, $B_2 = 1$, Carry-in = `0` (from Column 1)
+  * Computation: $1 + 1 + 0 = 2_{10} = 10_2$
+  * Outputs: Sum bit = `0`, Carry-out = `1`
+* **Column 3 (MSB)**:
+  * Inputs: $A_3 = 0$, $B_3 = 0$, Carry-in = `1` (from Column 2)
+  * Computation: $0 + 0 + 1 = 1_{10} = 1_2$
+  * Outputs: Sum bit = `1`, Carry-out = `0`
 
-For Hack:
+The final result is $1011_2$ ($11_{10}$).
 
-```text
-16-bit addition returns the low 16 bits
-extra carry beyond bit 15 is discarded
-```
+##### Handling Overflow
+
+When the addition of the two most significant bits (MSB) generates a carry-out of 1, we have an **overflow**. In fixed-width computer systems (such as the 16-bit Hack platform), there is no hardware register space to store this extra carry bit. 
+
+Our hardware approach is to **ignore the overflow carry** and discard it. 
+
+![4-bit binary addition example with an overflow carry bit of 1, showing how the overflow is discarded](media/slides/chapter-2/slide-29-handling-overflow.png)
+
+###### Mathematical Modulo Arithmetic of Overflow
+
+Discarding the overflow carry is equivalent to performing **addition modulo $2^w$**, where $w$ is the word size of the computer:
+$$\text{Hardware Sum} = (A + B) \pmod{2^w}$$
+
+If the sum of $A$ and $B$ exceeds the maximum value representable in $w$ bits ($2^w - 1$), the hardware automatically decreases the result by $2^w$ by dropping the overflow bit. 
+
+For example, in a 4-bit system ($w=4, 2^4 = 16$), if we add $1011_2$ ($11_{10}$) and $0110_2$ ($6_{10}$):
+* True Sum: $11 + 6 = 17_{10}$
+* Binary Sum: `1011` + `0110` = `10001` (5-bit result, with MSB carry = 1)
+* Truncated Hardware Sum: Discarding the carry yields `0001` ($1_{10}$)
+* Modulo Equivalence: $17 \pmod{16} = 1$
+
+##### The Hardware Adder Construction Ladder
+
+To construct the physical logic gates that perform this addition, we build a hierarchy of three abstraction stages:
+1. **Half-Adder (2 inputs, 2 outputs)**:
+   * Adds two bits $a$ and $b$.
+   * Outputs: `sum` and `carry`.
+   * Used for the LSB column where there is never a carry-in from a previous step.
+2. **Full-Adder (3 inputs, 2 outputs)**:
+   * Adds three bits $a$, $b$, and $c$ (where $c$ is the carry-in bit).
+   * Outputs: `sum` and `carry`.
+   * Used for all columns from bit 1 up to the MSB.
+3. **Multi-Bit Adder (16-bit)**:
+   * Adds two 16-bit numbers $A$ and $B$ by cascading one half-adder (for LSB bit 0) and 15 full-adders (for bits 1 through 15) in a carry-propagation chain. The carry-out of each adder becomes the carry-in of the next leftward adder.
 
 #### 2.4 Signed Binary Numbers
 
-To represent negative numbers, the computer must assign meanings to bit patterns.
+##### The Code Space Allocation Challenge
+An $n$-bit binary system can code $2^n$ different things. In a system representing nonnegative integers, these $2^n$ patterns code the values $0$ through $2^n - 1$. However, to represent signed (positive and negative) numbers, we must partition the available code space into two subsets: one subset for representing nonnegative numbers, and the other for representing negative numbers. 
 
-The standard representation used here is two's complement.
+The primary design goal for this partitioning is **hardware simplicity**: the coding scheme should complicate the physical implementation of arithmetic circuitry as little as possible.
 
-![](media/figure_2.1.png)
+##### Sign-Magnitude Representation and Its Downfalls
+An intuitive way to represent negative numbers is the **Sign-Magnitude** scheme. Here, we allocate the leftmost bit (the most significant bit, MSB) exclusively to represent the sign:
+* `0` in the sign bit represents a nonnegative number.
+* `1` in the sign bit represents a negative number.
+* The remaining $n-1$ bits represent the magnitude (absolute value) of the number.
 
-**Figure 2.1** Two's complement representation of signed numbers, in a 4-bit binary system.
+For a 4-bit system, this allocates 1 sign bit and 3 magnitude bits, yielding values from $+0$ (`0000`) to $+7$ (`0111`) and $-0$ (`1000`) to $-7$ (`1111`).
 
-This figure is best read as a circular numbering system rather than as two unrelated halves.
+Although simple in concept, this scheme has severe drawbacks for hardware design:
+1. **Two Representations of Zero**: It creates both $+0$ (`0000`) and $-0$ (`1000`). This is highly inelegant and introduces software bugs since comparing $+0$ and $-0$ requires special hardware logic.
+2. **Non-Monotonic Codes**: The codes do not increase monotonically with the values they represent, making magnitude comparison operations more complex.
+3. **Hardware Complexity**: We cannot use the same addition circuitry for both positive and negative numbers. Adding a positive and a negative number requires separate subtraction logic, and the hardware must perform complex conditional checks on the sign bits.
 
-The nonnegative values rise normally:
+![Sign-Magnitude representation of signed numbers with 4 bits showing its core issues, including two zeros and non-monotonic codes](media/slides/chapter-2/slide-36-sign-magnitude-representation.png)
 
+##### Two's Complement Representation (Radix Complement)
+Modern computers solve these issues using **two's complement** representation. In an $n$-bit binary system, the two's complement code that represents a negative number $-x$ is defined as the positive binary code representing:
+$$\text{Code}(-x) = 2^n - x$$
+
+For example, in a 4-bit system ($n=4, 2^4 = 16$), the negative number $-7$ is represented by the code for $16 - 7 = 9_{10}$, which is `1001`.
+
+###### Range of Representable Signed Numbers
+An $n$-bit two's complement system represents $2^n$ signed numbers in the range:
+$$-2^{n-1} \text{ through } 2^{n-1} - 1$$
+
+In a 4-bit system, the range is $-2^3$ through $2^3 - 1$, which is $-8$ through $+7$:
+* Nonnegative values ($0$ to $+7$) are coded as $0000$ to $0111$.
+* Negative values ($-1$ to $-8$) are coded as $1111$ to $1000$ (representing $2^4 - x$).
+
+This scheme results in the following attractive properties:
+* **Single Representation of Zero**: Zero is uniquely represented as `0000` (since $2^n - 0 = 2^n$, which overflows to `0000` in fixed-width registers).
+* **Sign Indicator Bit**: The most significant bit (MSB) naturally acts as a sign indicator:
+  * If MSB = `0`, the number is nonnegative.
+  * If MSB = `1`, the number is negative.
+* **Monotonicity**: The codes are monotonically increasing in value within their respective signed intervals.
+
+![Two's complement representation of signed numbers, in a 4-bit binary system. This figure mapping positive integers 2^n - x to represent negative -x is best read as a circular numbering system rather than as two unrelated halves.](media/figure_2.1.png)
+
+##### Two's Complement Addition and Modulo Arithmetic
+The most remarkable feature of two's complement is that **ordinary unsigned binary addition works correctly for signed numbers without any modifications**. 
+
+Because our fixed-width addition circuitry naturally performs addition modulo $2^n$ (by discarding any carry bit that overflows past the MSB), the hardware addition exactly aligns with the modulo-based encoding of negative numbers.
+
+Mathematically, if we add $A$ and $B$ where one or both are negative (represented as $2^n - |x|$):
+$$\text{Hardware Sum} = (A + B) \pmod{2^n}$$
+
+###### Concrete Signed Addition Traces (4-Bit System)
+
+* **Example 1: Positive + Negative ($6 + (-2) = 4$)**
+  * Decimal equivalent: $6 + (16 - 2) = 6 + 14 = 20_{10}$
+  * Binary:
+    ```text
+        Carry:  1 1 1 0
+        6:      0 1 1 0
+      + -2:     1 1 1 0  (14 in unsigned)
+      -----------------
+        Sum:  1 0 1 0 0  -> Discard overflow carry -> 0100 (4)
+    ```
+  * Modulo: $20 \pmod{16} = 4$. The hardware correctly yields $0100_2$ ($4_{10}$).
+
+* **Example 2: Negative + Negative ($-2 + (-3) = -5$)**
+  * Decimal equivalent: $(16 - 2) + (16 - 3) = 14 + 13 = 27_{10}$
+  * Binary:
+    ```text
+        Carry:  1 1 0 0
+        -2:     1 1 1 0  (14 in unsigned)
+      + -3:     1 1 0 1  (13 in unsigned)
+      -----------------
+        Sum:  1 1 0 1 1  -> Discard overflow carry -> 1011 (11)
+    ```
+  * Modulo: $27 \pmod{16} = 11$. In two's complement, $11$ codes $16 - 5$, representing $-5$.
+
+![Two's Complement addition examples showing modulo arithmetic and overflow behavior](media/slides/chapter-2/slide-38-twos-complement-addition-examples.png)
+
+###### Overflow Detection
+Since we represent a restricted range of signed values, adding two numbers can sometimes result in a sum that exceeds the representable range (signed overflow):
+* **Positive Overflow**: Adding two positive numbers yields a negative result (e.g., $5 + 7 = 12 \rightarrow 1100_2$, which represents $-4$).
+* **Negative Overflow**: Adding two negative numbers yields a positive result (e.g., $-7 + (-3) = 1001_2 + 1101_2 = 10110_2 \rightarrow 0110_2$, which represents $+6$).
+* **Rule**: Overflow occurs if and only if adding two numbers of the same sign yields a result with the opposite sign.
+
+##### The Negation Algorithm: NOT and Add 1
+To negate a number $x$ (find $-x$), we need to compute $2^n - x$. We can derive a simple bit-level algorithm using a mathematical trick:
+$$2^n = (2^n - 1) + 1$$
+$$-x = 2^n - x = (2^n - 1) - x + 1$$
+
+* The term $(2^n - 1)$ is represented in binary as a sequence of all `1`s (e.g., `1111` for $n=4$).
+* Subtracting any number $x$ from all `1`s requires no borrow operations; it is equivalent to flipping every bit of $x$ (i.e., performing a bitwise NOT operation).
+* Therefore, the negation of $x$ is:
+$$\text{Negate}(x) = \text{NOT}(x) + 1$$
+
+###### Step-by-Step Negation Example: Negating $4_{10}$ in a 4-Bit System
+Let $x = 4_{10} = 0100_2$. We want to find the code for $-4_{10}$ (which is $16 - 4 = 12_{10}$):
+1. **Flip all bits (NOT)**: `0100` becomes `1011` (this represents $15 - 4 = 11_{10}$).
+2. **Add 1**: `1011` + `0001` = `1100` (this represents $11 + 1 = 12_{10}$, which is $-4$).
+
+Meaning of the negation algorithm:
 ```text
-0000, 0001, 0010, ...
+  NOT(0100) -> 1011
+  1011 + 1  -> 1100
 ```
 
-Then the bit patterns continue into the negative range:
+###### Custom Hardware Incrementing Shortcut
+When building hardware to add 1 to a number, we can use a simpler method than a general adder:
+* Start from the rightmost bit (LSB).
+* Flip bits from right to left as long as we see a `1` (turning them to `0`).
+* When we hit the first `0`, flip it to `1` and stop.
 
-```text
-1111 = -1
-1110 = -2
-...
-1000 = -8
-```
+##### Subtraction Reduction
+Using the negation algorithm, subtraction is handled as a special case of addition. We do not need dedicated subtraction hardware:
+$$y - x = y + (-x) = y + \text{NOT}(x) + 1$$
 
-That wraparound property is exactly what makes ordinary binary addition usable for signed arithmetic too.
-
-In an `n`-bit two's complement system, the range is:
-
-```text
--2^(n-1) through 2^(n-1) - 1
-```
-
-Example with 4 bits:
-
-```text
-1000 -> -8
-1001 -> -7
-...
-1111 -> -1
-0000 -> 0
-0001 -> 1
-...
-0111 -> 7
-```
-
-The most significant bit indicates the sign:
-
-```text
-0 at the left -> nonnegative
-1 at the left -> negative
-```
-
-The course also explains why a simple `sign bit + magnitude` scheme is not used here.
-
-It creates two representations of zero and forces the hardware to treat positive and negative cases separately.
-
-Two's complement is better because the arithmetic stays uniform.
-
-To negate a number:
-
-```text
-flip all bits
-add 1
-```
-
-The hardware payoff is huge:
-
-```text
-x - y = x + (-y)
-```
-
-So the same adder can support both addition and subtraction.
+A single adder circuit can support both addition and subtraction.
 
 #### 2.5 Specification
 
@@ -2041,88 +2113,130 @@ It will later help the program counter move to the next instruction.
 
 ##### 2.5.2 The Arithmetic Logic Unit
 
-The ALU is the main computation chip of the Hack computer.
+###### Introduction and von Neumann Architecture
+The **Arithmetic Logic Unit (ALU)** is the computational centerpiece of every general-purpose computer. In 1945, the mathematician John von Neumann published a seminal paper describing the structure of general-purpose computers, which became known as the **von Neumann Architecture**. 
 
-Inputs:
+In the von Neumann model, the Central Processing Unit (CPU) is a core block, and within it, the ALU is responsible for executing all arithmetic and logical operations.
 
-```text
-x[16]
-y[16]
-```
+An ALU is structurally abstracted as a component that receives two data inputs, a function selection directive, and outputs the resulting computation.
 
-Control bits:
+###### Hardware-Software Trade-Off
+A classic question in computer engineering is: *How many functions should the ALU implement in hardware?* 
+* **Hardware implementation**: Fast execution but requires more logic gates, increasing chip area, cost, and design complexity.
+* **Software implementation**: Slower execution but keeps the hardware simple. Functions omitted from the ALU can be implemented later in software libraries (such as operating system libraries) using loops of simpler hardware instructions.
 
-```text
-zx nx zy ny f no
-```
+To keep the Hack platform clean and cheap, its ALU does not implement multiplication or division in hardware. Instead, it supports a minimal set of basic arithmetic and bitwise logic operations, leaving multiplication and division to be handled by software.
 
-Outputs:
-
-```text
-out[16]
-zr
-ng
-```
+###### The Hack ALU Abstraction
+The Hack ALU operates on two 16-bit, two's complement numbers and computes one of 18 functions. 
 
 ![](media/figure_2.5a.png)
 
-**Figure 2.5a** The Hack ALU, designed to compute the eighteen arithmetic-logical functions shown on the right. The symbols `!`, `&`, and `|` represent the 16-bit operations `Not`, `And`, and `Or`. For now, ignore the `zr` and `ng` output bits.
+**Figure 2.5a** The Hack ALU, designed to compute the eighteen arithmetic-logical functions. The symbols `!`, `&`, and `|` represent the 16-bit operations `Not`, `And`, and `Or`. The diagram shows the 16-bit data inputs $x$ and $y$, 6 control inputs, a 16-bit output bus, and two status flags.
 
-This figure is dense, but the main idea is simple:
+The chip's inputs, control bits, and outputs are defined as:
 
-```text
-the ALU is one reusable data path
-the control bits decide which computation that path performs
-```
+* **Data Inputs**:
+  * `x[16]`: 16-bit data bus.
+  * `y[16]`: 16-bit data bus.
+* **Control Inputs (6 bits)**:
+  * `zx` (zero x): If 1, the $x$ input is pre-set to 0.
+  * `nx` (negate x): If 1, the $x$ input is bitwise negated.
+  * `zy` (zero y): If 1, the $y$ input is pre-set to 0.
+  * `ny` (negate y): If 1, the $y$ input is bitwise negated.
+  * `f` (function): If 1, the ALU computes $x + y$; if 0, it computes $x \text{ AND } y$.
+  * `no` (negate output): If 1, the output bus is bitwise negated.
+* **Outputs**:
+  * `out[16]`: 16-bit output bus holding the result.
+  * `zr` (zero status flag): 1 if `out` is zero, 0 otherwise.
+  * `ng` (negative status flag): 1 if `out` is negative (MSB is 1), 0 otherwise.
 
-The six control bits describe a small processing pipeline:
-
-```text
-maybe zero x
-maybe negate x
-maybe zero y
-maybe negate y
-choose Add or And
-maybe negate output
-```
+###### The 18 Functions of Interest and Truth Table
+Rather than routing 18 distinct arithmetic/logical circuits, the Hack ALU is designed as a **single, unified data path** whose behavior is steered dynamically by the 6 control bits. 
 
 ![](media/figure_2.5b.png)
 
-**Figure 2.5b** Taken together, the values of the six control bits `zx`, `nx`, `zy`, `ny`, `f`, and `no` cause the ALU to compute one of the functions listed in the rightmost column.
+**Figure 2.5b** The Hack ALU truth table specifying the control bit configurations for all 18 functions of interest. Taken together, the values of the six control bits `zx`, `nx`, `zy`, `ny`, `f`, and `no` cause the ALU to compute one of the functions listed in the rightmost column.
 
-Figure `2.5b` is best read as a recipe.
+The full specifications are summarized in the following table:
 
-You start with `x` and `y`, then pass them through several possible transformations, and only at the end do you get `out`.
+| zx | nx | zy | ny | f | no | out = f(x,y) | Description |
+|:--:|:--:|:--:|:--:|:-:|:-:|:------------:|:-----------:|
+| 1  | 1  | 1  | 1  | 1 | 1  | `0`          | Constant 0 |
+| 1  | 1  | 1  | 0  | 1 | 0  | `1`          | Constant 1 |
+| 1  | 1  | 1  | 0  | 1 | 1  | `-1`         | Constant -1 |
+| 0  | 0  | 1  | 1  | 0 | 0  | `x`          | Input x |
+| 1  | 1  | 0  | 0  | 0 | 0  | `y`          | Input y |
+| 0  | 0  | 1  | 1  | 0 | 1  | `!x`         | Bitwise Not x |
+| 1  | 1  | 0  | 0  | 0 | 1  | `!y`         | Bitwise Not y |
+| 0  | 0  | 1  | 1  | 1 | 1  | `-x`         | Negate x (two's complement) |
+| 1  | 1  | 0  | 0  | 1 | 1  | `-y`         | Negate y (two's complement) |
+| 0  | 1  | 1  | 1  | 1 | 1  | `x+1`        | Increment x by 1 |
+| 1  | 1  | 0  | 1  | 1 | 1  | `y+1`        | Increment y by 1 |
+| 0  | 0  | 1  | 1  | 1 | 0  | `x-1`        | Decrement x by 1 |
+| 1  | 1  | 0  | 0  | 1 | 0  | `y-1`        | Decrement y by 1 |
+| 0  | 0  | 0  | 0  | 1 | 0  | `x+y`        | Add x and y |
+| 0  | 1  | 0  | 0  | 1 | 1  | `x-y`        | Subtract y from x |
+| 0  | 0  | 0  | 1  | 1 | 1  | `y-x`        | Subtract x from y |
+| 0  | 0  | 0  | 0  | 0 | 0  | `x&y`        | Bitwise And x and y |
+| 0  | 1  | 0  | 1  | 0 | 1  | `x\|y`       | Bitwise Or x and y |
 
-So the ALU is not eighteen unrelated circuits.
+###### Tracing Non-Obvious Algebraic Insights
+Understanding how these control bits achieve their mathematical results highlights the elegance of two's complement modulo $2^n$ arithmetic. We can simulate the ALU pipeline on paper to prove some of the non-obvious functions:
 
-It is one circuit whose behavior is steered by control bits.
+* **Insight 1: Constant `-1`** (`zx=1, nx=1, zy=1, ny=0, f=1, no=0`)
+  1. $zx=1, nx=1 \implies x$ is zeroed, then negated: $\text{NOT}(0) = 1111\dots1111_2 = -1_{10}$.
+  2. $zy=1, ny=0 \implies y$ is zeroed, but not negated: $y = 0$.
+  3. $f=1 \implies x + y = -1 + 0 = -1$.
+  4. $no=0 \implies out = -1$ (all `1` bits).
 
-This tiny control scheme can produce the Hack machine's needed arithmetic and logical functions:
+* **Insight 2: Two's Complement Negation `-x`** (`zx=0, nx=0, zy=1, ny=1, f=1, no=1`)
+  1. $zx=0, nx=0 \implies x$ is left as $x$.
+  2. $zy=1, ny=1 \implies y$ is zeroed, then negated: $\text{NOT}(0) = 1111\dots1111_2 = -1_{10}$.
+  3. $f=1 \implies x + y = x + (-1) = x - 1$.
+  4. $no=1 \implies \text{NOT}(x - 1)$. In two's complement, $\text{NOT}(z) = -z - 1$. Thus, $\text{NOT}(x-1) = -(x-1) - 1 = -x + 1 - 1 = -x$.
+
+* **Insight 3: Increment `x+1`** (`zx=0, nx=1, zy=1, ny=1, f=1, no=1`)
+  1. $zx=0, nx=1 \implies x$ is negated: $\text{NOT}(x)$.
+  2. $zy=1, ny=1 \implies y$ is zeroed, then negated: $-1$.
+  3. $f=1 \implies \text{NOT}(x) + (-1) = \text{NOT}(x) - 1$.
+  4. $no=1 \implies \text{NOT}(\text{NOT}(x) - 1) = -(\text{NOT}(x) - 1) - 1 = -\text{NOT}(x) = -(-x - 1) = x + 1$.
+
+* **Insight 4: Subtraction `x-y`** (`zx=0, nx=1, zy=0, ny=0, f=1, no=1`)
+  1. $zx=0, nx=1 \implies x$ is negated: $\text{NOT}(x)$.
+  2. $zy=0, ny=0 \implies y$ is left as $y$.
+  3. $f=1 \implies \text{NOT}(x) + y = -x - 1 + y = y - x - 1$.
+  4. $no=1 \implies \text{NOT}(y - x - 1) = -(y - x - 1) - 1 = x - y + 1 - 1 = x - y$.
+
+###### The ALU Operation Pipeline
+The logic of the Hack ALU is evaluated as a sequential processing pipeline. The inputs $x$ and $y$ are transformed stage-by-stage based on the control bits:
 
 ```text
-0, 1, -1
-x, y
-!x, !y
--x, -y
-x+1, y+1
-x-1, y-1
-x+y
-x-y, y-x
-x&y
-x|y
+Input:  x[16], y[16], zx, nx, zy, ny, f, no
+1. If zx == 1: set x = 0
+2. If nx == 1: set x = !x
+3. If zy == 1: set y = 0
+4. If ny == 1: set y = !y
+5. If f == 1:  set out = x + y
+   Else:       set out = x & y
+6. If no == 1: set out = !out
+Output: out[16]
 ```
 
-The status outputs summarize the result:
+![The Hack ALU operation pipeline, tracing the transformations of x and y stage-by-stage](media/slides/chapter-2/slide-62-hack-alu-operation-pipeline.png)
 
-```text
-zr = 1 if out is zero
-ng = 1 if out is negative
-```
+###### Status Outputs (`zr` and `ng`)
+The ALU computes and outputs two status flags that summarize properties of the 16-bit output:
 
 ![](media/figure_2.5c.png)
 
-**Figure 2.5c** The Hack ALU API.
+**Figure 2.5c** The Hack ALU API, illustrating the evaluation logic for the status flags `zr` (zero status indicator) and `ng` (negative status indicator).
+
+* **Evaluation Rules**:
+  * `zr = 1` if `out == 0`, else `0`.
+  * `ng = 1` if `out < 0` (meaning the MSB is `1`), else `0`.
+* **Hardware Significance**:
+  These two bits are critical for **conditional branching** and program control (jumps). The CPU evaluates these status flags to decide whether to fetch the next sequential instruction or branch to a new address (e.g., executing jump instructions like `if out == 0 jump` or `if out > 0 jump`).
 
 This compact API becomes critical later because the CPU will control the ALU only through these inputs and interpret the result only through these outputs.
 
@@ -2163,61 +2277,68 @@ compute zr and ng
 
 #### 2.7 Project
 
-Project 2 asks you to implement:
+Project 2 requires implementing a family of five combinational arithmetic chips, systematically building up from a basic 2-bit adder to a fully functional Arithmetic Logic Unit (ALU).
 
 Implementation links: [`HalfAdder`](projects/project-02-boolean-arithmetic.md#halfadder), [`FullAdder`](projects/project-02-boolean-arithmetic.md#fulladder), [`Add16`](projects/project-02-boolean-arithmetic.md#add16), [`Inc16 using HalfAdders`](projects/project-02-boolean-arithmetic.md#inc16-using-halfadders), [`Inc16 using Add16`](projects/project-02-boolean-arithmetic.md#inc16-using-add16), and [`ALU`](projects/project-02-boolean-arithmetic.md#alu).
 
-```text
-HalfAdder
-FullAdder
-Add16
-Inc16
-ALU
-```
+##### The 5 Project Chips
 
-The building blocks are Chapter 1 gates and the chips completed earlier in the project.
+1. **HalfAdder**: Adds two bits $a$ and $b$, producing `sum` and `carry` outputs.
+   - *Implementation Tip*: Can be built from exactly two basic gates implemented in Project 1: `Xor` (for the sum bit) and `And` (for the carry bit).
+2. **FullAdder**: Adds three bits $a$, $b$, and $c$, producing `sum` and `carry` outputs.
+   - *Implementation Tip*: Can be built using two `HalfAdder` chips and one `Or` gate.
+3. **Add16**: Adds two 16-bit, two's complement numbers $A$ and $B$, producing a 16-bit output.
+   - *Implementation Tip*: Cascades adders sequentially from right to left (1 `HalfAdder` for the LSB at bit 0, connected to 15 `FullAdder` chips for bits 1 through 15). The carry-out pin of bit $i$ is routed directly to the carry-in pin of bit $i+1$. The final MSB carry-out bit (from bit 15) is discarded.
+4. **Inc16**: Increments a 16-bit number by 1, computing `in + 1`.
+   - *Implementation Tip*: Can be built easily by feeding the input bus `in` and a constant value of `1` (using HDL constant syntax) into an `Add16` chip.
+5. **ALU**: Computes one of 18 pre-defined arithmetic/logical functions on two 16-bit inputs.
+   - *Implementation Tip*: Can be built using a 16-bit adder (`Add16`) and various logic gates from Project 1. Thanks to two's complement arithmetic, the entire ALU can be implemented in less than 20 lines of HDL!
 
-The book recommends using built-in versions of Chapter 1 chips instead of copying Project 1 HDL files. This makes Project 2 faster and keeps the focus on arithmetic.
+##### Hack HDL Syntax: Sub-bussing and Constants
 
-The course adds a software-engineering reason: using built-in earlier chips helps localize bugs to the current project.
+When writing HDL for Project 2, you must utilize Hack HDL's syntax for constants and sub-busses:
 
-That supports a unit-testing style workflow, where you debug the new arithmetic chip rather than re-debugging the layers below it.
+* **Constants (`true` and `false`)**: You can set individual bits or entire buses to constant values of `1` or `0` using the keywords `true` and `false`.
+  - Setting a bus to `false` sets all its bits to `0` (e.g., `y = false` zero-presets a 16-bit bus).
+  - Setting a bus to `true` sets all its bits to `1` (e.g., `x = true` sets all 16 bits to `1`, representing the value $-1$ in two's complement).
+* **Sub-bussing (Slicing)**: You can assign constants or internal pins to specific bit subsets of a bus.
+  - Syntax: `z[0..2] = true` sets bits 0, 1, and 2 of bus `z` to `1`. Unassigned bits default to `0`.
+  - Creating internal pins from output subsets: `Add16(..., out[0..7] = low, out[8..15] = high)`.
 
-The same rules still apply:
+![Examples of assigning values to sub-busses and constants in Hack HDL](media/slides/chapter-2/slide-86-hdl-sub-bussing-examples.png)
 
-- use only specified chips
-- prefer simple correct HDL
-- do not invent unnecessary helper chips
-- test each chip with the supplied scripts
+##### Built-In Chips and Unit Testing Strategy
+The Hack Hardware Simulator resolves chip parts by checking the current project directory first. If a chip part referenced in an `.hdl` file (e.g., `And`, `Mux`, `Or`) is not found in the local directory (since the `02` directory only contains the 6 Project 2 stub files), the simulator automatically falls back to its Java-based **built-in implementation**.
+
+This behavior supports a clean unit-testing workflow:
+* Do not copy Project 1 HDL files into your Project 2 directory.
+* By using Java built-in versions of earlier gates, you localize any bugs directly to the current chip under test. If a test fails, you know the error is in the logic of the chip you are building, rather than a hidden bug in a nested Project 1 gate.
 
 #### 2.8 Perspective
 
-The adder design prioritizes clarity.
+##### Standard Components vs. Course Simplification
+Most of the logic gates and adder circuits implemented in Project 2 are standard building blocks in digital systems design:
+* **Standard Industry Chips**: The `HalfAdder`, `FullAdder`, and multi-bit ripple-carry adders (`Add16`) are identical to chips found in commercial processors.
+* **Simplified Hack ALU**: The Hack ALU is a custom design optimized specifically for educational clarity. Commercial processors implement far more complex ALUs with dozens of specialized instructions, but the Hack ALU is kept simple to ensure all computational blocks can be built from first principles in a single course.
 
-A ripple-carry adder is easy to understand:
+##### The Hardware/Software Trade-Off in Arithmetic
+A computer's overall capabilities are divided between its hardware execution units and the software operating system running on top of it.
+* **Hardware Operations**: Run extremely fast but are expensive to design, verify, and manufacture (requiring more physical transistors on the silicon die).
+* **Software Operations**: Slower to execute but trivial to design, correct, and extend via software updates.
 
-```text
-each bit waits for carry from the previous bit
-```
+To keep the Hack hardware simple, complex arithmetic functions like multiplication, division, and square roots are omitted from the ALU. Instead, they are delegated to software libraries (specifically, the operating system's `Math` library, built in Part 2 of this course). Because this delegation is handled inside the OS, it is completely transparent to high-level programmers, who can use multiplication and division operators without needing to know that they are being executed as a software program rather than a hardware gate.
 
-But it can be slow because carry may need to travel through many positions.
+##### Ripple-Carry Delay vs. Carry-Lookahead Optimization
+In our 16-bit adder, we chain 16 adders sequentially from right to left in a **Ripple-Carry** design.
+* **Propagation Delay**: The carry bit must "ripple" through the adder columns. In each full adder, the carry signal traverses 3 to 4 gates. For an $n$-bit adder, the total propagation delay is:
+$$\text{Total Delay} \approx n \times \text{Full Adder Gate Delay}$$
+* **System Limitation**: This sequential carry propagation creates a significant delay. The system clock speed is restricted because the clock cycle must be long enough to allow carry signals to traverse the entire chain and let the voltages/capacitors settle.
+* **Carry-Lookahead Adder**: Commercial systems optimize this using a carry-lookahead adder. This design uses additional parallel logic gates to compute the carry-in bit for each column independently of the preceding columns. This eliminates the sequential delay chain, allowing the adder to run at much higher clock speeds, at the cost of significantly increased transistor counts.
 
-Real hardware can use faster designs such as carry-lookahead adders, but those optimizations are outside the book's main path.
-
-The course also makes a distinction between what is standard and what is course-specific.
-
-Chips like half-adders, full-adders, and ripple-carry adders are standard building blocks in digital design, while the Hack ALU is intentionally simplified for teaching.
-
-The Hack ALU is also intentionally small. Expensive operations like multiplication, division, and square root are not built directly into the hardware.
-
-Instead:
-
-```text
-simple hardware
-more work in software
-```
-
-This is a recurring systems trade-off.
+##### Simulator Performance and the Rationale for Built-In Chips
+In Project 2, it is highly recommended to use built-in chips for previously completed parts (such as Project 1 gates). There are two primary reasons for this practice:
+1. **Localizing Failures (Unit Testing)**: Using Java-based built-in parts ensures that any bugs that arise in Project 2 are localized to the current chip's implementation. If a test fails, you do not have to worry that the bug is hidden in a Project 1 gate.
+2. **Simulation Performance**: The Hack Hardware Simulator runs built-in chips as compiled Java code, which evaluates near-instantaneously. Simulating multi-layered chips (such as ALU or RAM) using nested HDL descriptions recursively forces the simulator to track millions of individual gate evaluations, causing sluggish and slow simulation speeds.
 
 ### 3 Memory
 
