@@ -325,3 +325,8 @@ The output of the DFF at the current clock cycle $t$ is exactly the value that w
 | **Data Sampled** | Continuous when inputs active | Continuous while $E = 1$ (transparent) | At the rising clock edge ($0 \to 1$) |
 | **Invalid State** | Yes ($S=1, R=1$) | No (prevented by input steering) | No (prevented by design) |
 | **Feedback Role** | Basic bi-stable element | Level-controlled store | Synchronous 1-cycle delay |
+
+---
+
+### Physical Realities and Perspectives
+Although the logical transition from basic NAND/NOR gates to the DFF is elegant, modern computer architectures optimize physical memory at the transistor level. Alternative solid-state technologies (such as DRAM capacitors, SRAM transistors, and floating-gate flash cells) are used to balance cost, speed, volatile versus non-volatile storage, and cache hierarchies. For a broader look at these engineering trade-offs, see the [NOTES.md (Section 3.6 Perspectives)](NOTES.md#36-perspective) notes.

@@ -2940,7 +2940,7 @@ By separating the files into directories `a` and `b`, we exploit the simulator's
 The closing perspective of Chapter 3 highlights several physical implementations, memory technologies, and engineering trade-offs that are abstracted away to simplify system architecture.
 
 ##### 3.6.1 Physical Flip-Flops vs. Abstraction
-While we treat the DFF as an atomic, built-in primitive, physical flip-flops are constructed from combinational gates (such as NAND or NOR) configured in feedback loops:
+While we treat the DFF as an atomic, built-in primitive, physical flip-flops are constructed from combinational gates (such as NAND or NOR) configured in feedback loops. For a detailed step-by-step gate-level construction trace, see the [DFF_DEEP_DIVE.md](DFF_DEEP_DIVE.md) notes.
 - **Bi-stable Storage**: Two cross-coupled gates create an SR (Set-Reset) latch that can hold its state in one of two stable physical configurations (representing 0 or 1) based on momentary input triggers.
 - **Edge Isolation (Master-Slave)**: Cascading two latches—a Master latch controlled by the inverted clock signal and a Slave latch controlled by the direct clock signal—ensures that state updates occur precisely at the clock cycle boundaries (ticks and tocks), preventing signal wiggles from propagating forward inside a single cycle.
 - **Solid-State Physics**: Modern computers do not build memory cells strictly from textbook gate loops. Instead, they exploit the unique physical and electrical properties of semiconductor silicon (such as capacitors in DRAM or floating-gate transistors in flash memory) to minimize size, heat, and cost.
