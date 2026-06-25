@@ -574,7 +574,7 @@ Meaning:
 
 A Boolean function maps binary inputs to a binary output. In prefix notation, we write a function over two variables as $f(x, y)$. In infix notation, we can write $x\ f\ y$, where $x$ and $y$ are called **operands** and $f$ is the **operator**.
 
-![](media/slides/chapter-1/slide-14-boolean-function-gate.png)
+![](media/slides/chapter-1/chapter1-slide-14-boolean-function-gate.png)
 
 **Figure (Slide 14)** Three equivalent representations of the `And` function: truth table (explicit output for each input combination), gate diagram (the physical symbol used in circuit diagrams), and piecewise definition (a compact rule).
 
@@ -600,7 +600,7 @@ Behavior rules:
 
 To see the complete landscape of two-variable operators, we can look at Slide 21:
 
-![](media/slides/chapter-1/slide-21-two-input-functions.png)
+![](media/slides/chapter-1/chapter1-slide-21-two-input-functions.png)
 
 **Figure (Slide 21)** Truth table enumeration of the 16 possible two-input Boolean functions.
 
@@ -612,7 +612,7 @@ Meaning:
   - `Nor(x, y)`: Not-Or, evaluates to `1` only when both inputs are `0`
   - `Xor(x, y)`: Exclusive-Or, evaluates to `1` exactly when the inputs are different
 
-![](media/slides/chapter-1/slide-22-how-many-functions.png)
+![](media/slides/chapter-1/chapter1-slide-22-how-many-functions.png)
 
 **Figure (Slide 22)** The general formula: *N* binary variables yield $2^{2^N}$ distinct Boolean functions. For $N = 2$: $2^{2^2} = 16$ functions.
 
@@ -633,7 +633,7 @@ Meaning:
 
 Since And, Or, and Not are sufficient to express any Boolean function, and each can be constructed using only Nand, **any Boolean function can be realized using only Nand gates**. This is the theoretical foundation of the entire course: we start with one primitive gate and build a complete computer.
 
-![](media/slides/chapter-1/slide-26-nand-expressive-power-proof.png)
+![](media/slides/chapter-1/chapter1-slide-26-nand-expressive-power-proof.png)
 
 **Figure (Slide 26)** Complete derivation: Nand truth table, the three identities for Not/And/Or in terms of Nand, and the theorem with its full proof sketch using DNF.
 
@@ -760,13 +760,13 @@ And(a, b) = 1 only when a = 1 and b = 1; otherwise, 0
 
 **Figure 1.4** Standard gate diagrams of three elementary logic gates: `And`, `Or`, and `Not`.
 
-![](media/slides/chapter-1/slide-32-elementary-gate-diagrams.png)
+![](media/slides/chapter-1/chapter1-slide-32-elementary-gate-diagrams.png)
 
 **Figure (Slide 32)** All four elementary gate diagrams side by side: `Nand`, `And`, `Or`, and `Not`, each with their if/else behavioral specification and the rationale for why this specific set is chosen — either `{Nand}` alone or `{And, Or, Not}` together is sufficient to build any Boolean function, and all have efficient hardware implementations.
 
 To visualize how physical circuits relate to these symbols, the slides present conceptual switch/relay implementations:
 
-![](media/slides/chapter-1/slide-33-circuit-conceptual.png)
+![](media/slides/chapter-1/chapter1-slide-33-circuit-conceptual.png)
 
 **Figure (Slide 33)** Conceptual circuit switch configurations for `And` and `Or` gates.
 
@@ -826,7 +826,7 @@ Meaning:
 
 As shown in the slides, the design process focuses purely on the logical architecture rather than the physical layout:
 
-![](media/slides/chapter-1/slide-35-logical-vs-physical.png)
+![](media/slides/chapter-1/chapter1-slide-35-logical-vs-physical.png)
 
 **Figure (Slide 35)** Logical vs. physical implementations of composite gates.
 
@@ -872,7 +872,7 @@ When working with chips, developers wear two distinct hats:
 - **The Programmer (User) Hat:** Focuses on the **interface** (the header). The interface is unique, specifying the name of the chip and the inputs/outputs. It represents a strict contract that must be adhered to. This is the only view needed by someone *using* the chip.
 - **The Chip Builder Hat:** Focuses on the **implementation** (the `PARTS` section). The implementation can vary, and different designs can realize the same interface with varying efficiencies (fewer gates, lower cost, less power). This is relevant only to the chip *builder*.
 
-![](media/slides/chapter-1/slide-46-interface-vs-implementation.png)
+![](media/slides/chapter-1/chapter1-slide-46-interface-vs-implementation.png)
 
 **Figure (Slide 46)** The interface/implementation distinction in HDL. The programmer only needs the interface contract (IN/OUT), while the chip builder implements it in the PARTS block using lower-level components. A logic gate has a single interface but can have many different implementations.
 
@@ -908,7 +908,7 @@ Several core syntax rules and conventions govern HDL:
 - **The `a=a`, `out=out` Syntax:** In the Hack architecture, two-input chips conventionally use inputs `a` and `b`, and output `out`. This leads to statements like `And(a=a, b=notb, out=aAndNotb)` or `Or(..., out=out)`. In these expressions, the name on the left of the equals sign refers to the *part's input/output pin*, while the name on the right refers to the *chip's input/output or internal pin* that is being wired to it.
 - **Simplified Educational Language:** Real-world hardware design uses industry-standard languages like VHDL and Verilog (which cover 90% of designs). The HDL in this course is a minimal, simplified subset that captures their essential concepts and can be learned in an hour, providing all the capabilities needed to build a computer.
 
-![](media/slides/chapter-1/slide-45-gate-diagram-and-hdl.png)
+![](media/slides/chapter-1/chapter1-slide-45-gate-diagram-and-hdl.png)
 
 **Figure (Slide 45)** Gate diagram and corresponding HDL implementation for the Xor chip. The internal wires (`nota`, `notb`, `aAndNotb`, `notaAndb`) in the schematic map directly to the output pins of the respective part instantiations in the HDL code.
 
@@ -924,13 +924,13 @@ There are two primary modes of simulation:
 1. **Interactive Simulation:** The developer manually loads the HDL file, inputs test values into the GUI, evaluates the chip logic, and inspects the output and internal pins to debug failures.
 2. **Script-Based Simulation:** The developer loads a test script (`.tst` file) that automates the testing cycle. The script sets inputs, evaluates the logic, and records output values in an output file (`.out`).
 
-![](media/slides/chapter-1/slide-55-script-based-simulation-output.png)
+![](media/slides/chapter-1/chapter1-slide-55-script-based-simulation-output.png)
 
 **Figure (Slide 55)** The logic and structure of script-based simulation with an output file. The test script initializes by loading the HDL, creating an empty output file, and specifying the pins to output. It then repeats the set, eval, and output cycle to construct the output file.
 
 To automate validation, the simulator can load a **compare file** (`.cmp`) containing the expected outputs. The simulator compares the generated output file line-by-line against the compare file, throwing a comparison error if a mismatch occurs. This is critical for complex chips (like an ALU or CPU) where manual visual validation is impossible.
 
-![](media/slides/chapter-1/slide-60-script-based-simulation-compare.png)
+![](media/slides/chapter-1/chapter1-slide-60-script-based-simulation-compare.png)
 
 **Figure (Slide 60)** Script-based simulation with a compare file. When the test script executes an `output` command, the simulator compares the generated line in `.out` against the corresponding line in `.cmp`, throwing a comparison error if a mismatch occurs.
 
@@ -948,7 +948,7 @@ For quick experiments and initial debugging, the developer interactively probes 
 3. **Evaluate the Logic:** Click the calculator/evaluate icon to trigger logic evaluation. The simulator will not propagate signals until this action is taken.
 4. **Inspect Results:** Inspect the output pin values in the "Output pins" pane and verify intermediate signal states in the "Internal pins" pane to trace errors.
 
-![](media/slides/chapter-1/slide-52-interactive-simulation-gui.png)
+![](media/slides/chapter-1/chapter1-slide-52-interactive-simulation-gui.png)
 
 **Figure (Slide 52)** The interactive simulation workflow in the Hardware Simulator GUI. The numbers map the sequential steps of loading a chip, manually setting input pin values, evaluating the logic, and inspecting the outputs and internal pins.
 
@@ -958,7 +958,7 @@ While manual testing is sufficient for simple 2-input gates like `Xor`, it becom
 
 A test script coordinates simulation by executing commands sequentially. The simulator interface displays the currently loaded script, highlighting the next statement to be executed with a yellow bar (cursor). Clicking play runs the commands until the next semicolon is hit.
 
-![](media/slides/chapter-1/slide-58-script-based-simulation-gui.png)
+![](media/slides/chapter-1/chapter1-slide-58-script-based-simulation-gui.png)
 
 **Figure (Slide 58)** The script-based simulation workflow in the Hardware Simulator GUI. The numbers map out loading the test script, running it, and inspecting the resulting output file inside the GUI.
 
@@ -990,11 +990,11 @@ The output file (`.out`) generated by a simulation is a side-effect of the scrip
 * When the test script executes the `output` command, the simulator compares the generated output line directly to the corresponding line in the loaded compare file (`.cmp`).
 * If a mismatch occurs, the simulator throws a **comparison error** immediately, pinpointing exactly where the implementation diverges from the specification.
 
-![](media/slides/chapter-1/slide-55-script-based-simulation-output.png)
+![](media/slides/chapter-1/chapter1-slide-55-script-based-simulation-output.png)
 
 **Figure (Slide 55)** The logic and structure of script-based simulation with an output file. The test script initializes by loading the HDL, creating an empty output file, and specifying the pins to output. It then repeats the set, eval, and output cycle to construct the output file.
 
-![](media/slides/chapter-1/slide-60-script-based-simulation-compare.png)
+![](media/slides/chapter-1/chapter1-slide-60-script-based-simulation-compare.png)
 
 **Figure (Slide 60)** Script-based simulation with a compare file. When the test script executes an `output` command, the simulator compares the generated line in `.out` against the corresponding line in `.cmp`, throwing a comparison error if a mismatch occurs.
 
@@ -1148,7 +1148,7 @@ It is still just many ordinary wires.
 
 The abstraction is that HDL lets us talk about the bundle as one meaningful value instead of naming each wire separately.
 
-![](media/slides/chapter-1/slide-63-multi-bit-bus.png)
+![](media/slides/chapter-1/chapter1-slide-63-multi-bit-bus.png)
 
 **Figure (Slide 63)** A 16-bit bus is one bundle of 16 wires, indexed from `15` down to `0`.
 
@@ -1211,7 +1211,7 @@ The course then shows two different ways HDL lets us work with buses.
 
 **Whole-bus use** means one chip consumes or produces the entire multi-bit value at once.
 
-![](media/slides/chapter-1/slide-66-bus-as-single-entity.png)
+![](media/slides/chapter-1/chapter1-slide-66-bus-as-single-entity.png)
 
 **Figure (Slide 66)** HDL can pass an entire bus through one pin name and can also create an internal bus like `ab`.
 
@@ -1248,7 +1248,7 @@ The second HDL pattern is **bit selection**.
 
 Sometimes we want to reach inside a bus and connect particular wires one by one.
 
-![](media/slides/chapter-1/slide-69-input-bus-subscripting.png)
+![](media/slides/chapter-1/chapter1-slide-69-input-bus-subscripting.png)
 
 **Figure (Slide 69)** Input bus pins can be subscripted so a composite chip can refer to individual wires like `a[0]` or `a[3]`.
 
@@ -1274,7 +1274,7 @@ Meaning:
 
 We can also subscript outputs when we want a bit-wise operation that preserves width.
 
-![](media/slides/chapter-1/slide-72-output-bus-subscripting.png)
+![](media/slides/chapter-1/chapter1-slide-72-output-bus-subscripting.png)
 
 **Figure (Slide 72)** Output bus pins can also be subscripted, so each bit position can be written explicitly.
 
@@ -1484,7 +1484,7 @@ Project 1 asks you to implement the chapter's 15 logic gates using HDL, starting
 
 The computer we are building consists of about 30 different chips in total. Project 1 lays the foundational layer of this bottom-up construction, providing the elementary logic toolkit needed to build all subsequent components (the ALU, registers, RAM, CPU, and eventually the entire computer platform).
 
-![Roadmap of the computer construction projects, starting with building elementary logic gates from Nand and moving up to build chips, CPUs, and assembler/software layers](media/slides/chapter-1/slide-79-project-1-roadmap.png)
+![Roadmap of the computer construction projects, starting with building elementary logic gates from Nand and moving up to build chips, CPUs, and assembler/software layers](media/slides/chapter-1/chapter1-slide-79-project-1-roadmap.png)
 
 ##### 1.6.1 The 15 Logic Gates
 The 15 chips in Project 1 can be grouped into three logical categories:
@@ -1533,7 +1533,7 @@ A demultiplexer is a distributor that routes a single input signal (`in`) to one
 ###### Application 1: Programmable Gate (AndMuxOr)
 A programmable gate changes its logical behavior according to a selection bit. We can combine `And`, `Or`, and `Mux` gates to construct a chip that acts as an `And` gate when `sel` is 0, and as an `Or` gate when `sel` is 1.
 
-![Wiring schematic, truth table, and completed HDL block of a programmable gate that performs And or Or logic depending on the select bit](media/slides/chapter-1/slide-85-programmable-gate-and-mux-logic.png)
+![Wiring schematic, truth table, and completed HDL block of a programmable gate that performs And or Or logic depending on the select bit](media/slides/chapter-1/chapter1-slide-85-programmable-gate-and-mux-logic.png)
 
 Wiring architecture for a programmable gate `AndMuxOr`:
 1. Fan out inputs `a` and `b` simultaneously into both an `And` gate and an `Or` gate.
@@ -1562,7 +1562,7 @@ Meaning:
 ###### Application 2: Communications Interleaving (Braiding)
 In communication networks, multiplexers and demultiplexers are used to share a single physical transmission line among multiple channels (such as transmitting multiple music streams or movies simultaneously).
 
-![Interleaved channel communication schematic showing Mux-DMux network braiding with oscillators feeding select bits](media/slides/chapter-1/slide-86-interleaved-channel-communication.png)
+![Interleaved channel communication schematic showing Mux-DMux network braiding with oscillators feeding select bits](media/slides/chapter-1/chapter1-slide-86-interleaved-channel-communication.png)
 
 * **Source End**: A `Mux` receives input from multiple distinct channels. An oscillator feeds a rapidly alternating sequence of select bits (`0`, `1`, `0`, `1`, ...) to the `Mux`'s `sel` input, causing it to transmit alternating packets (e.g., a bit from channel A, a bit from channel B, and so on) sequentially down the shared line.
 * **Destination End**: A `DMux` receives the combined data train from the line. A synchronized oscillator feeds the same alternating sequence of select bits to the `DMux`'s `sel` input, distributing the data back to its original separate destinations.
@@ -1585,7 +1585,7 @@ Gates with a `16` suffix (such as `And16`) take 16-bit wide buses as input and r
 Multi-way gates process multiple input lines. 
 * **Control Pin Scaling**: Selecting among $n$ input channels requires a control bus of size $k$ where $2^k = n$. For example, a 4-way multiplexer (`Mux4Way16`) routes one of four 16-bit inputs (`a`, `b`, `c`, `d`) to a single 16-bit output. Choosing among 4 possibilities requires a 2-bit selection bus `sel[2]`.
 
-![Checklist specifying multi-way multiplexer selection truth table, interface signature, and built-from-Mux16 tip](media/slides/chapter-1/slide-94-16bit-4way-multiplexor.png)
+![Checklist specifying multi-way multiplexer selection truth table, interface signature, and built-from-Mux16 tip](media/slides/chapter-1/chapter1-slide-94-16bit-4way-multiplexor.png)
 
 ##### 1.6.4 Project Mechanics and Validation
 
@@ -1595,7 +1595,7 @@ For every chip built in the course, three corresponding files are provided in th
 2. `Xxx.tst` — A simulation script containing input values, evaluation commands, and comparison calls.
 3. `Xxx.cmp` — A comparison file specifying the exact expected outputs for the test inputs.
 
-![Test environment contract showing how Xor hdl, tst, cmp files interact within the simulator directory](media/slides/chapter-1/slide-98-project-1-contract-xor-example.png)
+![Test environment contract showing how Xor hdl, tst, cmp files interact within the simulator directory](media/slides/chapter-1/chapter1-slide-98-project-1-contract-xor-example.png)
 
 * **The Testing Contract**: When running the test script (`.tst`) on your implementation (`.hdl`), the hardware simulator evaluates your logic and writes results to an output file (`.out`). It then automatically compares `.out` to `.cmp`.
 * **Verification Status**:
@@ -1605,7 +1605,7 @@ For every chip built in the course, three corresponding files are provided in th
 ###### Signature Specification and Wiring
 When wiring chip-parts together inside the `PARTS` block, the developer must map internal pins correctly. 
 
-![Conceptual circuit design and corresponding partial HDL structure mapping inputs and outputs of Xor](media/slides/chapter-1/slide-99-xor-gate-schematic-wiring.png)
+![Conceptual circuit design and corresponding partial HDL structure mapping inputs and outputs of Xor](media/slides/chapter-1/chapter1-slide-99-xor-gate-schematic-wiring.png)
 
 For a chip-part signature lookup (e.g. knowing that a `Mux` has inputs `a`, `b`, `sel` and output `out`), consult the **Hack Chipset API** reference guide.
 
@@ -1734,7 +1734,7 @@ General-purpose computers must perform a set of basic arithmetic operations on s
 
 In Project 2, our hardware construction path moves systematically from simple adders to a fully functional Arithmetic Logic Unit (ALU):
 
-![Hardware construction roadmap for Chapter 2, showing the path from Nand gates up to building arithmetic chips and the ALU](media/slides/chapter-2/slide-04-project-2-roadmap.png)
+![Hardware construction roadmap for Chapter 2, showing the path from Nand gates up to building arithmetic chips and the ALU](media/slides/chapter-2/chapter2-slide-04-project-2-roadmap.png)
 
 The most fundamental operation is addition. Subtraction can be modeled as addition by using negative representations (e.g. $x - y = x + (-y)$), incrementing is addition of a constant 1, and higher operations like multiplication and division can be reduced to successive additions in software or hardware. Therefore, building an efficient adder logic gate is the gateway to all processing capabilities.
 
@@ -1752,7 +1752,7 @@ Like the decimal system, the binary system is a positional number system. The va
   * Example:
     $$101_2 = 1 \cdot 2^2 + 0 \cdot 2^1 + 1 \cdot 2^0 = 4 + 0 + 1 = 5_{10}$$
 
-![Comparison of the positional number systems between base 10 (decimal) and base 2 (binary)](media/slides/chapter-2/slide-18-decimal-vs-binary-positional.png)
+![Comparison of the positional number systems between base 10 (decimal) and base 2 (binary)](media/slides/chapter-2/chapter2-slide-18-decimal-vs-binary-positional.png)
 
 ##### 2.2.2 Mathematical Representation and Conversion
 To compute the decimal value of any binary sequence of bits $B$ of size $n+1$ (where $B_0$ is the LSB and $B_n$ is the MSB):
@@ -1761,7 +1761,7 @@ $$\text{Value} = \sum_{i=0}^{n} B_i \cdot 2^i$$
 
 Inside computers, all information types (numbers, text, images, instructions) are represented using binary codes. Gottfried Wilhelm Leibniz first documented the binary system in 1679 (shown in his medallion), advocating that binary numerals are extremely easy to store, compare, add, subtract, multiply, and transmit in physical devices compared to decimal.
 
-![Historical medallion of G.W. Leibniz showing his binary numeral system description](media/slides/chapter-2/slide-23-leibniz-binary-system.png)
+![Historical medallion of G.W. Leibniz showing his binary numeral system description](media/slides/chapter-2/chapter2-slide-23-leibniz-binary-system.png)
 
 ##### 2.2.3 Fixed Word Size and Integer Ranges
 In physical hardware, registers are finite and use a fixed word size ($k$ bits) to represent chunks of data.
@@ -1789,7 +1789,7 @@ To convert a decimal number to its binary representation, we express the decimal
 Sum: $87 = 64 + 16 + 4 + 2 + 1 = 2^6 + 2^4 + 2^2 + 2^1 + 2^0$
 Result: `1010111` (bits at positions 6, 4, 2, 1, 0 are `1`; bits at positions 5, 3 are `0`).
 
-![Table listing powers of 2 and demonstrating binary-to-decimal and decimal-to-binary conversions with practice solutions](media/slides/chapter-2/slide-22-decimal-binary-conversions.png)
+![Table listing powers of 2 and demonstrating binary-to-decimal and decimal-to-binary conversions with practice solutions](media/slides/chapter-2/chapter2-slide-22-decimal-binary-conversions.png)
 
 #### 2.3 Binary Addition
 
@@ -1810,7 +1810,7 @@ At each bit column position, we:
 3. Calculate the sum bit for that position.
 4. Calculate any carry-out bit to be sent to the next (leftward) column.
 
-![Side-by-side comparison of 2nd-grade decimal addition (5783 + 2456) with binary addition (1001 + 1100) showing carry bits](media/slides/chapter-2/slide-25-decimal-vs-binary-addition.png)
+![Side-by-side comparison of 2nd-grade decimal addition (5783 + 2456) with binary addition (1001 + 1100) showing carry bits](media/slides/chapter-2/chapter2-slide-25-decimal-vs-binary-addition.png)
 
 The basic bitwise addition cases are:
 * $0 + 0 = 0$ (Sum: `0`, Carry: `0`)
@@ -1856,7 +1856,7 @@ When the addition of the two most significant bits (MSB) generates a carry-out o
 
 Our hardware approach is to **ignore the overflow carry** and discard it. 
 
-![4-bit binary addition example with an overflow carry bit of 1, showing how the overflow is discarded](media/slides/chapter-2/slide-29-handling-overflow.png)
+![4-bit binary addition example with an overflow carry bit of 1, showing how the overflow is discarded](media/slides/chapter-2/chapter2-slide-29-handling-overflow.png)
 
 ###### Mathematical Modulo Arithmetic of Overflow
 
@@ -1905,7 +1905,7 @@ Although simple in concept, this scheme has severe drawbacks for hardware design
 2. **Non-Monotonic Codes**: The codes do not increase monotonically with the values they represent, making magnitude comparison operations more complex.
 3. **Hardware Complexity**: We cannot use the same addition circuitry for both positive and negative numbers. Adding a positive and a negative number requires separate subtraction logic, and the hardware must perform complex conditional checks on the sign bits.
 
-![Sign-Magnitude representation of signed numbers with 4 bits showing its core issues, including two zeros and non-monotonic codes](media/slides/chapter-2/slide-36-sign-magnitude-representation.png)
+![Sign-Magnitude representation of signed numbers with 4 bits showing its core issues, including two zeros and non-monotonic codes](media/slides/chapter-2/chapter2-slide-36-sign-magnitude-representation.png)
 
 ##### Two's Complement Representation (Radix Complement)
 Modern computers solve these issues using **two's complement** representation. In an $n$-bit binary system, the two's complement code that represents a negative number $-x$ is defined as the positive binary code representing:
@@ -1964,7 +1964,7 @@ $$\text{Hardware Sum} = (A + B) \pmod{2^n}$$
     ```
   * Modulo: $27 \pmod{16} = 11$. In two's complement, $11$ codes $16 - 5$, representing $-5$.
 
-![Two's Complement addition examples showing modulo arithmetic and overflow behavior](media/slides/chapter-2/slide-38-twos-complement-addition-examples.png)
+![Two's Complement addition examples showing modulo arithmetic and overflow behavior](media/slides/chapter-2/chapter2-slide-38-twos-complement-addition-examples.png)
 
 ###### Overflow Detection
 Since we represent a restricted range of signed values, adding two numbers can sometimes result in a sum that exceeds the representable range (signed overflow):
@@ -2223,7 +2223,7 @@ Input:  x[16], y[16], zx, nx, zy, ny, f, no
 Output: out[16]
 ```
 
-![The Hack ALU operation pipeline, tracing the transformations of x and y stage-by-stage](media/slides/chapter-2/slide-62-hack-alu-operation-pipeline.png)
+![The Hack ALU operation pipeline, tracing the transformations of x and y stage-by-stage](media/slides/chapter-2/chapter2-slide-62-hack-alu-operation-pipeline.png)
 
 ###### Status Outputs (`zr` and `ng`)
 The ALU computes and outputs two status flags that summarize properties of the 16-bit output:
@@ -2305,7 +2305,7 @@ When writing HDL for Project 2, you must utilize Hack HDL's syntax for constants
   - Syntax: `z[0..2] = true` sets bits 0, 1, and 2 of bus `z` to `1`. Unassigned bits default to `0`.
   - Creating internal pins from output subsets: `Add16(..., out[0..7] = low, out[8..15] = high)`.
 
-![Examples of assigning values to sub-busses and constants in Hack HDL](media/slides/chapter-2/slide-86-hdl-sub-bussing-examples.png)
+![Examples of assigning values to sub-busses and constants in Hack HDL](media/slides/chapter-2/chapter2-slide-86-hdl-sub-bussing-examples.png)
 
 ##### Built-In Chips and Unit Testing Strategy
 The Hack Hardware Simulator resolves chip parts by checking the current project directory first. If a chip part referenced in an `.hdl` file (e.g., `And`, `Mux`, `Or`) is not found in the local directory (since the `02` directory only contains the 6 Project 2 stub files), the simulator automatically falls back to its Java-based **built-in implementation**.
@@ -2342,222 +2342,212 @@ In Project 2, it is highly recommended to use built-in chips for previously comp
 
 ### 3 Memory
 
-Chapter 3 moves from combinational logic to sequential logic.
+Chapter 3 transitions our hardware journey from **combinational logic** to **sequential logic** by introducing the critical dimension of time.
 
-Combinational chips compute outputs from current inputs:
+**Combinational vs. Sequential Logic**
 
+*Combinational Logic*
+Computes outputs strictly as a function of the current inputs. These circuits are time-independent, meaning that outputs react immediately (in an idealized sense) to any changes on input pins.
+$$out(t) = f(in(t))$$
+*Inputs to Outputs Mapping:*
 ```text
-current inputs -> logic -> current output
+current inputs -> [combinational logic] -> current output
 ```
 
-Memory chips must also remember previous values:
-
+*Sequential Logic*
+Computes outputs based on both current inputs and the state of the circuit from the previous clock cycle. These circuits are time-dependent, utilizing clock signals to remember historical values.
+$$out(t) = f(in(t-1), state(t-1))$$
+*Stateful Transition Mapping:*
 ```text
-current inputs + previous state -> next state/output
+current inputs + previous state -> [sequential logic] -> next state / output
 ```
 
-The construction ladder is:
+**The Dual Role of Time in Hardware**
+Incorporating time serves two major purposes in hardware design:
+1. **Hardware Reuse**: The ability to perform the same calculations sequentially over time using a single physical component. For example, rather than constructing 100 distinct physical adders to compute the sum of 100 numbers, a single adder can be reused sequentially inside a program loop to add numbers one after another.
+2. **Remembering the Past (State Retention)**: Storing intermediate computation results and execution context. To sum 100 numbers, the system must retain the running total accumulated up to the current iteration; without time-based state storage, there is no way to accumulate values.
 
+**The Clocked Construction Ladder**
+The hierarchy of clocked memory devices constructed in this chapter wraps sequential logic step-by-step:
 ```text
-DFF
-  -> Bit
-  -> Register
-  -> RAM8
-  -> RAM64
-  -> RAM512
-  -> RAM4K
-  -> RAM16K
-  -> PC
+DFF (Data Flip-Flop)
+  └── Bit (1-bit Register)
+        └── Register (w-bit Register, e.g., 16-bit)
+              ├── RAM8 (8 w-bit Registers)
+              │     └── RAM64 ──> RAM512 ──> RAM4K ──> RAM16K
+              └── PC (Program Counter with custom increment/load/reset logic)
 ```
+- **Data Flip-Flop (DFF)**: The atomic 1-bit hardware primitive that introduces a one-cycle delay.
+- **Registers**: Group individual bits together to store words of data (16-bit in the Hack platform).
+- **RAM**: Clusters multiple registers together and implements addressing logic to select which register is active.
+- **Program Counter (PC)**: A specialized register equipped with combinational logic to increment, load, or reset instruction addresses, directing program execution flow.
 
-The main idea is:
-
-```text
-DFF gives one bit of time-delayed state.
-Registers group bits into words.
-RAM groups registers and adds addressing.
-PC is a controlled register for instruction flow.
-```
+---
 
 #### 3.1 Memory Devices
 
-Programs need values that persist.
+To write programs, we need values that persist. At the software level, we manipulate persistent values through variables, arrays, and objects. At the hardware level, however, "memory" can refer to multiple distinct technologies:
+- **Secondary Storage**: Magnetic disks, solid-state drives, or optical media (non-volatile, slow, massive capacity).
+- **Primary Storage**: Volatile semiconductor RAM, which is fast and directly addressable.
+- **CPU Registers**: Tiny, ultra-fast storage locations built directly into the processor core.
 
-The course makes one useful framing point before getting technical: in hardware, the word `memory` can refer to several storage technologies. This chapter narrows the discussion to the clocked memory devices that become registers and RAM inside the computer itself.
+This chapter focuses exclusively on **clocked memory devices** (registers and RAM) that are physically integrated into the CPU and the system's memory bus. 
 
-Examples:
+##### The Limit of Combinational Logic
+Combinational circuits are incapable of state retention. If their input signals are removed or altered, the output pins update immediately to reflect the new input state. Therefore, storing intermediate values requires a new class of components that can maintain state over time.
 
-```text
-variables
-arrays
-objects
-current instruction address
-temporary computation results
-```
-
-Combinational logic cannot store these values because it has no memory. If its inputs disappear or change, its output changes too.
-
-The chapter introduces a primitive sequential chip:
-
-```text
-DFF = Data Flip-Flop
-```
-
-The book treats `DFF` as a built-in building block.
-
-From that one primitive, the chapter builds the useful memory hierarchy:
+##### Wrapping the Atomic Primitive
+The memory hierarchy is constructed by repeatedly wrapping the most primitive sequential component: the **Data Flip-Flop (DFF)**.
 
 ![](media/figure_3.1.png)
 
 **Figure 3.1** The memory hierarchy built in this chapter.
 
-This figure is the whole chapter in one ladder.
+- **Primitive 1-bit Delay**: A physical component (DFF) that delays its output by exactly one clock cycle.
+- **Controlled 1-bit Register**: A wrapper around the DFF adding control logic to choose whether to load a new input or maintain the current state.
+- **Word-level Register**: Multiple 1-bit registers grouped together to store multi-bit words (e.g., 16 bits).
+- **Addressed Memory Blocks (RAM)**: Multiple word registers grouped together and paired with addressing logic (multiplexers and demultiplexers) to retrieve or update specific registers.
+- **Program Counter (PC)**: A register wrapped with increment and control logic to track the address of the next instruction.
 
-Read it as repeated wrapping:
+> **Mental Model:** Every memory device in the computer is ultimately composed of DFFs wrapped in combinational control structures.
 
-```text
-start with a 1-bit time-delayed element
-add control to make a useful bit register
-group bits into words
-group words into addressed memory blocks
-add special next-state logic to get a program counter
-```
-
-Mental model:
-
-```text
-DFF stores one delayed bit.
-Everything else is structure and control around many DFFs.
-```
+---
 
 #### 3.2 Sequential Logic
 
-Sequential logic adds time to Boolean logic.
+Sequential logic extends combinational circuits by introducing the concept of state transitions synchronised to clock cycles.
 
-Combinational logic:
+![Side-by-side time diagrams comparing Combinational vs. Sequential logic. Combinational logic has outputs that depend on current inputs only, while sequential logic outputs depend on previous inputs and optionally current inputs.](media/slides/chapter-3/chapter3-slide-58-combinational-vs-sequential.png)
 
-```text
-out = function(current inputs)
-```
-
-Sequential logic:
-
-```text
-out = function(current inputs, stored state)
-```
-
-That stored state comes from earlier clock cycles.
+---
 
 ##### 3.2.1 Time Matters
 
-Real gates do not update instantly.
+In physical electronics, signals do not propagate instantaneously. Electrons require time to travel along physical wires, and transistors require time to switch state and charge capacitors. This physical delay consists of:
+- **Propagation Delays**: The time elapsed between a change in an input pin and that change propagating down the physical wire to the gate's input.
+- **Computation Delays**: The time a gate takes to switch its output state after its inputs have changed.
 
-Signals need time to travel, and gate outputs need time to stabilize.
+When inputs change, the outputs do not instantly jump to their correct values; instead, they undergo a chaotic analog transition phase, wiggling between 0 and 1.
 
-Instead of modeling every tiny delay, the book uses discrete time:
+![An ALU computation during signal transitions. If inputs change (e.g., from 5 to 7 on one pin, and 8 to 11 on another), it takes finite time for the input pins to settle and for the internal circuitry to compute the new sum. During this settling window, the ALU outputs temporary nonsense.](media/slides/chapter-3/chapter3-slide-09-delay-example.png)
 
-```text
-cycle 0
-cycle 1
-cycle 2
-...
-```
+##### Sweeping Delays Under the Rug (Discrete Time Abstraction)
+To prevent programmers and hardware designers from having to calculate every microscopic delay, computer architecture abstracts continuous physical time into **discrete time steps** ($t = 1, 2, 3 \dots$) using a hardware **clock**:
+- **Clock Oscillator**: A crystal oscillator (typically quartz) that generates a continuous train of alternating high/low electronic pulses (referred to as ticks and tocks).
+- **Cycle Length (Clock Period)**: The duration of a single tick-tock cycle. This duration is a critical design parameter: it must be set to be slightly longer than the maximum propagation and computation delay of the computer's slowest combinational path (the critical path).
+
+By setting the cycle length this way, we can safely ignore the internal analog wiggles and observe the outputs only at the cycle boundaries.
 
 ![](media/figure_3.2.png)
 
 **Figure 3.2** Discrete time representation: state changes are observed only during cycle transitions, while within-cycle fluctuations are ignored.
 
-The figure matters because it tells you what the book is choosing not to model.
+![A detailed view of physical analog signal transitions versus discrete time steps. Within the grey transition area of each cycle, the input and output voltages wiggle. Because the clock cycle is wide enough, these signals settle to stable digital levels (0 or 1) by the end of the cycle.](media/slides/chapter-3/chapter3-slide-22-analog-delays.png)
 
-Inside a clock cycle, signals may wiggle and settle.
+##### The Shared System Rhythm
+1. **Within the cycle**: Combinational logic computes. Inputs change, voltages rise/fall, and signals ripple through logic gates.
+2. **At the cycle boundary**: Sequential elements (DFFs) sample their inputs and commit their next values, transitioning the state of the computer.
 
-The abstraction says:
+As long as the clock period satisfies:
+$$\text{Clock Period} > \text{Max Combinational Delay}$$
+the system is guaranteed to be stable and free of transient errors.
 
-```text
-ignore the internal analog mess
-observe only stable values at clock boundaries
-```
+##### State Feedback Loops
+In combinational logic, feeding the output of a gate directly back into its inputs creates a feedback loop with zero delay. Because the transition is instantaneous, this results in unstable race conditions, uncontrolled oscillations, or invalid states (e.g., connecting a NOT gate output back to its input creates a loop that rapidly oscillates between 0 and 1, drawing excessive power and generating thermal noise).
 
-The clock gives the machine a shared rhythm.
-
-During a cycle:
-
-```text
-combinational logic computes
-```
-
-At the cycle boundary:
+Sequential logic resolves this by introducing a **1-cycle clock delay**. By inserting a delay element (the DFF) into the feedback path:
+1. The output at time $t$ depends on the input from time $t-1$.
+2. This decouples the current input from the current output, allowing a wire to safely carry its own previous value without race conditions.
 
 ```text
-stateful chips commit their next values
+               ┌───────────────────────┐
+   Input (a) ──►   Combinational F()   ├─► Next State
+               └──────────▲────────────┘
+                          │
+                   ┌──────┴──────┐
+                   │ 1-Cycle DFF │ (Clocked Delay)
+                   └──────▲──────┘
+                          │
+                          └──────────────── Output (Current State)
 ```
 
-This works as long as the clock cycle is long enough for the slowest needed computation to settle.
+Traced mathematically over discrete time steps:
+- At time $t=1$, the state is initialized to $a$:
+  $$state(1) = a$$
+- At time $t=2$, the feedback loop applies the function $f$:
+  $$state(2) = f(state(1)) = f(a)$$
+- At time $t=3$, the function is applied recursively:
+  $$state(3) = f(state(2)) = f(f(a))$$
+- In general, the state at any time step $t$ is:
+  $$state(t) = f(state(t-1))$$
+
+This discrete feedback mechanism enables the computer to transition gracefully from one state to another at each clock cycle edge, providing the basis for memory and CPU control units.
 
 ##### 3.2.2 Flip-Flops
 
-The `DFF` is the primitive one-bit memory device.
+To move information from time-step $t-1$ to time-step $t$, sequential systems require a hardware component that has **state**. The component must maintain one of two stable physical states (representing a digital 0 or 1) across the transition point of a clock cycle. Because it can switch between these two states based on control inputs, it is called a **flip-flop** (flipping to 0 and flopping back to 1).
 
-Its behavior is:
+The fundamental memory primitive used in this course is the **clocked Data Flip-Flop (DFF)**. 
 
-```text
-out(t) = in(t - 1)
-```
+> [!NOTE]
+> For a detailed transition showing how a DFF is constructed from the basic combinational gates from Chapters 1 and 2, see the [DFF_DEEP_DIVE.md](DFF_DEEP_DIVE.md) notes.
 
-Meaning:
+###### DFF API
+- **Inputs**: `in` (1-bit data input)
+- **Outputs**: `out` (1-bit data output)
+- **Clock**: Synchronised system clock input (represented visually by a triangle icon at the bottom of the chip diagram).
 
-```text
-the input from the previous time step becomes the output now
-```
+###### Behavioral Rule
+$$out(t) = in(t-1)$$
 
-![](media/figure_3.3.png)
+*Meaning:*
+The input pin value at time-step $t-1$ is delayed and emitted as the output pin value at time-step $t$.
 
-**Figure 3.3** The data flip-flop and its behavior over time.
+![A DFF timing trace showing the input shifting to the output at the next time step. Because we do not know the history prior to cycle 1, the output at cycle 1 is undefined (represented by the grey shadow). From cycle 2 onward, the output is exactly the input from the previous cycle.](media/slides/chapter-3/chapter3-slide-68-dff-timing.png)
 
-When you read the timing part of the figure, track one value mentally.
+###### Clock Icon (Triangle Symbol)
+The triangle symbol at the bottom of a chip diagram indicates that it is a clocked (sequential) chip. Unlike combinational chips whose outputs depend immediately on current inputs, a clocked chip keeps state internally, and its outputs depend on what happened in previous cycles. At a physical level, this means the chip has access to the master clock oscillator to synchronise its state transitions.
 
-If the input changes during cycle `t`, that new value does not appear immediately at the output.
+###### The 1-Cycle Delay Key
+The one-cycle delay of the DFF is the foundational element that enables state loops. It separates:
+- The **old state** (which is stable and used for computations during the current clock cycle)
+- The **new state** (which is computed during the cycle and committed at the cycle boundary for the next cycle)
 
-It appears at the next observation point.
-
-That single-step delay is what turns feedback from a paradox into usable memory.
-
-This one-cycle delay is the key.
-
-It lets the computer separate:
-
-```text
-old state used during this cycle
-new state committed for the next cycle
-```
+By separating these two, we can feed outputs back to inputs without creating race conditions or unstable oscillations.
 
 ##### 3.2.3 Combinational and Sequential Logic
 
-Combinational chips contain no memory.
+Every digital system is built by combining combinational logic (which does calculations) and sequential logic (which stores state).
 
-Sequential chips contain `DFF`s directly or indirectly.
+###### The Generic Sequential Paradigm
+The architecture of memory chips, CPU registers, and counters follows a universal feedback pattern:
+1. **State Storage**: An array of DFFs stores the current state of the system.
+2. **Combinational Processing**: The output of these DFFs (the current state) is fed into a combinational logic circuit along with any external inputs.
+3. **Next State Calculation**: The combinational logic processes these inputs and generates a candidate next state.
+4. **State Transition**: The output of the combinational logic is wired back to the inputs of the DFF array. At the next clock cycle boundary, the DFF array samples and stores this new state, becoming the current state for the next cycle.
 
-![](media/figure_3.4.png)
-
-**Figure 3.4** Sequential logic design typically combines `DFF`s with combinational chips and feedback paths.
-
-This figure is the template for almost every stateful digital system:
-
+*Generic Feedback Template:*
 ```text
-current state goes into logic
-logic computes a candidate next state
-DFF stores that next state for the following cycle
+               ┌───────────────────────┐
+   Inputs ────►│                       │
+               │  Combinational Logic  ├─► Next State
+  Old State ──►│                       │      │
+     ▲         └───────────────────────┘      │
+     │                                        │
+     │                 ┌───┐                  │
+     └─────────────────┤DFF│◄─────────────────┘
+                       └───┘
 ```
 
-The safe pattern is:
+###### Example: A Counter
+- The DFF array stores the current count value (e.g., 5).
+- The combinational logic is an adder configured to add 1 to its input.
+- The adder receives the current count (5) and outputs the candidate next state (6).
+- At the clock tick, the DFF samples and stores the 6. The count transitions from 5 to 6.
 
-```text
-old state -> combinational logic -> DFF -> next state
-```
-
-Feedback without delay can create circular dependency inside the same moment.
-
-Feedback through a `DFF` is safe because the `DFF` delays the value until the next cycle.
+###### The Rule of Safe Feedback
+- **Unsafe Feedback**: Connecting the output of a combinational gate directly back to its input without a delay element creates a circular dependency in the same clock cycle, leading to race conditions and oscillations.
+- **Safe Feedback**: Routing the feedback loop through a DFF is safe because the DFF delays the value until the next clock cycle, breaking the instantaneous loop.
 
 #### 3.3 Specification
 
@@ -2575,58 +2565,45 @@ PC        -> register with reset/load/increment behavior
 
 ##### 3.3.1 Data Flip-Flop
 
-The `DFF` has one data input and one data output.
+The Data Flip-Flop (DFF) is the primitive 1-bit clocked delay element. It serves as the ultimate source of persistent state for all memory devices in the processor.
 
-Its rule is:
-
-```text
-out(t) = in(t - 1)
-```
-
-In plain language:
-
-```text
-whatever was at input last cycle appears at output this cycle
-```
-
-The `DFF` is small, but architecturally important. It is the source of all persistent state in the chapter.
+###### DFF Specification
+- **Interface**: `DFF(in, out)`
+- **Behavioral Contract**:
+  $$out(t) = in(t-1)$$
+- **Description**: Whatever value is at the input pin during the previous cycle $t-1$ is emitted on the output pin during the current cycle $t$.
 
 ##### 3.3.2 Registers
 
-The chapter defines two register abstractions:
+A register is a clocked memory device designed to store a value indefinitely until it is explicitly commanded to load a new one. The Hack platform defines two register abstractions:
+- **Bit**: A 1-bit register.
+- **Register**: A 16-bit register.
 
-```text
-Bit       -> stores 1 bit
-Register  -> stores 16 bits
-```
+###### 1-Bit Register (Bit)
+- **Interface**: `Bit(in, load, out)`
+- **Inputs**:
+  - `in`: 1-bit data input representing the value to be stored.
+  - `load`: 1-bit control input deciding whether to update the register.
+- **Outputs**:
+  - `out`: 1-bit data output continuously emitting the stored state.
 
-Both use a `load` control bit.
+###### Bit Behavioral Contract
+If the control pin `load` was asserted in the previous cycle, the register updates to the input value; otherwise, it holds its current state.
 
-For the 1-bit register:
-
-```text
-Bit(in, load, out)
-```
+$$out(t) = \begin{cases} in(t-1) & \text{if } load(t-1) = 1 \\ out(t-1) & \text{if } load(t-1) = 0 \end{cases}$$
 
 ![](media/figure_3.5.png)
 
 **Figure 3.5** 1-bit register (`Bit`).
 
-The figure introduces an important pattern: data input plus control input.
-
-`in` is the value that may be stored.
-
-`load` decides whether storing actually happens.
-
-Behavior:
-
-```text
-if load = 0:
-    keep old value
-
-if load = 1:
-    store in on the next clock cycle
-```
+###### 16-Bit Register (Register)
+- **Interface**: `Register(in[16], load, out[16])`
+- **Inputs**:
+  - `in[16]`: 16-bit data bus representing the word to be stored.
+  - `load`: 1-bit control input.
+- **Outputs**:
+  - `out[16]`: 16-bit data bus emitting the stored 16-bit word.
+- **Behavior**: Exactly the same as the 1-bit register, applied across all 16 bits in parallel. All 16 internal bits share the same `load` signal, ensuring the entire word updates in unison.
 
 For the 16-bit register:
 
@@ -2661,78 +2638,84 @@ Register is sixteen Bit chips in parallel.
 
 ##### 3.3.3 Random Access Memory
 
-RAM is many registers plus addressing.
+In the Von Neumann architecture, memory is a central component that holds both the program's data and its execution instructions.
 
-The address chooses which register you are talking to.
+###### Memory Categories
+- **Main Memory**: Fast, volatile semiconductor RAM hardwired onto the motherboard. It holds active program instructions and variables. Volatile means the stored state is lost when power is removed.
+- **Secondary Storage**: Slow, non-volatile storage (disks, flash drives) where files and operating system files reside. State persists without power.
+- **Logical Organization**: This course focuses entirely on the logical architecture of Random Access Memory (RAM), bypassing the analog transistor-level physical implementation.
 
-Generic RAM behavior:
+###### The Memory Construction Ladder
+To build RAM, we stack memory components recursively, starting from the atomic Data Flip-Flop (DFF):
 
-```text
-in      = value you may want to store
-load    = whether to write
-address = where to read/write
-out     = value currently stored at that address
-```
+![The memory construction ladder starting from DFF and ending at RAM.](media/slides/chapter-3/chapter3-slide-75-dff-to-ram.png)
 
-![](media/figure_3.7.png)
+###### RAM Abstraction
+A RAM chip of size $n$ consists of a sequence of $n$ addressable registers (numbered $0$ to $n-1$).
+- **State**: The value currently expressed by the internal circuits of the registers, creating the illusion of storage.
+- **Address Bits ($k$)**: To select exactly one out of $n$ registers using binary code, we require $k$ address pins:
+  $$k = \log_2(n)$$
+- **Word Width ($w$)**: The number of bits in each register (we assume $w = 16$ for the Hack computer).
 
-**Figure 3.7** A RAM chip as a collection of addressable `Register` chips.
+![RAM Abstraction showing ports: in, load, address, out, and the read/write logic.](media/slides/chapter-3/chapter3-slide-76-ram-abstraction.png)
 
-The visual idea is:
+###### RAM Interface Ports
+- `in[w]`: The $w$-bit data bus representing the value we want to write.
+- `load`: The 1-bit control input deciding whether to write.
+- `address[k]`: The $k$-bit selection code selecting which register to read or write.
+- `out[w]`: The $w$-bit data output emitting the value of the selected register.
 
-```text
-many storage words exist all the time
-the address chooses which one is visible / writable right now
-```
+###### RAM Behavioral Contract
+At any time cycle $t$, only the register selected by the `address` is active.
+- **Reading**: The output pin `out` continuously emits the state of the selected register `RAM[address]`.
+- **Writing**: If `load` is asserted (`load = 1`), the register at `address` is updated to the value of `in` on the next clock transition.
 
-Reading:
+$$\text{out}(t) = \text{RAM}[\text{address}(t)](t-1)$$
 
-```text
-address selects which stored word appears at out
-```
+$$\text{if } \text{load}(t-1) = 1: \quad \text{RAM}[\text{address}(t-1)](t) = \text{in}(t-1)$$
 
-Writing:
+Meaning:
+At step $t$, the output bus `out` emits the state of the register at the current `address`, which was stored at the end of the previous cycle $t-1$. If `load` was high in the previous cycle, the register at the previous `address` stores the input value `in` from that cycle.
 
-```text
-if load = 1:
-    store in into the selected address on the next clock cycle
-```
-
-Random access means the address can select any location directly. You do not have to scan through earlier locations first.
+###### The Power of Random Access
+The term "Random Access" indicates that any memory location can be read or written in exactly the same access time ($O(1)$), regardless of whether the RAM has 8 registers or 8 million. This is achieved because:
+1. State storage (holding the value) is sequential, utilizing clocked registers.
+2. Address selection (routing to/from a register) is combinational, utilizing logic gates (multiplexers and demultiplexers) that resolve almost instantly.
 
 ##### 3.3.4 Counter
 
-The `PC`, or Program Counter, is a special register.
+The Program Counter (`PC`) is a specialized register designed to track and direct program execution flow.
 
-It stores the address of the instruction that should run next.
+###### Execution Context (The Robot Recipe Metaphor)
+Imagine a domestic robot programmed to bake brownies. The recipe consists of 50 steps (numbered $0$ to $49$) mounted on the wall:
+- **Default Increment**: As the robot completes each step, a counter increments by $1$, telling the robot to execute the next instruction in sequence ($0 \to 1 \to 2 \dots$).
+- **Direct Load (Jumping)**: If the recipe says "if the oven is already warm, skip to step 11", the counter must bypass sequence and load $11$ directly.
+- **Reset**: When the recipe finishes and the robot must bake a new batch, the counter resets to step $0$.
 
-It must support four behaviors:
+###### PC Interface Ports
+- `in[16]`: 16-bit data input representing the target jump address.
+- `reset`: 1-bit control input to clear the counter to $0$.
+- `load`: 1-bit control input to load the jump address from `in`.
+- `inc`: 1-bit control input to increment the current count.
+- `out[16]`: 16-bit data output continuously emitting the active instruction address.
 
-```text
-reset to 0
-load a specific value
-increment by 1
-hold current value
-```
+###### PC Priority Logic Contract
+The Program Counter behaves like a register with a prioritized multiplexing network. The control priority is absolute:
+1. **Reset** overrides everything (clears to 0).
+2. **Load** overrides increment (loads jump address).
+3. **Increment** is the default active state transition (adds 1).
+4. **Hold** occurs if no control bit is active (retains current count).
 
-The course also makes the control priority explicit:
+$$out(t) = \begin{cases} 0 & \text{if } reset(t-1) = 1 \\ in(t-1) & \text{else if } load(t-1) = 1 \\ out(t-1) + 1 & \text{else if } inc(t-1) = 1 \\ out(t-1) & \text{otherwise} \end{cases}$$
 
-```text
-reset overrides everything
-load overrides increment
-increment is the default active update
-otherwise the counter holds
-```
+Meaning:
+The output address `out` at cycle $t$ is determined by the control bits asserted during the previous cycle $t-1$. If `reset` was high, the address becomes $0$. If `reset` was low and `load` was high, the address becomes `in`. If both were low and `inc` was high, the address becomes `out(t-1) + 1`. Otherwise, the address remains unchanged.
 
 ![](media/figure_3.8.png)
 
 **Figure 3.8** Program Counter (`PC`).
 
-This figure is useful because it shows that `PC` is not a completely different kind of hardware.
-
-It is still a register, but wrapped with control logic that can choose among several candidate next values.
-
-The `PC` is still a register underneath. The extra control bits decide what value should be stored next.
+The PC is still a register at its core, but wrapped with combinational control logic that selects among several candidate next values.
 
 #### 3.4 Implementation
 
@@ -2746,238 +2729,233 @@ commit the chosen value on the next clock cycle
 
 ##### 3.4.1 Data Flip-Flop
 
-The book does not ask you to build `DFF` from gates.
+The course and the hardware simulator treat the `DFF` as a primitive, built-in gate (`BUILTIN DFF`). However, understanding how a physical flip-flop is implemented under the hood provides key insight into the physics of memory.
 
-It treats `DFF` as primitive.
+###### Constructing Memory from NAND Gates
+In physical hardware, memory cells are constructed from standard combinational logic gates (NAND gates) wired together in **feedback loops**:
+1. **The Cross-Coupled Latch**: Wiring the output of one NAND gate to the input of another creates a bi-stable loop (known as an SR latch). This loop amplifies any feedback signal and locks itself into one of two stable physical states (high voltage representing 1, or low voltage representing 0).
+2. **Cycle Isolation (Edge-Triggering)**: A simple latch is level-sensitive, meaning its output changes immediately when its inputs change. If a level-sensitive latch is used in a state feedback loop, the signal will cycle around the loop multiple times within a single clock period, causing unstable race conditions.
+3. **Master-Slave Design**: To prevent race conditions, a physical flip-flop uses two gated latches configured in a master-slave configuration (or edge-triggered latching). While the clock is high, the master latch is open to input changes while the slave latch is locked. When the clock transitions, the master latch locks its state and transfers it to the slave latch, which then updates the chip output. This isolates successive clock cycles and guarantees that outputs only update once per clock edge.
 
-Reason:
+![DFF implementation showing cross-coupled NAND gates latch schematic representing physical DFF construction.](media/slides/chapter-3/chapter3-slide-85-dff-nand-implementation.png)
 
-```text
-DFF implementation requires lower-level timing details
-Chapter 3 wants to focus on memory architecture
-```
-
-So the simulator provides `DFF` as a built-in chip.
+###### Why We Treat DFF as a Primitive
+Simulating recursive feedback loops in a digital logic simulator requires tracking continuous analog voltage transitions, which is computationally expensive and sluggish. To maintain simulator speed and focus purely on memory architecture, the DFF is implemented as a built-in Java class.
 
 ##### 3.4.2 Registers
 
-A raw `DFF` stores its input every cycle.
+A DFF stores and outputs its input value at every clock cycle. To make a useful register, we must add a control mechanism to select whether to load a new value or maintain the currently stored value.
 
-A useful 1-bit register needs a choice:
-
-```text
-store the new input
-or
-keep the old value
-```
-
-The `Bit` chip gets this behavior by placing a `Mux` before the `DFF`.
-
-![](media/figure_3.9.png)
-
-**Figure 3.9** Invalid and correct implementations of the `Bit` register.
-
-The contrast in the figure is crucial.
-
-The invalid design tries to feed state back without the right control structure.
-
-The correct design inserts a `Mux` so the circuit can explicitly choose between:
+###### The Naive Feedback Loop Error
+If we try to build a 1-bit register by looping the output of a DFF directly back to its input, we create a circuit that remembers its state, but remains closed to the outside world—there is no physical pin to feed new inputs:
 
 ```text
-the old stored value
-the new external input
+       ┌──────────┐
+  ────►│   DFF    ├────► out
+  ▲    └──────────┘    │
+  └────────────────────┘
 ```
 
-Conceptually:
+###### The Mux-DFF Loop Implementation
+To resolve this, we place a Multiplexer (Mux) before the DFF. The Mux acts as a routing switch, choosing between the DFF's own feedback output (when `load = 0`) and the external data input pin (when `load = 1`).
 
-```text
-                 +-----+
-old out -------->|     |
-in ------------->| Mux |----> DFF ----> out
-load ----------->|     |
-                 +-----+
-```
+![Mux-DFF implementation of a 1-bit register. Mux selects between old out (when load is 0) and in (when load is 1), feeding the selected value to DFF input. The output of DFF is fed back into Mux select channel 0.](media/slides/chapter-3/chapter3-slide-71-1bit-register.png)
 
-If `load = 0`:
+###### Trace Analysis: Retaining State (load = 0)
+When `load` is 0 at cycle $t-1$:
+1. The Multiplexer selects channel `a`, which is connected to the DFF output $out(t-1)$.
+2. The Multiplexer outputs $out(t-1)$ to the input of the DFF.
+3. At the next clock transition, the DFF commits this value, resulting in:
+   $$out(t) = out(t-1)$$
+   The state is successfully held.
 
-```text
-Mux selects old out
-DFF receives old out
-Bit keeps its value
-```
+###### Trace Analysis: Loading State (load = 1)
+When `load` is 1 at cycle $t-1$:
+1. The Multiplexer selects channel `b`, which is connected to the external input $in(t-1)$.
+2. The Multiplexer outputs $in(t-1)$ to the input of the DFF.
+3. At the next clock transition, the DFF commits this value, resulting in:
+   $$out(t) = in(t-1)$$
+   The new state is loaded.
 
-If `load = 1`:
+###### 16-Bit Register Construction
+A 16-bit register (`Register`) is implemented by placing sixteen `Bit` registers in parallel. All sixteen chips share the same single `load` control signal, ensuring that all 16 bits of the word update in unison:
+- `Bit 0` stores `in[0]`
+- `Bit 1` stores `in[1]`
+- ...
+- `Bit 15` stores `in[15]`
 
-```text
-Mux selects in
-DFF receives in
-Bit updates on the next clock cycle
-```
-
-A 16-bit `Register` is then built from sixteen `Bit` chips:
-
-```text
-Bit 0  stores in[0]
-Bit 1  stores in[1]
-...
-Bit 15 stores in[15]
-```
-
-All sixteen share the same `load` signal, so the whole word updates together.
+All outputs are grouped together as a 16-bit output bus `out[16]`.
 
 ##### 3.4.3 RAM
 
-RAM is built recursively.
+RAM is constructed recursively, stacking smaller memory units to build larger ones.
 
-The hierarchy is:
+###### The RAM Chip Family
+For the Hack platform, we build a family of five 16-bit RAM chips:
 
-```text
-RAM8
-  -> RAM64
-  -> RAM512
-  -> RAM4K
-  -> RAM16K
-```
+| Chip Name | Register Count ($n$) | Address Width ($k$) | Address Selection Logic |
+|---|---|---|---|
+| **RAM8** | 8 | 3 | Selects 1 of 8 16-bit registers |
+| **RAM64** | 64 | 6 | Selects 1 of 8 RAM8 chips (3 bits) + 1 of 8 registers inside that block (3 bits) |
+| **RAM512** | 512 | 9 | Selects 1 of 8 RAM64 chips (3 bits) + 1 of 8 RAM8 blocks inside (3 bits) + register (3 bits) |
+| **RAM4K** | 4,096 | 12 | Selects 1 of 8 RAM512 chips (3 bits) + internal offsets (9 bits) |
+| **RAM16K** | 16,384 | 14 | Selects 1 of 4 RAM4K chips (2 bits) + internal offsets (12 bits) |
 
-![](media/figure_wo_caption_3.1.png)
+![The family of 16-bit RAM chips showing sizes and address widths.](media/slides/chapter-3/chapter3-slide-82-ram-family.png)
 
-This recursive RAM figure is easier to understand if you read it as repeated address splitting.
+###### 1. RAM8 Implementation
+RAM8 is the base unit of addressable memory, containing 8 Register chips (Register 0 to 7) operating in parallel:
+- **Routing Input Data**: The global input bus `in[16]` is wired directly to the `in` inputs of all 8 internal Registers.
+- **Reading (Multiplexing)**: The outputs of all 8 Registers are connected to a 16-bit 8-way Multiplexer (`Mux8Way16`). The 3-bit address bus `address` selects which register's output is routed to the global output pin `out`.
+- **Writing (Demultiplexing)**: The global `load` bit is sent to a 1-to-8 Demultiplexer (`DMux8Way`), controlled by the 3-bit `address`. The DMux directs the `load` signal to the target register's `load` pin (sending 0 to all other registers). Only the selected register receives the active write signal and stores `in` at the next clock edge.
 
-Some address bits choose the large block.
+![RAM implementation schematic illustrating Mux for reading and DMux for writing.](media/slides/chapter-3/chapter3-slide-79-ram-implementation.png)
 
-The remaining bits choose a smaller location inside that block.
+###### 2. Recursive Address Splitting
+To build larger RAM chips (RAM64 and beyond), we group eight smaller memory blocks together and partition the address bus into two parts:
+- **High-Order Address Bits**: Used to select which of the 8 sub-blocks to activate (routing the `load` signal via a DMux and reading output via a Mux).
+- **Low-Order Address Bits**: Passed down to all 8 sub-blocks in parallel to select the target register inside the active sub-block.
 
-That same idea repeats until you reach one concrete register.
-
-The basic idea for `RAM8` is:
-
-```text
-8 registers
-one address selects one register
-```
-
-Reading uses a multiplexer:
-
-```text
-all register outputs go into a Mux
-address chooses which output appears at RAM out
-```
-
-Writing uses a demultiplexer:
+For example, in `RAM64` (consisting of eight `RAM8` chips):
+- We have a 6-bit address bus `address[6]`.
+- The most significant 3 bits (`address[3..5]`) select one of the 8 `RAM8` sub-chips.
+- The least significant 3 bits (`address[0..2]`) select one of the 8 individual Registers within the selected `RAM8` chip.
 
 ```text
-global load goes into a DMux
-address chooses which register receives load = 1
+       ┌─────────── address[0..5] ───────────┐
+       ▼                                    ▼
+[ address[3..5] ]                    [ address[0..2] ]
+Selects 1 of 8 RAM8 chips            Selects 1 of 8 registers
+(Steers load / reads output)         (Passed to RAM8 internal selection)
 ```
 
-All registers can receive the same input bus, but only the selected register is told to load it.
+This structural recurrence continues all the way up the hierarchy:
 
-For larger RAM, the same pattern repeats.
-
-Example:
-
-```text
-RAM64 = 8 RAM8 chips
-```
-
-The address is split conceptually:
-
-```text
-low bits  -> select inside a small block
-high bits -> select which block
-```
-
-Mental model:
-
-```text
-RAM = registers + read selection + write selection
-```
+![Hierarchical RAM implementation showing recursive composition of RAM units.](media/slides/chapter-3/chapter3-slide-81-recursive-ram.png)
 
 ##### 3.4.4 Counter
 
-The counter is implemented from:
+A Program Counter is implemented by wrapping a 16-bit Register with combinational logic that calculates the next state and selects it based on priority.
 
+###### 1. Component Composition
+To build the PC, we connect:
+- **State Storage**: A 16-bit `Register` that stores the current count.
+- **Incrementer**: An `Inc16` chip that continuously calculates `out + 1` from the Register's output.
+- **Multiplexer Cascade**: A chain of three 16-bit 2-way Multiplexers (`Mux16`) to select the next state.
+
+Concrete Priority Cascade Schema
 ```text
-Register
-Incrementer
-Mux/control logic
+           out (Feedback)
+            │      │
+            │    [Inc16] (out + 1)
+            │      │
+            ▼      ▼
+         [ Mux16 (Stage 1) ] ◄─── inc
+                  │
+  in ─────────────┼────────┐
+                  ▼        ▼
+         [ Mux16 (Stage 2) ] ◄─── load
+                  │
+  0 ──────────────┼────────┐
+                  ▼        ▼
+         [ Mux16 (Stage 3) ] ◄─── reset
+                  │
+                  ▼
+             [ Register ] ──► out (to system)
 ```
 
-The combinational logic chooses the next value.
+###### 2. The Multiplexer Cascade and Priority Routing
+Because the Hack HDL requires us to resolve selections in a specific order of precedence, we arrange the `Mux16` gates in a chain where each successive multiplexer overrides the decisions of the earlier ones.
 
-Possible next values:
+1. **Stage 1 (Increment Selector)**:
+   - Selects between the current count `out` and the incremented count `out + 1`.
+   - Controlled by `inc`.
+   - If `inc = 1`, selects `out + 1`. If `inc = 0`, selects `out`.
+2. **Stage 2 (Load Selector)**:
+   - Selects between the output of Stage 1 and the external jump input `in`.
+   - Controlled by `load`.
+   - If `load = 1`, selects `in` (overriding `inc`). If `load = 0`, selects Stage 1's output.
+3. **Stage 3 (Reset Selector)**:
+   - Selects between the output of Stage 2 and the constant `0` (represented as `false` in HDL).
+   - Controlled by `reset`.
+   - If `reset = 1`, selects `0` (overriding both `load` and `inc`). If `reset = 0`, selects Stage 2's output.
 
-```text
-0              for reset
-in             for load
-current + 1    for increment
-current        for hold
-```
+The output of Stage 3 is then wired directly into the input of the Register.
 
-The register stores whichever value the control logic selects.
+###### Tracing Clock Execution (Tick/Tock Demo)
+1. **Initialize State**: Let the Register store `23`.
+2. **Load Scenario (`load = 1`, `in = 45`, `inc = 1`, `reset = 0`)**:
+   - Stage 1 selects `23 + 1 = 24`.
+   - Stage 2 selects `in = 45` (load overrides inc).
+   - Stage 3 selects Stage 2's output (`45`, since `reset = 0`).
+   - The Register's input pin receives `45`.
+   - **On Tick**: The internal state of the Register updates to `45`.
+   - **On Tock**: The output stabilizes to `45` and propagates through the system.
+3. **Increment Scenario (`load = 0`, `inc = 1`, `reset = 0`)**:
+   - Stage 1 selects `45 + 1 = 46`.
+   - Stage 2 selects Stage 1's output (`46`, since `load = 0`).
+   - Stage 3 selects Stage 2's output (`46`, since `reset = 0`).
+   - **On Tick**: The internal state updates to `46`.
+   - **On Tock**: The output stabilizes to `46`.
+4. **Safety Verification**: If we inadvertently keep `load = 1` while trying to count, the Register will keep reloading `in` on every clock edge, preventing the incrementer from advancing. We must drop `load = 0` to resume counting.
 
-The general pattern is:
-
-```text
-current state -> combinational next-state logic -> register -> next state
-```
+![16-bit Counter implementation slide showing ports and logic.](media/slides/chapter-3/chapter3-slide97-pc-implementation.png)
 
 #### 3.5 Project
 
-Project 3 asks you to implement the memory chips.
+Project 3 tasks us with implementing the complete sequential logic chipset for the Hack platform, spanning from a single controlled memory bit to the addressable computer RAM.
+
+###### The sequential Chip Hierarchy
+Our construction strategy is a "Russian Doll" system where each chip recursively wraps the previous layer:
+- `DFF`: The built-in atomic sequential delay.
+- `Bit` (1-bit Register): The only chip in the entire computer that uses the `DFF` directly.
+- `Register` (16-bit word): Formed by placing sixteen `Bit` registers in parallel.
+- `RAM8` (8 registers): Built from eight `Register` chips plus address routing.
+- `RAM64` $\to$ `RAM512` $\to$ `RAM4K` $\to$ `RAM16K`: Nested ascending arrays of memory blocks.
+- `PC` (Program Counter): A `Register` wrapped in multiplexing priority routing logic.
 
 Implementation links: [`Bit`](projects/project-03-memory.md#bit), [`Register`](projects/project-03-memory.md#register), [`RAM8`](projects/project-03-memory.md#ram8), [`RAM64`](projects/project-03-memory.md#ram64), [`RAM512`](projects/project-03-memory.md#ram512), [`RAM4K`](projects/project-03-memory.md#ram4k), [`RAM16K`](projects/project-03-memory.md#ram16k), and [`PC`](projects/project-03-memory.md#pc).
 
-The chips include:
+![Project 3 Sequential Logic chips mapping and requirements.](media/slides/chapter-3/chapter3-slide83-project-3-overview.png)
 
-```text
-Bit
-Register
-RAM8
-RAM64
-RAM512
-RAM4K
-RAM16K
-PC
-```
 
-The allowed building blocks are:
+**Why this structure must be preserved:**
+The Hardware Simulator is a standard computer program. If it evaluates a massive chip like `RAM16K` by recursively expanding every sub-part down to individual `DFF` gates, it will create millions of internal simulator objects. This would slow down simulation or cause the program to crash.
 
-```text
-DFF
-chips built earlier in Project 3
-gates from Chapters 1 and 2
-```
+By separating the files into directories `a` and `b`, we exploit the simulator's path-loading rules:
+1. When loading a chip from folder `b` (e.g., `RAM512.hdl`), the simulator searches its current directory for its constituent sub-parts (like `RAM64.hdl`).
+2. Finding no `RAM64.hdl` in directory `b`, the simulator stops recursive drilling and automatically falls back to its highly optimized compiled Java class (`BUILTIN RAM64`).
+3. This partition guarantees smooth, instantaneous simulation times.
 
-The project is split into two folders for simulator performance:
-
-```text
-projects/03/a -> smaller memory chips
-projects/03/b -> larger memory chips
-```
-
-The course explains the reason a bit more concretely: large RAM chips expand recursively into many smaller parts, so the split helps the hardware simulator stop descending through HDL at some level and switch to built-in implementations for faster, smoother simulation.
-
-The recommended workflow is the same as before:
-
-```text
-read specification
-implement in HDL
-run supplied test
-fix until the compare file matches
-```
+###### Implementation Best Practices
+- **Use Built-in Parts**: When writing HDL, do not copy your custom gate implementations from Projects 1 and 2 (such as `Mux16` or `DMux8Way`) into Project 3 directories. Allow the simulator to load its built-in implementations to keep execution fast.
+- **The Hardware Loop**: Follow the standard iterative process:
+  1. Read the target API and behavioral contract.
+  2. Implement the wiring logic in HDL.
+  3. Load the `.tst` test script in the simulator.
+  4. Run the script and verify that the generated output `.out` file matches the reference `.cmp` file.
 
 #### 3.6 Perspective
 
-Real flip-flops can be built from lower-level gates using carefully designed feedback circuits.
+The closing perspective of Chapter 3 highlights several physical implementations, memory technologies, and engineering trade-offs that are abstracted away to simplify system architecture.
 
-The book hides that detail because Chapter 3 is about the architectural use of memory, not transistor-level timing.
+##### 3.6.1 Physical Flip-Flops vs. Abstraction
+While we treat the DFF as an atomic, built-in primitive, physical flip-flops are constructed from combinational gates (such as NAND or NOR) configured in feedback loops:
+- **Bi-stable Storage**: Two cross-coupled gates create an SR (Set-Reset) latch that can hold its state in one of two stable physical configurations (representing 0 or 1) based on momentary input triggers.
+- **Edge Isolation (Master-Slave)**: Cascading two latches—a Master latch controlled by the inverted clock signal and a Slave latch controlled by the direct clock signal—ensures that state updates occur precisely at the clock cycle boundaries (ticks and tocks), preventing signal wiggles from propagating forward inside a single cycle.
+- **Solid-State Physics**: Modern computers do not build memory cells strictly from textbook gate loops. Instead, they exploit the unique physical and electrical properties of semiconductor silicon (such as capacitors in DRAM or floating-gate transistors in flash memory) to minimize size, heat, and cost.
 
-Modern memory technologies are also not always built literally as textbook flip-flops. Real systems use many optimized memory technologies.
+##### 3.6.2 Memory Hierarchy and Non-Volatile Storage
+Physical memory systems operate under a classic trade-off: speed, size, and cost are inversely proportional. This leads to a layered memory hierarchy:
+- **Volatile RAM**: Random Access Memory is fast and directly addressable, but it is volatile—meaning its stored contents disappear the moment power is cut.
+- **Non-Volatile ROM**: Read-Only Memory is non-volatile, keeping its data permanently intact without power. ROM is critical for the booting (bootstrapping) process. When the computer turns on, a hardwired program in ROM runs first to initialize hardware components and load the operating system's startup code from secondary storage (like a disk drive) into RAM.
+- **Flash Memory**: Combines the best of both RAM and ROM, providing a non-volatile medium that can be written to and modified in-place, making it perfect for SSDs, USB drives, and firmware.
+- **Cache Memory**: A small, ultra-fast, and expensive memory block placed inside or extremely close to the processor core. The cache stores copies of frequently accessed data from the larger, slower main memory. Doing this correctly ensures that the processor operates at close to register speeds most of the time.
 
-The course gives two concrete examples here: `ROM` is used for code that must survive power loss and be available at boot time, and flash memory is another non-volatile storage technology with different engineering trade-offs.
+##### 3.6.3 Universal Logical Abstraction
+Despite the vast differences in physical storage technologies (transistors, capacitors, magnetic disks, or optical media), they are logically identical from the programmer's point of view.
 
-But the abstractions remain fundamental:
+Every memory system behaves as a linear sequence of addressable registers:
 
 ```text
 registers store words
@@ -2985,7 +2963,7 @@ RAM stores addressable words
 counters store and update control positions
 ```
 
-Together with the ALU from Chapter 2, these memory devices provide the remaining hardware pieces needed to build the CPU and the larger Hack computer.
+By abstracting these physical layers into uniform logical components, computer systems can run software without needing to adapt to the underlying hardware medium. Together with the ALU from Chapter 2, these memory devices provide the final components required to construct the CPU and the complete Hack computer platform.
 
 ### 4 Machine Language
 

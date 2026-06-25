@@ -471,83 +471,77 @@ address[0..11]  = which word inside that block
 This is the same hierarchy idea again, except the final level uses 4 blocks instead of 8.
 ```
 
-### PC
+#### PC
+
+The Program Counter (`PC`) is a 16-bit register equipped with combinational control logic to select among several candidate next values based on reset, load, and inc commands.
+
+#### HDL Implementation
 
 ```hdl
 // This file is part of www.nand2tetris.org
 // and the book "The Elements of Computing Systems"
 // by Nisan and Schocken, MIT Press.
 // File name: projects/3/a/PC.hdl
+
 /**
- * 16-bit program counter.
- * If reset=1, the counter becomes 0.
- * Else if load=1, the counter becomes in.
- * Else if inc=1, the counter increments by 1.
- * Else it keeps its previous value.
- *
- * Method:
- * Build PC from one Register plus combinational logic in front of it.
- * The Register stores the current value.
- * Then a chain of Mux16 chips decides what the next value should be.
- *
- * Priority is created by the order of the muxes:
- * - first choose hold vs increment
- * - then allow load to override that result
- * - then allow reset to override everything
+ * A 16-bit counter.
+ * if      reset(t): out(t+1) = 0
+ * else if load(t):  out(t+1) = in(t)
+ * else if inc(t):   out(t+1) = out(t) + 1
+ * else              out(t+1) = out(t)
  */
 CHIP PC {
-    IN in[16], load, inc, reset;
+    IN in[16], reset, load, inc;
     OUT out[16];
 
     PARTS:
-    // The register stores the current PC value.
-    // In HDL, this is wiring, not step-by-step execution:
-    // the wire named next is computed below and fed back into the register input.
-    Register(in=next, load=true, out=out, out=current);
+    // 1. State Storage: Stores the current PC address.
+    // 'load' is hardwired to true because our multiplexer cascade always
+    // calculates the correct candidate value for the next cycle.
+    Register(in=nextPC, load=true, out=out, out=currentPC);
 
-    // One possible next value is current + 1.
-    Inc16(in=current, out=incremented);
+    // 2. Incrementer: Calculates the next sequential instruction address.
+    Inc16(in=currentPC, out=incrementedPC);
 
-    // If inc = 0, keep the current value.
-    // If inc = 1, use the incremented value.
-    Mux16(a=current, b=incremented, sel=inc, out=afterInc);
+    // 3. Stage 1 (Inc Selector): Chooses between holding and incrementing.
+    // if inc = 0 -> output currentPC
+    // if inc = 1 -> output incrementedPC
+    Mux16(a=currentPC, b=incrementedPC, sel=inc, out=holdOrIncPC);
 
-    // If load = 1, external input overrides hold/increment.
-    Mux16(a=afterInc, b=in, sel=load, out=afterLoad);
+    // 4. Stage 2 (Load Selector): Handles jumping to external addresses.
+    // 'load' overrides 'inc' and Hold by selecting input 'in' if asserted.
+    // if load = 0 -> output holdOrIncPC
+    // if load = 1 -> output in
+    Mux16(a=holdOrIncPC, b=in, sel=load, out=jumpOrHoldOrIncPC);
 
-    // If reset = 1, zero overrides everything else.
-    Mux16(a=afterLoad, b[0..15]=false, sel=reset, out=next);
+    // 5. Stage 3 (Reset Selector): Handles clearing the counter.
+    // 'reset' overrides all other inputs by selecting 0 if asserted.
+    // if reset = 0 -> output jumpOrHoldOrIncPC
+    // if reset = 1 -> output 0
+    Mux16(a=jumpOrHoldOrIncPC, b[0..15]=false, sel=reset, out=nextPC);
 }
 ```
 
-Why this works:
+Meaning:
+- `Register(in=nextPC, load=true, out=out, out=currentPC);`: At each clock tick, the 16-bit register stores `nextPC` (the final computed value from the Mux cascade) because its load pin is hardwired to `true`. It outputs the stored value to the chip's external output `out` and to the internal feedback wire `currentPC`.
+- `Inc16(in=currentPC, out=incrementedPC);`: The `Inc16` chip continuously takes `currentPC` and calculates the incremented value `currentPC + 1`, outputting it on the internal wire `incrementedPC`.
+- `Mux16(a=currentPC, b=incrementedPC, sel=inc, out=holdOrIncPC);`: The first multiplexer selects between `currentPC` (channel `a`, selected when `inc = 0`) and `incrementedPC` (channel `b`, selected when `inc = 1`), outputting the result on `holdOrIncPC`.
+- `Mux16(a=holdOrIncPC, b=in, sel=load, out=jumpOrHoldOrIncPC);`: The second multiplexer selects between the previous stage's result `holdOrIncPC` (channel `a`, selected when `load = 0`) and the external input `in` (channel `b`, selected when `load = 1`), outputting the result on `jumpOrHoldOrIncPC`. This implements the override where `load` takes precedence over `inc` and hold.
+- `Mux16(a=jumpOrHoldOrIncPC, b[0..15]=false, sel=reset, out=nextPC);`: The final multiplexer selects between the accumulated result `jumpOrHoldOrIncPC` (channel `a`, selected when `reset = 0`) and a 16-bit constant zero (channel `b`, selected when `reset = 1`), outputting the final result to `nextPC`. This implements the highest priority override where `reset` overrides all other inputs.
+
+#### Priority Routing Analysis
+
+The counter's priority logic (Reset > Load > Increment > Hold) is implemented by cascading three multiplexers in reverse priority order:
 
 ```text
-if reset = 1 -> next = 0
-else if load = 1 -> next = in
-else if inc = 1 -> next = current + 1
-else -> next = current
+currentPC -> inc selector -> load selector -> reset selector -> nextPC
 ```
 
-Read the circuit from left to right:
+Because the output of each multiplexer feeds into the input of the next one, the later stages have the power to discard the decisions made by the earlier ones:
+1. **Default State**: If `reset = 0`, `load = 0`, and `inc = 0`, the first Mux outputs `currentPC`, which flows through all subsequent stages to become `nextPC` (Hold).
+2. **Increment**: If `inc = 1`, the first Mux outputs `currentPC + 1`, which flows to the end as long as `load = 0` and `reset = 0`.
+3. **Load Override**: If `load = 1`, the second Mux discards the output of the first Mux and outputs `in`, which flows to the end as long as `reset = 0`.
+4. **Reset Override**: If `reset = 1`, the third Mux discards the output of the second Mux and outputs `0`, overriding all other control bits.
 
-```text
-current -> maybe increment -> maybe replace with in -> maybe replace with 0 -> next
-```
-
-Important detail:
-
-```text
-HDL is not sequential code.
-The line Register(in=next, ...) does not mean "use next before assignment".
-It means "connect the register input pin to the wire named next".
-Then later muxes drive that wire.
-```
-
-So the PC is really:
-
-```text
-Register + increment logic + selection logic
-```
-
-That is why it can hold, increment, load a new value, or reset to zero.
+#### Wire Routing and Feedback Loops
+In HDL, connections represent physical wires, not sequential execution lines. The wire `nextPC` is calculated by the third Mux and fed back to the register's input pin `in=nextPC`. Because the register is a sequential chip, it introduces a one-cycle delay, breaking any instantaneous combinational feedback loop and ensuring safe state updates..
