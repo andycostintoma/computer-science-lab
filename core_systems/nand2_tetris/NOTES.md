@@ -598,7 +598,7 @@ Behavior rules:
 
 **Figure 1.2** All the Boolean functions of two binary variables.
 
-To see the complete landscape of two-variable operators, we can look at Slide 21:
+The complete landscape of two-variable operators is shown below:
 
 ![](media/slides/chapter-1/chapter1-slide-21-two-input-functions.png)
 
@@ -764,7 +764,7 @@ And(a, b) = 1 only when a = 1 and b = 1; otherwise, 0
 
 **Figure (Slide 32)** All four elementary gate diagrams side by side: `Nand`, `And`, `Or`, and `Not`, each with their if/else behavioral specification and the rationale for why this specific set is chosen — either `{Nand}` alone or `{And, Or, Not}` together is sufficient to build any Boolean function, and all have efficient hardware implementations.
 
-To visualize how physical circuits relate to these symbols, the slides present conceptual switch/relay implementations:
+To visualize how physical circuits relate to these symbols, conceptual switch/relay implementations can be used:
 
 ![](media/slides/chapter-1/chapter1-slide-33-circuit-conceptual.png)
 
@@ -824,7 +824,7 @@ Meaning:
 
 **Figure 1.6** `Xor` gate interface (left) and a possible implementation (right).
 
-As shown in the slides, the design process focuses purely on the logical architecture rather than the physical layout:
+The design process focuses purely on the logical architecture rather than the physical layout:
 
 ![](media/slides/chapter-1/chapter1-slide-35-logical-vs-physical.png)
 
@@ -1320,7 +1320,7 @@ Meaning:
 - `in[8..15]` means: connect the high 8 wires of the same bus
 - HDL is still describing plain wiring, just at the level of slices instead of single wires
 
-The transcript also points out three practical HDL conventions that are easy to miss:
+Three practical HDL conventions are easy to miss:
 
 ```text
 internal bus width is inferred from what it connects to
@@ -2961,7 +2961,6 @@ Every memory system behaves as a linear sequence of addressable registers:
 registers store words
 RAM stores addressable words
 counters store and update control positions
-```
 
 By abstracting these physical layers into uniform logical components, computer systems can run software without needing to adapt to the underlying hardware medium. Together with the ALU from Chapter 2, these memory devices provide the final components required to construct the CPU and the complete Hack computer platform.
 
@@ -2999,540 +2998,231 @@ That is why this chapter matters so much:
 hardware becomes useful only when it can execute instructions
 ```
 
-#### 4.1 Machine Language: Overview
+### 4 Machine Language
 
-This section explains what a machine language must talk about.
+This chapter focuses not on the machine but rather on the *language* used to control the machine. Therefore, we will abstract away the hardware platform, focusing on the minimal subset of hardware elements that are mentioned explicitly in machine language instructions.
+##### The Stored-Program Concept and Universality
+The fundamental concept of computer universality is defined as:
+- **Universality**: Most physical machines built by humanity perform exactly one task (e.g., a washing machine only washes clothes; it cannot cook spaghetti). A general-purpose computer or smartphone is universal—the same physical machine can run a word processor, play video games, display media streams, and facilitate calls.
+- **Alan Turing**: In the early 20th century, Turing proposed a theoretical model of computation (the Turing Machine) to capture what can be computed. He discovered that a single machine—the *Universal Turing Machine*—could simulate any other Turing machine when provided with the correct program description.
+- **John von Neumann**: Turned this theoretical insight into engineering practice by designing the *stored-program computer* architecture. In this design, program instructions and data share the same physical memory space. By loading different instruction streams (software) into memory, a fixed, static hardware platform performs entirely different functions.
 
-The focus is not on all the circuitry inside the machine.
-
-The focus is on the hardware elements that a programmer must control explicitly.
-
-The course adds one teaching motivation for doing Chapter 4 before Chapter 5: before building the full Hack computer, it helps to see what kind of machine the hardware is supposed to support from the programmer's point of view.
+![Stored program concept: The computer memory stores both program instructions and data values. A fixed hardware platform dynamically changes its functionality simply by loading a different program into memory.](media/slides/chapter-4/chapter4-slide-12-stored-program-concept-detail.png)
 
 ##### 4.1.1 Hardware Elements
 
-Machine language is written for a specific physical machine.
+A machine language can be viewed as an agreed-upon formalism designed to manipulate a *memory* using a *processor* and a set of *registers*.
 
-So the language has to name the key hardware things that exist at runtime:
+**Memory**: The term *memory* refers loosely to the collection of hardware devices that store data and instructions in a computer. Functionally speaking, a memory is a continuous sequence of cells, also referred to as *locations* or *memory registers*, each having a unique *address*. An individual memory register is accessed by supplying its address.
 
-```text
-memory     -> where most values live
-processor  -> the thing that does operations
-registers  -> small, fast storage inside the processor
-```
+**Processor**: The processor, normally called the *Central Processing Unit*, or *CPU*, is a device capable of performing a fixed set of primitive operations. These include arithmetic and logical operations, memory access operations, and control (also called *branching*) operations. The processor draws its inputs from selected registers and memory locations and writes its outputs to selected registers and memory locations. It consists of an ALU, a set of registers, and gate logic that enables it to parse and execute binary instructions.
 
-**Memory** is the computer's big table of storage cells.
+**Registers**: The processor and the memory are implemented as two separate, standalone chips, and moving data from one to the other is a relatively slow affair. For this reason, processors are normally equipped with several on-board registers, each capable of holding a single value. Located inside the processor’s chip, the registers serve as a high-speed local memory, allowing the processor to manipulate data and instructions without having to venture outside the chip.
 
-Each cell has an **address** (a number) and holds a fixed-width value (for Hack, 16 bits).
+The CPU-resident registers fall into two categories: *data registers*, designed to hold data values, and *address registers*, designed to hold values that can be interpreted either as data values or as memory addresses. The computer architecture is configured in such a way that placing a particular value, say *n*, in an address register, causes the memory location whose address is *n* to become *selected* instantaneously.[^3] This sets the stage for a subsequent operation on the selected memory location.
 
-Mental model:
+###### Silicon Cost-Performance Trade-offs
+The design of any machine language and its supporting hardware is governed by a fundamental cost-performance trade-off:
+- **Hardware Complexity**: Providing richer primitive operations (e.g., hardware-level division or floating-point arithmetic) or supporting wider native data types (e.g., 64-bit vs. 8-bit) increases the performance of specific software routines. However, this complexity requires significantly more silicon area on the chip and can increase the execution latency or propagation delay of basic operations.
+- **Simplification Decisions**: Hardware architects must choose which operations to implement directly in silicon and which to defer to software libraries. For instance, a processor might omit a division instruction to save silicon area, requiring compilers or programmers to implement division as a sequence of hardware-supported additions and subtractions.
 
-```text
-RAM[0] = some 16-bit value
-RAM[1] = some 16-bit value
-RAM[2] = some 16-bit value
-...
-```
+###### Memory Hierarchy
+To balance the physical limits of memory speed, storage capacity, and addressing efficiency, computer architectures employ a multi-tiered memory hierarchy:
+1. **Registers**: Small, extremely fast storage units located directly inside the CPU. Because there are very few of them (e.g., 2 to 32), addressing them requires only a few bits in an instruction word, and data is accessed with zero latency at register speeds.
+2. **Cache**: Slightly larger, fast memory blocks situated close to the CPU core. They store copies of frequently accessed data from main memory to minimize processor wait times.
+3. **Main Memory (RAM)**: Large, general-purpose storage located outside the CPU chip. Accessing main memory requires a bus transfer, which introduces latency and requires a much larger address space (more bits in the instruction).
+4. **Secondary Storage (Disk)**: Extremely large, non-volatile storage (such as SSDs or HDDs) located far from the processor, with the longest access latencies.
 
-To use memory, a program must (1) pick an address, then (2) read or write the value stored at that address.
-
-**Processor (CPU)** is the device that repeatedly:
-
-```text
-fetch an instruction
-decode what it means
-execute it (ALU work, memory access, or a jump)
-```
-
-It can do only a fixed set of primitive operations (add, and, not, compare, branch, etc.).
-
-It does not "decide" what to do.
-
-It follows the program's instruction stream.
-
-**Registers** are a few storage cells built into the CPU chip.
-
-They are much faster than main memory, so machine languages use them as the CPU's working area.
-
-Two roles matter a lot:
+As we move further away from the processor core down the hierarchy:
+- **Capacity** increases significantly.
+- **Access time (latency)** increases.
+- **Addressing cost** increases (requiring wider address fields to reference the larger space).
 
 ```text
-data registers    -> hold values being computed
-address registers -> hold a value that is treated as a memory address
+       ┌───────────────── Memory (RAM / ROM) ────────────────┐
+       │                                                     │
+       │  Addresses:  0     1     2     3     ...   32767    │
+       │            ┌───┐ ┌───┐ ┌───┐ ┌───┐         ┌───┐    │
+       │            │   │ │   │ │   │ │   │         │   │    │
+       │            └───┘ └───┘ └───┘ └───┘         └───┘    │
+       └───────────────────────▲─────────────────────────────┘
+                               │ (Memory Bus)
+       ┌───────────────────────▼─────────────────────────────┐
+       │  CPU                  │                             │
+       │                                                     │
+       │  ┌───────────┐ ┌───────────────┐ ┌───────────────┐  │
+       │  │    ALU    │ │ Data Reg (D)  │ │ Addr Reg (A)  │  │
+       │  └─────▲─────┘ └───────────────┘ └───────────────┘  │
+       │        │                                            │
+       │  ┌─────┴─────────────────────────────────────────┐  │
+       │  │ Instruction Decoder & Control Gates           │  │
+       │  └───────────────────────────────────────────────┘  │
+       └─────────────────────────────────────────────────────┘
 ```
 
-One subtle point that often causes confusion:
+![Conceptual division of registers in a computer: CPU-resident registers (few, accessed directly by name) vs Memory-resident registers (many, accessed by address).](media/slides/chapter-4/chapter4-slide-14-machine-language-registers.png)
 
-An "address register" does not contain some special "address substance".
-
-It contains an ordinary bit-pattern, like any other register.
-
-Whether that bit-pattern is interpreted as:
-
-```text
-the number 17
-```
-
-or as:
-
-```text
-the address of memory cell 17
-```
-
-depends entirely on what the next instruction chooses to do with it.
-
-Concrete mental example (we will see this exactly in Hack later with the `A` register):
-
-```text
-If A = 17:
-
-use A as data:     D = A    // D gets the value 17
-use A as address:  D = M    // D gets RAM[A] (i.e., RAM[17])
-```
-
-This distinction matters because many machines access memory **indirectly**.
-
-Instead of a single magical instruction "write RAM[123]", you typically do it in two steps:
-
-```text
-1) put 123 in an address register  (this selects RAM[123])
-2) read/write the selected memory cell
-```
-
-That pattern is the core mental model for low-level programming:
-
-```text
-address register selects a memory cell
-then the next instruction acts on that selected cell
-```
+![CPU registers are containers that hold bits. They generally include Data registers to hold values, Address registers to hold memory addresses, and Instruction registers to hold instructions.](media/slides/chapter-4/chapter4-slide-15-register-types.png)
 
 ##### 4.1.2 Languages
 
-Machine language programs can be written in two equivalent notations:
+Machine language programs can be written in two alternative, but equivalent, ways: *binary* and *symbolic*. For example, consider the abstract operation “set `R1` to the value of `R1 + R2`”. As language designers, we can decide to represent the addition operation using the 6-bit code `101011`, and registers `R1` and `R2` using the codes `00001` and `00010`, respectively. Assembling these codes left to right, we can decide to use the 16-bit instruction `1010110001000001` as the binary version of “set `R1` to the value of `R1 + R2`”.
 
-```text
-binary   -> what the CPU actually executes
-symbolic -> a human-friendly spelling of the same instructions
-```
+In the early days of computer systems, computers were programmed manually: When proto-programmers wanted to issue the instruction “set `R1` to the value of `R1 + R2`”, they pushed up and down mechanical switches that stored a binary code like `1010110001000001` in the computer’s instruction memory. And if the program was a hundred instructions long, they had to go through this ordeal a hundred times. Of course debugging such programs was a perfect nightmare. This led programmers to invent and use symbolic codes as a convenient way for documenting and debugging programs *on paper*, before entering them into the computer. For example, the symbolic format `add` `R2,R1` could be chosen for representing the semantics “set `R1` to the value of `R1 + R2`” and the binary instruction `1010110001000001`.
 
-The binary form is literally the bits that sit in instruction memory.
+Field Packing Table for `add R2,R1`:
 
-The symbolic form is what we call **assembly language**.
+| Field | Mnemonic | Value | Binary | Bit Range |
+|---|---|---|---|---|
+| Operation Code | `add` | 43 | `101011` | bits 10-15 |
+| Source Register | `R2` | 2 | `00010` | bits 5-9 |
+| Dest Register | `R1` | 1 | `00001` | bits 0-4 |
 
-The bridge between them is a translation program:
+It didn’t take long before several people hit on the same idea: Symbols like `R`, `1`, `2`, and + can also be represented using agreed-upon binary codes. Why not use symbolic instructions for writing programs, and then use another program - a translator - for translating the symbolic instructions into executable binary code? This innovation liberated programmers from the tedium of writing binary code, paving the way for the subsequent onslaught of high-level programming languages. For reasons that will become clear in chapter [6](#6-assembler), symbolic machine languages are called assembly languages, and the programs that translate them into binary code are called *assemblers*.
 
-```text
-assembly (symbolic) -> assembler -> machine code (binary)
-```
+Unlike the syntax of high-level languages, which is portable and hardware independent, the syntax of an assembly language is tightly related to the low-level details of the target hardware: the available ALU operations, number and type of registers, memory size, and so on. Since different computers vary greatly in terms of any one of these parameters, there is a Tower of Babel of machine languages, each with its obscure syntax, each designed to control a particular family of CPUs. Irrespective of this variety, though, all machine languages are theoretically equivalent, and all of them support similar sets of generic tasks, as we now turn to describe.
 
-The key idea is that these are not two different languages.
+###### Hardware-Supported Data Types
+A CPU's native data types define the values it can manipulate primitively directly in hardware. The choice of native data types represents another major cost-performance design trade-off:
+- **Bit Width (8-bit vs. 64-bit)**: Working with larger word sizes directly in hardware is significantly faster but more expensive. For example, if software requires 64-bit integer arithmetic:
+  - A **64-bit processor** performs a 64-bit addition in a single clock cycle.
+  - An **8-bit processor** must perform the same operation via a sequence of multiple 8-bit additions with carry propagation, which can be at least eight times slower.
+- **Integer vs. Floating-Point**:
+  - **Integer Arithmetic**: Most basic processors natively support only integer numbers (whole numbers) because the hardware required to add or subtract integers is simple and compact.
+  - **Floating-Point Arithmetic**: Direct hardware support for real numbers (floating-point representation) requires complex, specialized logic (such as a Floating-Point Unit, or FPU). For scientific or graphics-intensive computation, an FPU is much faster than software emulation, but it demands substantial silicon area. In simpler or educational platforms, floating-point arithmetic is omitted from hardware and implemented entirely in software.
 
-They are two different *representations* of the same underlying instruction set.
+![Typical assembly language instructions in RISC-like syntax. While syntax varies across architectures, the underlying semantics remains the same: manipulating registers.](media/slides/chapter-4/chapter4-slide-16-typical-operations-risc.png)
 
-Concrete example:
+![The physical representation of typical operations in memory and registers as raw binary streams of bits.](media/slides/chapter-4/chapter4-slide-17-typical-operations-binary.png)
 
-Suppose we want the abstract operation:
-
-```text
-set R1 to (R1 + R2)
-```
-
-As machine designers, we can decide an encoding scheme like:
-
-```text
-add op-code = 101011
-R1 code     = 00001
-R2 code     = 00010
-```
-
-Then the CPU's binary instruction could be:
-
-```text
-101011 00010 00001
-```
-
-Since `6 + 5 + 5 = 16`, concatenating these fields left-to-right gives:
-
-```text
-1010110001000001
-```
-
-Humans don't want to write or debug long bit-patterns.
-
-So we choose a symbolic spelling for the same instruction, like:
-
-```text
-add R2,R1
-```
-
-And we let the assembler do the mechanical work:
-
-```text
-look up "add"  -> write 101011
-look up "R2"   -> write 00010
-look up "R1"   -> write 00001
-pack fields into the 16-bit instruction format
-```
-
-In other words: symbols are not magic.
-
-They are just names that stand for agreed-upon bit patterns.
-
-Unlike high-level languages, assembly language is tied to a specific hardware platform.
-
-Change the CPU (instruction formats, op-codes, registers), and you necessarily change the assembly language too.
+![The translation pipeline: High-level compiler translates source code to assembly language, and the assembler tool translates symbolic assembly into executable binary code.](media/slides/chapter-4/chapter4-slide-22-program-translation.png)
 
 ##### 4.1.3 Instructions
 
-This subsection is still staying general.
+In what follows, we assume that the computer’s processor is equipped with a set of registers denoted `R0`, `R1`, `R2`, … The exact number and type of these registers are irrelevant to our present discussion.
 
-The book is not yet saying, "Here is the exact Hack syntax."
-
-It is first answering a more basic question:
-
-```text
-what jobs must any machine language be able to do?
-```
-
-The answer is a short list:
-
-```text
-1) compute on values
-2) access memory
-3) control which instruction executes next
-4) use symbols so humans can manage the code
-```
-
-That list is almost a definition of what low-level programming is.
-
-If a language could not do these things, it could not control a general-purpose computer.
-
-**Arithmetic and logical operations** let the computer transform data that is already inside the machine.
-
-Examples:
-
-```text
-add two values
-subtract one value from another
-and/or/not values
-```
-
-These instructions are the programmer's view of the ALU.
-
-At the hardware level, the ALU is a circuit.
-
-At the machine-language level, it appears as a menu of primitive operations that instructions can request.
+**Arithmetic and logical operations**: Every machine language features instructions for performing basic arithmetic operations like addition and subtraction, as well as basic logical operations like And, Or, Not. For example, consider the following code segments:
 
 ![](media/figure_wo_caption_4.1.png)
 
-Figure `4.1` without the caption shows two tiny examples.
-
-The first sequence is arithmetic:
-
 ```text
-load R1,17
-load R2,4
-add R1,R1,R2
-```
+// Adds up two numbers:
+load R1,17      // R1 <- 17
+load R2,4       // R2 <- 4
+add  R1,R1,R2   // R1 <- R1 + R2
 
-Read it step by step:
-
-```text
-put 17 in R1
-put 4 in R2
-replace R1 with R1 + R2
-```
-
-So after the third instruction, `R1 = 21`.
-
-The second sequence is logical:
-
-```text
-load R1,true
-load R2,false
-and R1,R1,R2
+// Computes a logical operation:
+load R1,true    // R1 <- binary representation of true
+load R2,false   // R2 <- binary representation of false
+and  R1,R1,R2   // R1 <- R1 And R2 (bit-wise And)
 ```
 
 Meaning:
+- `load R1,17`: Loads the immediate value `17` into register `R1`.
+- `load R2,4`: Loads the immediate value `4` into register `R2`.
+- `add R1,R1,R2`: Sums the values in registers `R1` and `R2` ($17 + 4 = 21$) and overwrites register `R1` with the result.
+- `load R1,true`: Loads the binary representation of `true` (typically all `1`s) into register `R1`.
+- `load R2,false`: Loads the binary representation of `false` (`0`) into register `R2`.
+- `and R1,R1,R2`: Performs a bitwise And operation on registers `R1` and `R2` (all `1`s And `0` yields `0`) and overwrites register `R1` with the result.
 
-```text
-put true in R1
-put false in R2
-replace R1 with R1 And R2
-```
+For such symbolic instructions to execute on a computer, they must first be translated into binary code. The translation is done by a program named *assembler*, which we’ll develop in chapter [6](#6-assembler). For now, we assume that we have access to such an assembler and that we can use it as needed.
 
-Since `true And false = false`, the final value in `R1` is false.
-
-The important point is not these particular mnemonics.
-
-The important point is that machine language exposes primitive computation directly.
-
-There is no expression parser, no rich type system, and no hidden runtime.
-
-If you want a computation, you ask for it in small explicit steps.
-
-The design lesson here is important:
-
-an instruction set is always a cost/performance trade-off.
-
-If you add richer operations, larger data types, or more elaborate addressing features, programming becomes nicer, but the hardware becomes more expensive and often slower.
-
-**Memory access** exists because computation alone is not enough.
-
-The CPU must also be able to fetch values from memory and store results back into memory.
-
-Registers are the CPU's fast workspace.
-
-Memory is the larger storage area outside that workspace.
-
-So machine language needs instructions that move between:
-
-```text
-values in registers
-values in memory
-```
-
-The usual pattern is indirect addressing:
-
-```text
-put an address in an address register
-then operate on the selected memory cell
-```
-
-The easiest mental model is:
-
-```text
-A = a pointer to one memory address
-M = the memory word currently selected by A
-```
-
-So:
-
-```text
-M = RAM[A]
-```
-
-This means `M` is not one fixed place.
-
-Its meaning changes whenever `A` changes.
-
-Example:
-
-```text
-if A = 17, then M means RAM[17]
-if A = 200, then M means RAM[200]
-```
-
-This section is still speaking in general machine-language terms, not yet in exact Hack syntax.
-
-So when the book uses instructions like:
-
-```text
-load A,17
-load M,1
-```
-
-it is illustrating the access pattern, not yet giving the final Hack spelling.
-
-The idea is:
-
-```text
-A = address register
-M = the memory word currently selected by A
-```
-
-So if `A = 17`, then `M` means memory location `17`.
-
-Then:
-
-```text
-load M,1
-```
-
-means:
-
-```text
-store 1 into memory[17]
-```
-
-Read the two instructions as:
-
-```text
-load A,17   -> make A point to address 17
-load M,1    -> write 1 into the memory cell A points to
-```
-
-The bigger example follows exactly the same logic.
-
-To set memory locations `200..249` to `1`, the machine first selects the start address and then repeatedly writes through the selected memory word while advancing the address:
-
-```text
-load A,200
-loop:
-  load M,1
-  add A,A,1
-```
-
-Mental model:
-
-```text
-start with A = 200
-write 1 into memory[A]
-increment A
-write 1 into memory[A]
-increment A
-repeat
-```
-
-Tiny trace:
-
-```text
-load A,200   -> A = 200, so M means RAM[200]
-load M,1     -> RAM[200] = 1
-add A,A,1    -> A = 201, so now M means RAM[201]
-load M,1     -> RAM[201] = 1
-add A,A,1    -> A = 202
-```
-
-So the main memory-access lesson is:
-
-```text
-first select an address
-then read or write the selected memory word
-```
-
-In actual Hack assembly, the same idea later appears in a more concrete form such as:
-
-```text
-@17
-M=1
-```
+**Memory access**: Every machine language features means for accessing, and then manipulating, selected memory locations. This is typically done using an *address register*, let’s call it `A`. For example, suppose we wish to set memory location 17 to the value 1. We can decide to do so using the two instructions `load` `A,17` followed by `load` `M,1`, where, by convention, `M` stands for the memory register selected by `A` (namely, the memory register whose address is the current value of `A`). With that in mind, suppose we wish to set the fifty memory locations 200, 201, 202, …, 249 to 1. This can be done by executing the instruction `load` `A,200` and then entering a loop that executes the instructions `load` `M,1` and `add` `A,A,1` fifty times.
 
 Meaning:
+- `load A,200`: Loads address `200` into address register `A`. The selected memory cell `M` now refers to `RAM[200]`.
+- `load M,1`: Writes the constant `1` into the selected memory cell `M` (storing `1` in `RAM[200]`).
+- `add A,A,1`: Increments address register `A` to `201`. The selected memory cell `M` now refers to `RAM[201]`.
+- `load M,1`: Writes the constant `1` into the selected memory cell `M` (storing `1` in `RAM[201]`).
 
-```text
-put 17 in A
-now M means RAM[17]
-store 1 there
-```
+| Instruction | A | RAM[200] | RAM[201] | RAM[202] | Selected Memory Cell (M) |
+|---|---|---|---|---|---|
+| Initial State | ? | ? | ? | ? | ? |
+| `load A,200` | 200 | ? | ? | ? | `RAM[200]` |
+| `load M,1` | 200 | 1 | ? | ? | `RAM[200]` |
+| `add A,A,1` | 201 | 1 | ? | ? | `RAM[201]` |
+| `load M,1` | 201 | 1 | 1 | ? | `RAM[201]` |
+| `add A,A,1` | 202 | 1 | 1 | ? | `RAM[202]` |
 
-This is why address registers matter so much in low-level programming.
+###### General Addressing Modes
+To perform any operation, the hardware must know which data values to manipulate. Machine languages specify operand locations using different *addressing modes*. The four fundamental modes are:
+1. **Register Addressing**: The operation operates directly on CPU registers.
+   ```text
+   add R1, R2
+   ```
+   Meaning:
+   - `add R1, R2`: The content of register `R2` is added to the content of register `R1`, storing the result back in `R1`.
+2. **Direct Addressing**: The instruction explicitly specifies the physical memory address of the operand.
+   ```text
+   add R1, 200
+   ```
+   Meaning:
+   - `add R1, 200`: The value stored at memory address `200` is added to the content of register `R1`, storing the result back in `R1`.
+3. **Indirect Addressing**: The memory address to be accessed is not hard-coded in the instruction, but is instead held in a CPU register (such as an address register).
+   ```text
+   store R1, A
+   ```
+   Meaning:
+   - `store R1, A`: The value in register `R1` is written to the memory address currently stored in address register `A`.
+4. **Immediate Addressing**: A constant value (literal) is embedded directly inside the instruction word.
+   ```text
+   add R1, 73
+   ```
+   Meaning:
+   - `add R1, 73`: The constant integer `73` is added directly to the content of register `R1`, storing the result back in `R1`.
 
-They let the CPU point at one memory word, and then operate on that selected word.
+###### General Input/Output Handling
+Computers must communicate with a wide variety of input and output (I/O) devices, such as screens, keyboards, mice, printers, and sensors. Most machine languages and CPU architectures handle this through a unified mechanism:
+- **Memory-Mapped I/O**: The CPU maps the control and data registers of physical I/O devices to specific, designated addresses in the main memory address space.
+  - **Input**: For example, when a user moves a mouse or presses a key, the hardware controller writes the movement coordinates or keycode to a specific memory address. To read the input, the program simply reads from that address.
+  - **Output**: To write a character to a printer or illuminate a pixel on a screen, the program simply writes the target data to a designated memory address. The physical device is wired to monitor that address and update its state accordingly.
+- **Operating System Drivers**: Hardware-specific I/O addresses and protocol specifications are encapsulated within OS drivers (software). This design ensures that high-level applications can perform general read/write tasks without needing to know the physical wiring or address coordinates of specific peripheral devices.
 
-**Flow control** exists because a useful program cannot just march forward forever.
-
-Without flow control, a program would be trapped in straight-line execution:
-
-```text
-instruction 1
-instruction 2
-instruction 3
-instruction 4
-...
-```
-
-Without jumps, every program would be one fixed straight line.
-
-That would make loops, conditionals, early exits, and repeated work impossible.
-
-With jumps and tests, machine language can build higher-level patterns like:
-
-```text
-if
-while
-for
-goto
-```
-
-At the machine-language level, these are not special language constructs.
-
-They are all built from instructions that decide what the next instruction address will be.
+**Flow control**: While computer programs execute by default sequentially, one instruction after another, they also include occasional *jumps* to locations other than the next instruction. To facilitate such branching actions, machine languages feature several variants of conditional and unconditional *goto* instructions, as well as label declaration statements that mark the goto destinations. Figure 4.1 illustrates a simple branching action using machine language.
 
 ![](media/figure_4.1.png)
+**Figure 4.1**    Two versions of the same low-level code (it is assumed that the code includes some loop termination logic, not shown here).
 
-**Figure 4.1** Two versions of the same low-level code (it is assumed that the code includes some loop termination logic, not shown here).
+Meaning of branching code in Figure 4.1:
+- **Left Version (Physical Addresses)**:
+  - `12: load R1,0`: Loads 0 into `R1`.
+  - `13: add R1,R1,1`: Increments `R1`.
+  - `...`: Intermediate program execution.
+  - `27: goto 13`: Jumps unconditionally back to physical instruction address `13`.
+- **Right Version (Symbolic Addresses)**:
+  - `load R1,0`: Loads 0 into `R1`.
+  - `(LOOP)`: Declares a symbolic label marking this instruction coordinate.
+  - `add R1,R1,1`: Increments `R1`.
+  - `...`: Intermediate program execution.
+  - `goto LOOP`: Jumps unconditionally to the instruction coordinate associated with label `LOOP`.
 
-Read the left side first.
+![By default, the CPU execution sequence is linear (PC = PC + 1). Flow control instructions jump to a non-sequential address by loading a new address into the Program Counter (PC).](media/slides/chapter-4/chapter4-slide-18-instruction-flow.png)
 
-It uses physical instruction addresses:
+![Typical loop implementation: line numbers and physical addresses are used to control the branching back to the loop start.](media/slides/chapter-4/chapter4-slide-19-branching-overview.png)
+
+![Comparison between physical branching (relying on hard-coded line numbers/addresses) and symbolic branching (relying on labels). Labels allow code to be readable and relocatable.](media/slides/chapter-4/chapter4-slide-20-branching-comparison.png)
+
+![A conditional branching routine implementing the logic R2 = abs(R1). If R2 > 0 (jgt), it jumps directly to CONT, skipping the negation block.](media/slides/chapter-4/chapter4-slide-21-conditional-branching-abs.png)
 
 ```text
-12: load R1,0
-13: add R1,R1,1
-...
-27: goto 13
+// Sets R2 to abs(R1)
+mov R2,R1
+jgt R2,CONT
+movi R2,0
+sub R2,R1
+CONT:
 ```
 
 Meaning:
+- `mov R2,R1`: Copies the value of register `R1` into `R2`.
+- `jgt R2,CONT`: Evaluates register `R2`. If it is greater than zero (`jgt`), the CPU jumps directly to the label `CONT`.
+- `movi R2,0`: Loads the immediate constant `0` into register `R2` (only executed if `R2 <= 0`).
+- `sub R2,R1`: Subtracts `R1` from `R2` ($0 - R1$), storing the negated value back in `R2` (only executed if `R2 <= 0`).
+- `CONT:`: A symbolic label marking the destination location of the conditional jump.
 
-```text
-initialize R1 to 0
-keep incrementing R1
-when execution reaches instruction 27, jump back to instruction 13
-```
+**Symbols**: Both code versions in figure 4.1 are written in assembly language; thus, both must be translated into binary code before they can be executed. Also, both versions perform exactly the same logic. However, the code version that uses symbolic references is much easier to write, debug, and maintain.
 
-So the loop is controlled by a raw numeric address.
-
-This works, but it is fragile.
-
-If you insert or remove instructions earlier in the program, the jump destination may change.
-
-Now read the right side.
-
-It expresses the same loop using a symbolic label:
-
-```text
-load R1,0
-(LOOP)
-  add R1,R1,1
-...
-  goto LOOP
-```
-
-The logic is identical, but the meaning is clearer:
-
-```text
-jump back to the place named LOOP
-```
-
-This is much easier for humans to read and maintain.
-
-**Symbols** are the usability layer on top of all this.
-
-The book uses figure 4.1 to show that symbolic names are not just cosmetic.
-
-They solve a real low-level programming problem.
-
-When code uses symbolic references instead of hard-coded physical addresses, the code becomes:
-
-```text
-easier to write
-easier to debug
-easier to maintain
-easier to move in memory
-```
-
-That last point is especially important.
-
-If code says `goto 13`, then it assumes the target instruction really is at address 13.
-
-If the whole program gets shifted in memory, that assumption can break.
-
-If code says `goto LOOP`, an assembler can translate `LOOP` to whichever physical address is correct in the final program.
-
-This is what the book means by *relocatable* code.
-
-So the full message of `4.1.3` is:
-
-```text
-machine language must let us compute
-machine language must let us access memory
-machine language must let us change control flow
-machine language becomes usable for humans when symbols replace raw addresses
-```
-
-The next section, `4.2`, takes these general ideas and shows exactly how the Hack computer realizes them.
+Further, unlike the code that uses physical addresses, the translated binary version of the code that uses symbolic references can be loaded into, and executed from, any memory segment that happens to be available in the computer’s memory. Therefore, low-level code that mentions no physical addresses is said to be *relocatable*. Clearly, relocatable code is essential in computer systems like PCs and cell phones, which routinely load and execute multiple apps dynamically and simultaneously. Thus, we see that symbolic references are not just a matter of cosmetics—they are used to liberate the code from unnecessary physical attachments to the host memory.
 
 #### 4.2 The Hack Machine Language
 
@@ -3552,13 +3242,30 @@ This section answers a practical question:
 what hardware picture should you keep in your head while reading Hack assembly?
 ```
 
-Hack follows the von Neumann style and is a 16-bit computer.
+###### Hardware-Software Duality
+There is a fundamental duality between hardware design and machine language design. Because the machine language is the primary interface through which software controls hardware, the design of one directly shapes and dictates the capabilities of the other. Thus, understanding the low-level instruction set requires a clear mental picture of the underlying hardware architecture.
 
-So the machine stores, moves, and computes using 16-bit values.
+###### The 16-Bit Platform
+The Hack platform is a 16-bit computer. The 16-bit word is the platform's atomic unit of information:
+- All data values, memory cells, and instructions are exactly 16 bits wide.
+- All retrieval, storage, and transfers of information occur in 16-bit chunks.
 
-The easiest way to understand the language is to first understand the memory model.
+The platform's hardware consists of three primary components connected by buses:
+1. **Data Memory (RAM)**: A continuous sequence of 16-bit registers, numbered sequentially (e.g., `RAM[0]`, `RAM[1]`, etc.) to store runtime data.
+2. **Instruction Memory (ROM)**: A separate, independent memory space storing 16-bit instructions (the program code).
+3. **Central Processing Unit (CPU)**: A processing unit centered around an ALU that manipulates 16-bit values.
+4. **Buses**: High-speed communication channels that move data between components. They function like 16-lane highways, transferring entire 16-bit chunks simultaneously:
+   - **Data Bus**: Transfers data between the CPU and the data memory.
+   - **Instruction Bus**: Transfers instructions from the ROM to the CPU.
+   - **Address Buses**: Select specific registers or instruction lines to be accessed.
 
-Hack uses two memories:
+![](media/slides/chapter-4/chapter4-slide-29-registers.png)
+*Conceptual register and memory abstraction of the Hack computer architecture.*
+
+###### The Reset Button
+To execute a program on the Hack platform, the 16-bit binary instructions of the program are loaded into the ROM. Execution is triggered by pressing a physical **reset button**. This hardware action resets the Program Counter (PC) to `0`, forcing the CPU to fetch and execute the first instruction in the ROM, kickstarting the software execution loop.
+
+Hack follows the von Neumann style and uses two memories:
 
 ```text
 data memory        -> RAM
@@ -4273,6 +3980,9 @@ C-instruction
 
 **Figure 4.5** The Hack instruction set, showing symbolic mnemonics and their corresponding binary codes.
 
+![](media/slides/chapter-4/chapter4-slide-155-spec-cheat-sheet.png)
+*Unified mapping table for the symbolic and binary specification of the Hack machine language.*
+
 This figure works like a dictionary.
 
 When reading any Hack instruction, you can decompose it into fields and then look up what each field is allowed to mean.
@@ -4285,7 +3995,7 @@ It tells you exactly which symbolic spellings are legal and which binary bit pat
 
 ###### The A-instruction
 
-The `A`-instruction loads a 15-bit value into the `A` register.
+The `A`-instruction is primarily used for **addressing** (which is why it is denoted as "A"). It loads a 15-bit value into the `A` register.
 
 Symbolic form:
 
@@ -4293,12 +4003,8 @@ Symbolic form:
 @xxx
 ```
 
-Where `xxx` can be:
-
-```text
-a constant (like 17)
-a symbol that the assembler will resolve (like sum or LOOP)
-```
+Meaning:
+- `@xxx`: Sets the `A` register to `xxx`, where `xxx` is either a non-negative decimal constant or a symbol referring to such a constant.
 
 Binary shape:
 
@@ -4307,63 +4013,43 @@ Binary shape:
 ```
 
 Meaning:
-
-```text
-leftmost 0  -> this is an A-instruction
-remaining 15 bits -> value to load into A
-```
+- `0`: The leftmost bit is `0`, indicating that this is an `A`-instruction.
+- `vvvvvvvvvvvvvvv`: The remaining 15 bits represent the binary value to be loaded into the `A` register.
 
 Example:
 
 ```text
-@5  -> 0000000000000101
+@21
 ```
+
+Meaning:
+- `@21`: Sets the `A` register to `21`.
+- **Side Effect**: Instantly selects `RAM[21]` as the active data memory register, so that the mnemonic `M` refers to `RAM[21]`.
+
+Every operation that writes to or reads from memory must select the target register first using this instruction. For example:
+
+```text
+@100
+M=-1
+```
+
+Meaning:
+- `@100`: Selects memory address `100` (`A` register becomes `100`).
+- `M=-1`: Writes `-1` to the currently selected memory register (`RAM[100]`), since `M` represents `RAM[A]`.
 
 This instruction has three main uses:
-
-```text
-load a constant into A
-select a RAM address for a later memory operation
-select a ROM address for a later jump
-```
-
-So `@n` does not by itself add, store, or jump.
-
-It prepares the stage.
-
-For example, if `A` ends up holding 17:
-
-```text
-use A as data:     D = A        // D gets 17
-use A as address:  D = M        // D gets RAM[A] (RAM[17])
-use A as jump:     0;JMP        // jump sets PC = A
-```
+- **Load a Constant**: Preloads a literal number into `A` to be copied into `D` or used in a calculation.
+- **Select a RAM Address**: Selects a memory register `M` for a subsequent read/write operation.
+- **Select a ROM Address**: Preloads a target instruction address in `A` for a subsequent jump (flow control).
 
 ###### The C-instruction
 
-The `C`-instruction performs actual work.
+The `C`-instruction is the workhorse of the Hack machine language. It performs actual computation, destination assignment, and program flow control.
 
 Its job is to answer three questions:
-
-```text
-what to compute?
-where to store the result?
-what to do next?
-```
-
-Binary shape:
-
-```text
-111accccccdddjjj
-```
-
-The fields mean:
-
-```text
-comp -> what the ALU should compute
-dest -> where to store the ALU result
-jump -> whether to jump (and on what condition)
-```
+- **What to compute?** (ALU calculation)
+- **Where to store the result?** (destination registers)
+- **What to do next?** (jump execution)
 
 Symbolic shape:
 
@@ -4371,94 +4057,118 @@ Symbolic shape:
 dest=comp;jump
 ```
 
-Where `dest` and `jump` are optional, but `comp` is always present.
+Meaning:
+- `dest`: Optional destination registers to store the computation result.
+- `comp`: Mandatory computation instruction representing the ALU operation.
+- `jump`: Optional jump directive defining the branching condition.
 
-Examples:
+Binary shape:
 
 ```text
-D=M        // dest=D, comp=M
-0;JMP      // comp=0, jump=JMP
-D;JGT      // comp=D, jump=JGT
-MD=D+1     // dest=MD, comp=D+1
+111accccccdddjjj
 ```
 
-The `comp` field chooses an ALU function.
+Meaning:
+- `111`: The leftmost three bits are `111`, indicating that this is a `C`-instruction (the leftmost bit is `1`, followed by two unused bits).
+- `a` and `cccccc`: The computation bits (`comp` field) directing the ALU function. The `a` bit selects whether to operate on `A` (if `a=0`) or `M` (if `a=1`).
+- `ddd`: The destination bits (`dest` field) directing where the result should be stored.
+- `jjj`: The jump bits (`jump` field) defining the branching logic.
 
-The two possible data sources are:
+###### The comp Field
+The `comp` field determines the ALU function. The CPU can compute arithmetic operations (addition, subtraction, negation, constants) and logical operations (bitwise AND/OR). It operates on the `D` register and either the `A` register or the selected memory cell `M` (based on the `a` bit).
 
+The following table details the mapping of the symbolic `comp` mnemonics to their 7-bit binary codes (`a` bit and 6 control bits `c1-c6`):
+
+| Symbolic comp (a = 0) | Symbolic comp (a = 1) | a-bit | c1-c6 bits |
+|---|---|---|---|
+| `0` | | 0 | `101010` |
+| `1` | | 0 | `111111` |
+| `-1` | | 0 | `111010` |
+| `D` | | 0 | `001100` |
+| `A` | `M` | 0 / 1 | `110000` |
+| `!D` | | 0 | `001101` |
+| `!A` | `!M` | 0 / 1 | `110001` |
+| `-D` | | 0 | `001111` |
+| `-A` | `-M` | 0 / 1 | `110011` |
+| `D+1` | | 0 | `011111` |
+| `A+1` | `M+1` | 0 / 1 | `110111` |
+| `D-1` | | 0 | `001110` |
+| `A-1` | `M-1` | 0 / 1 | `110010` |
+| `D+A` | `D+M` | 0 / 1 | `000010` |
+| `D-A` | `D-M` | 0 / 1 | `010011` |
+| `A-D` | `M-D` | 0 / 1 | `000111` |
+| `D&A` | `D&M` | 0 / 1 | `000000` |
+| `D|A` | `D|M` | 0 / 1 | `010101` |
+
+###### The dest Field
+The result of the computation can be stored in up to three containers simultaneously. The `dest` field provides 8 distinct possibilities:
+
+| Symbolic dest | binary code d1 d2 d3 | Destination container(s) |
+|---|---|---|
+| `null` | `000` | The result is not stored |
+| `M` | `001` | `RAM[A]` (selected memory cell) |
+| `D` | `010` | `D` data register |
+| `MD` | `011` | `RAM[A]` and `D` data register |
+| `A` | `100` | `A` address register |
+| `AM` | `101` | `A` address register and `RAM[A]` |
+| `AD` | `110` | `A` address register and `D` data register |
+| `AMD` | `111` | `A`, `D`, and `RAM[A]` |
+
+###### The jump Field
+The `jump` directive is used to implement branching and loops. It tells the CPU whether to load a new target instruction address (held in the `A` register) into the Program Counter (`PC = A`) or to continue to the next instruction (`PC = PC + 1`).
+
+All jump conditions compare the result of the `comp` calculation to `0`:
+
+| Symbolic jump | binary code j1 j2 j3 | Condition / Effect |
+|---|---|---|
+| `null` | `000` | No jump. Continue sequentially. |
+| `JGT` | `001` | Jump if `comp > 0` (greater than zero) |
+| `JEQ` | `010` | Jump if `comp == 0` (equal to zero) |
+| `JGE` | `011` | Jump if `comp >= 0` (greater than or equal to zero) |
+| `JLT` | `100` | Jump if `comp < 0` (less than zero) |
+| `JNE` | `101` | Jump if `comp != 0` (not equal to zero) |
+| `JLE` | `110` | Jump if `comp <= 0` (less than or equal to zero) |
+| `JMP` | `111` | Jump unconditionally (forces PC = A) |
+
+###### Examples of C-instruction Usage
+
+**Setting a register directly:**
 ```text
-D
-A or M
+D=-1
 ```
 
-The `a` bit decides whether the second source is `A` or `M`.
+Meaning:
+- `D=-1`: The ALU computes the constant `-1`, which is stored in the data register `D`. No jump is executed.
 
-So this is the core idea:
-
+**Modifying a memory location (two-step process):**
 ```text
-same ALU machinery
-different source selection
+@300
+M=D-1
 ```
 
-Examples:
+Meaning:
+- `@300`: Preloads address `300` into the `A` register, selecting `RAM[300]` as `M`.
+- `M=D-1`: Computes `D - 1` and writes the result to the currently selected memory register (`RAM[300]`).
 
+**Conditional Jump (branching on comparison):**
 ```text
-D-1
-D|M
-0
--1
+@56
+D-1;JEQ
 ```
 
-The `dest` field tells where the ALU result goes.
+Meaning:
+- `@56`: Preloads address `56` into the `A` register (the jump target).
+- `D-1;JEQ`: The ALU computes `D - 1`. If the result equals zero (`JEQ`), the CPU jumps to ROM address `56` by setting `PC = A`. Otherwise, it continues sequentially.
 
-Possible destinations are:
-
+**Unconditional Jump:**
 ```text
-A
-D
-M
-```
-
-One, several, or none can be selected at once.
-
-So a single instruction can store the same computed value into multiple places.
-
-![](media/figure_wo_caption_4.2.png)
-
-This small example matters because it shows that destination bits can describe several writes at once.
-
-The ALU computes one value, and the control logic can choose to copy that value into more than one target in the same instruction.
-
-The `jump` field decides whether execution continues with the next sequential instruction or jumps to the instruction whose address is currently in `A`.
-
-The decision is based on the ALU output.
-
-The three jump bits test whether that output is:
-
-```text
-negative
-zero
-positive
-```
-
-That is why the ALU flags from Chapter 2 matter.
-
-The CPU will use them to decide whether a jump condition is satisfied.
-
-The standard unconditional jump is:
-
-```text
+@56
 0;JMP
 ```
 
-This looks odd until you remember that `comp` is mandatory.
-
-So `0;JMP` means:
-
-```text
-compute 0 (ignored)
-unconditionally jump by setting PC = A
-```
+Meaning:
+- `@56`: Preloads address `56` into the `A` register.
+- `0;JMP`: Computes the constant `0` (ignored) and jumps unconditionally to ROM address `56` (sets `PC = A`).
 
 One subtle best practice appears here.
 
@@ -4529,72 +4239,68 @@ This is how names like `i`, `sum`, or `count` become real storage locations with
 
 ##### 4.2.5 Input/Output Handling
 
-Hack handles screen and keyboard through memory maps.
+The Hack computer communicates with the outside world using two peripheral input/output (I/O) devices: a physical **display unit (screen)** and a physical **keyboard**. 
 
-This is a powerful systems idea:
+In high-level environments (like Java or Python), programmers use abstract library calls (such as `drawCircle()` or `write("hello")`) to communicate with I/O devices. At the machine language level, however, these abstractions do not exist—the CPU controls and probes physical peripherals using only raw binary bits. This low-level communication is achieved through **Memory-Mapped I/O**.
 
-```text
-I/O devices look like memory regions
-```
+###### Memory-Mapped I/O Architecture
+Under a memory-mapped I/O scheme, the control and data registers of physical I/O devices are mapped directly to designated addresses within the computer's CPU-addressable RAM space. The CPU reads and writes to these peripheral devices using the exact same load and store instructions it uses to access standard memory registers. 
+- The synchronization between the physical peripheral devices and the RAM memory maps is handled by external hardware refresh loops that run continuously and independently of the main CPU cycle.
 
-That means the CPU can interact with devices using ordinary read and write instructions.
+###### Screen Memory Map
+The Hack screen is a black-and-white grid consisting of **256 rows** and **512 columns** (a total of $256 \times 512 = 131,072$ pixels).
+- **Physical Representation**: Each pixel is represented by a single bit: `0` for white, and `1` for black.
+- **Memory Mapping**: The state of these 131,072 pixels is mapped to a contiguous 8K block of data memory ($8 \text{K} \times 16 \text{ bits} = 131,072 \text{ bits}$) starting at RAM address `16384` (associated with the predefined symbol `SCREEN`).
+- **Word-Level Access Constraint**: Because the Hack CPU can only read and write data memory in 16-bit chunks (words), individual pixels cannot be accessed directly. To manipulate a single pixel at a specific coordinate, a program must perform a three-step read-modify-write process:
+  1. Fetch the entire 16-bit word containing the target pixel from the memory map.
+  2. Use arithmetic or bitwise operations to set or clear the specific bit corresponding to the target column (without altering the other 15 bits).
+  3. Write the modified 16-bit word back into the memory map.
+- **Continuous Refresh**: The physical display unit refreshes itself from this 8K memory map many times each second. Any modification a program makes to the bits in the memory map is automatically reflected on the screen during the next refresh cycle.
 
-**Screen**:
-
-The Hack screen is a black-and-white grid with:
-
-```text
-256 rows
-512 columns
-```
-
-Its state is stored in an 8K block of RAM starting at address `16384`, also named `SCREEN`.
-
-Each 16-bit word controls 16 horizontal pixels.
-
-So the mapping rule is:
-
-```text
-screen word address = SCREEN + row * 32 + col / 16
-bit inside word     = col % 16
-```
+**Mapping Formula:**
+To map a pixel at coordinate `(row, col)` to its corresponding bit in the main RAM, use the following rules:
+- **RAM Address**: `SCREEN + (row * 32) + (col / 16)` (using integer division, throwing away the remainder).
+- **Bit Position**: `col % 16` (counting from the Least Significant Bit, LSB, to the Most Significant Bit, MSB).
 
 ![](media/figure_wo_caption_4.4.png)
 
-This screen-memory figure is best read as a mapping table from a 2D picture to a 1D memory region.
+This screen-memory figure shows the mapping from the 2D screen pixels to the 1D memory map registers. It explains why graphics at this level require address arithmetic: the user sees rows and columns of pixels, while the program sees word addresses and bit positions.
 
-It explains why graphics at this level feel awkward:
+![](media/slides/chapter-4/chapter4-slide-167-screen-mapping.png)
+*Detailed visual layout mapping the physical 2D screen pixel coordinates to the 1D Screen Memory Map in the RAM.*
 
-```text
-the user sees rows and columns of pixels
-the program sees word addresses and bit positions
-```
+For example, row 3, columns 0-15 corresponds to the word address:
+$$\text{Address} = \text{SCREEN} + (3 \times 32) + (0 / 16) = \text{SCREEN} + 96$$
+Writing sixteen ones (binary `1111111111111111`, representing `-1` in 2's complement decimal) to `RAM[SCREEN + 96]` will blacken the first 16 pixels of row 3.
 
-This is the first place where you clearly see why word-level memory access is lower level than pixel-level graphics.
+###### Keyboard Memory Map
+The physical keyboard interfaces with the Hack computer through a keyboard memory map consisting of a single 16-bit register located at RAM address `24576` (associated with the predefined symbol `KBD`).
+- **Idle State**: When no key is pressed on the physical keyboard, `RAM[KBD]` holds the value `0`.
+- **Active State**: When a key is pressed, its physical **scan code** (a unique character code assigned to each key) travels through the interface cable and is written into `RAM[KBD]`.
+- **Polling Input**: To detect user input, a program runs a continuous loop probing the value of `RAM[24576]`. If the value is non-zero, the program can read the scan code to identify which key is currently pressed.
 
-To manipulate one pixel, the program often has to:
+![](media/slides/chapter-4/chapter4-slide-175-keyboard-map.png)
+*Memory space layout of RAM showing the Keyboard Memory Map register KBD relative to the standard RAM and Screen Memory Map.*
 
-```text
-read a 16-bit word
-change one bit inside it
-write the whole word back
-```
+**Predefined Scan Codes:**
+The Hack computer recognizes a predefined subset of keyboard keys, including:
+- Digits: `0` through `9`
+- Letters: `A` through `Z`
+- Control keys: Newline (`128`), Backspace (`129`), Left Arrow (`130`), Up Arrow (`131`), Right Arrow (`132`), Down Arrow (`133`), Home (`134`), End (`135`), Page Up (`136`), Page Down (`137`), Insert (`138`), Delete (`139`), ESC (`140`), F1-F12 (`141`-`152`).
+- Space: `32`
 
-**Keyboard**:
-
-The keyboard is even simpler.
-
-It is mapped to one RAM location:
-
-```text
-KBD = 24576
-```
-
-When no key is pressed, `RAM[KBD] = 0`.
-
-When a key is pressed, that location contains the key's code.
+![](media/slides/chapter-4/chapter4-slide-176-character-set.png)
+*The predefined Hack character set scan code lookup table.*
 
 This is why the `Fill.asm` project can poll the keyboard in a loop.
+
+![](media/slides/chapter-4/chapter4-slide-178-kbd-input-example.png)
+*Example showing the key 'k' pressed on the physical keyboard, causing its scan code 75 to be loaded into the keyboard memory map register KBD.*
+
+###### Hardware Simulator Implementations
+In the hardware simulator, the built-in `Screen` and `Keyboard` chips simulate this peripheral hardware mapping:
+- **Screen Chip**: Serves as the 8K RAM memory map. It exposes a graphical interface side-effect displaying the simulated black-and-white monitor. Running the simulator clock after writing a value to a screen register immediately updates the monitor's pixels.
+- **Keyboard Chip**: A read-only register that is physically bound to the user's host keyboard. When keyboard input is enabled in the simulator, pressing a physical key on the host keyboard immediately writes its scan code to the chip's output pin, which can be read by the CPU program.
 
 ##### 4.2.7 Syntax Conventions and File Formats
 
@@ -4634,306 +4340,883 @@ This seems minor, but it matters because assemblers need exact lexical rules.
 
 #### 4.3 Hack Programming
 
-After defining the language, the chapter returns to programming examples.
+##### 4.3.1 Registers, Memory, and Basic Operations
 
-The goal is not to memorize each line.
+Low-level programming revolves around the direct manipulation of CPU registers and memory locations. In the Hack architecture, the programmer operates on three primary registers:
+- `D`: Data register. Resides inside the CPU and holds a single 16-bit value.
+- `A`: Address register. Resides inside the CPU and can hold either a data value or a memory address.
+- `M`: Selected memory word. Refers to the RAM register located at the address currently stored in the `A` register (i.e., `RAM[A]`).
 
-The goal is to internalize the low-level programming style.
+###### Basic Register and Memory Manipulations
 
-**Example 1** computes a simple arithmetic expression.
+**1. Loading a Constant into D:**
+There is no C-instruction in the Hack language that allows loading a literal value directly into the `D` register (e.g., `D=10` is illegal). Constants must be loaded indirectly by first setting the `A` register and then copying the value to `D`:
+```text
+// D=10
+@10
+D=A
+```
 
-It reads from `R0` and `R1`, adds the values, adds `17`, and stores the result in `R2`.
+Meaning:
+- `@10`: Sets the `A` register to the constant `10`.
+- `D=A`: Copies the value of the `A` register (`10`) into the `D` register.
+
+**2. Incrementing D directly:**
+Unlike constant loading, incrementing a register can be done in a single clock cycle because the ALU natively supports the `D+1` computation:
+```text
+// D++
+D=D+1
+```
+
+Meaning:
+- `D=D+1`: The ALU computes `D + 1` and stores the result back in the `D` register (equivalent to `D++`).
+
+**3. Setting D to the value of RAM[17] (Memory Read):**
+Accessing a memory register is a two-step process. The target address must first be selected in the `A` register, which automatically references that register as `M`:
+```text
+// D=RAM[17]
+@17
+D=M
+```
+
+Meaning:
+- `@17`: Selects address `17` in the `A` register. The selected memory cell `M` now refers to `RAM[17]`.
+- `D=M`: Copies the value stored in the selected memory cell `M` (`RAM[17]`) into the `D` register.
+
+**4. Setting RAM[17] to D (Memory Write):**
+To write the value of the `D` register into memory, select the target address first, and then write the value of `D` to `M`:
+```text
+// RAM[17]=D
+@17
+M=D
+```
+
+Meaning:
+- `@17`: Selects address `17` in the `A` register. The selected memory cell `M` now refers to `RAM[17]`.
+- `M=D`: Writes the value of the `D` register into the selected memory cell `M` (`RAM[17]`).
+
+**5. Setting RAM[17] to a Constant (10):**
+This requires a combination of constant loading and memory writing:
+```text
+// RAM[17]=10
+@10
+D=A
+@17
+M=D
+```
+
+Meaning:
+- `@10`: Sets the `A` register to `10`.
+- `D=A`: Copies `10` into the `D` register.
+- `@17`: Selects address `17` in the `A` register. The selected memory cell `M` now refers to `RAM[17]`.
+- `M=D`: Writes the value of the `D` register (`10`) into `RAM[17]`.
+
+**6. Copying RAM[5] to RAM[3]:**
+Since the Hack architecture cannot read and write from two different memory addresses in a single step, copying memory requires using the `D` register as an intermediary:
+```text
+// RAM[3]=RAM[5]
+@5
+D=M
+@3
+M=D
+```
+
+Meaning:
+- `@5`: Selects address `5` in the `A` register. The selected memory cell `M` now refers to `RAM[5]`.
+- `D=M`: Copies the value of `RAM[5]` into the `D` register.
+- `@3`: Selects address `3` in the `A` register. The selected memory cell `M` now refers to `RAM[3]`.
+- `M=D`: Writes the value of the `D` register (the copied value of `RAM[5]`) into `RAM[3]`.
+
+![](media/slides/chapter-4/chapter4-slide-42-memory-manipulation.png)
+*Typical register and memory manipulation operations in the Hack assembly language, demonstrating the two-step select-and-operate pattern.*
+
+###### Predefined Symbols and Styling Conventions
+The Hack language defines 16 virtual registers, `R0` through `R15`, mapped to RAM addresses `0` through `15`. 
+
+Using virtual register symbols improves code readability. Consider the contrast:
+- `@5`: The programmer must inspect the subsequent code to know whether `5` is a literal constant (for computation) or a memory address.
+- `@R5`: The syntax explicitly signals to the reader that the programmer is addressing data memory register `5`.
+
+**Case-Sensitivity Warning:**
+Predefined symbols and assembly mnemonics are strictly case-sensitive:
+- `R5` is a predefined symbol mapping to address `5`.
+- `r5` is treated as a user-defined symbol, which the assembler will bind to a variable in memory (starting at address 16). Misspelled symbols are a common source of bugs that generate no compiler/assembler errors.
+
+##### 4.3.2 Example 1: Basic Arithmetic and Program Termination
+
+The first program example adds the values of the first two RAM registers, adds `17` to the sum, and stores the result in the third RAM register:
+```text
+RAM[2] = RAM[0] + RAM[1] + 17
+```
+
+Before executing, the input values must be loaded into `RAM[0]` (represented by `R0`) and `RAM[1]` (represented by `R1`).
 
 ![](media/figure_4.6.png)
-
 **Figure 4.6** A Hack assembly program that computes a simple arithmetic expression.
 
-This figure is a good first full-program example because every line has an obvious role.
+![](media/slides/chapter-4/chapter4-slide-88-add-program.png)
+*Line-by-line implementation of the arithmetic addition program Add.asm.*
 
-It is mostly just:
-
+###### Add Program Pseudocode
 ```text
-read value
-read another value
-compute
-store result
-stop safely
+R2 = R0 + R1 + 17
 ```
 
-This example also teaches an important discipline:
+###### Add Program Implementation
+Here is the full symbolic assembly program for `Add.asm`:
 
 ```text
-end programs with an intentional infinite loop
+// Adds R2 = R0 + R1 + 17
+@R0
+D=M
+
+@R1
+D=D+M
+
+@17
+D=D+A
+
+@R2
+M=D
+
+(END)
+@END
+0;JMP
 ```
 
-Otherwise the CPU keeps fetching whatever bits happen to come after the program.
+Meaning:
+- `@R0`: Selects the address mapping to virtual register `R0` (address `0`) in the `A` register. `M` refers to `RAM[0]`.
+- `D=M`: Copies the value of `RAM[0]` into the `D` register.
+- `@R1`: Selects the address mapping to virtual register `R1` (address `1`) in the `A` register. `M` refers to `RAM[1]`.
+- `D=D+M`: Computes `D + M` (i.e., `RAM[0] + RAM[1]`) and stores the sum in the `D` register.
+- `@17`: Sets the `A` register to the constant `17`.
+- `D=D+A`: Computes `D + A` (i.e., the sum in `D` plus the constant `17`) and stores the result back in the `D` register.
+- `@R2`: Selects the address mapping to virtual register `R2` (address `2`) in the `A` register. `M` refers to `RAM[2]`.
+- `M=D`: Writes the final sum in the `D` register into `RAM[2]`.
+- `(END)`: Declares a label `END` representing the ROM address of the next instruction.
+- `@END`: Preloads the address of the label `END` into the `A` register.
+- `0;JMP`: Execution jumps unconditionally to the address in `A` (`END`), trapping the computer in a safe infinite loop.
 
-The course makes this even more explicit as a best practice: Hack has no real "stop" instruction here, so ending in a deliberate infinite loop keeps execution under control instead of falling into unintended instructions.
+###### Safe Program Termination (Infinite Loop)
+A physical computer never stops executing instructions; it continues sequentially step-by-step. If a program terminates without an explicit control instruction, the Program Counter (`PC`) will continue to increment, and the CPU will fetch whatever random values happen to occupy the subsequent ROM addresses.
 
-**Example 2** revisits the summation program from figure 4.4.
+This behavior creates a security vulnerability known as a **NOP slide**. If a malicious program is placed downstream in the ROM, the CPU will eventually execute its way into it. To prevent this and safely terminate execution, every Hack program should end in a deliberate infinite loop under the programmer's control, such as `(END)` followed by `@END 0;JMP`.
 
-Now the point is not just what it computes, but how to design such code.
+![](media/slides/chapter-4/chapter4-slide-107-terminate-program.png)
+*Best practice illustration showing program termination using an infinite loop loop.*
 
-The recommended workflow is:
+##### 4.3.3 Example 1.5: Conditional Branching (Signum)
 
+To illustrate branching (flow control) in the Hack machine language, consider the Signum function:
 ```text
-write goto-style pseudocode
-trace it on paper
-make sure the logic is right
-translate it into assembly
+if RAM[0] >= 0 then RAM[1] = 1
+else RAM[1] = -1
 ```
 
-This is one of the most important learning habits in the chapter.
+High-level structured constructs like `if-else` do not exist at the hardware level. The CPU can only execute instructions sequentially, or perform a conditional jump.
 
-Assembly is too error-prone to improvise comfortably.
-
-It is far safer to derive it from a clearer intermediate plan.
-
-**Example 3** explains array processing using pointers.
-
-High-level code like:
-
+###### Signum Program Pseudocode
 ```text
-for (i = 0; i < n; i++) {
-    do something with arr[i];
+// High-level:
+if (R0 >= 0) {
+    R1 = 1;
+} else {
+    R1 = -1;
 }
+
+// Low-level (Goto-style):
+    if (R0 >= 0) goto POS;
+    R1 = -1;
+    goto END;
+POS:
+    R1 = 1;
+END:
+    infinite loop;
 ```
 
-has no direct array abstraction in machine language.
-
-Instead, the program works with addresses.
-
-The crucial idea is:
+###### Signum Program Implementation
+Here is the full symbolic assembly program for `Signum.asm`, which implements this branch structure:
 
 ```text
-a variable can hold an address
+// Program: Signum (R0 represents input)
+// if R0 >= 0 then R1 = 1
+// else R1 = -1
+
+// if R0 >= 0 goto POS
+@R0
+D=M
+@POS
+D;JGE
+
+// R1 = -1
+@R1
+M=-1
+// goto END
+@END
+0;JMP
+
+(POS)
+// R1 = 1
+@R1
+M=1
+
+(END)
+@END
+0;JMP
 ```
 
-If `x = 523`, then:
+Meaning:
+- `@R0`: Selects `RAM[0]` (containing the input). `M` refers to `RAM[0]`.
+- `D=M`: Copies the value of `RAM[0]` into the `D` register.
+- `@POS`: Preloads the address of label `POS` into the `A` register.
+- `D;JGE`: Jumps to the address in `A` (`POS`) if the value in `D` is greater than or equal to `0` ($D \ge 0$).
+- `@R1`: Selects `RAM[1]`. `M` refers to `RAM[1]`.
+- `M=-1`: Sets `RAM[1]` to `-1` (executes only when the jump is not taken).
+- `@END`: Preloads the address of label `END` into the `A` register.
+- `0;JMP`: Jumps unconditionally to `END` to bypass the positive-branch block.
+- `(POS)`: Declares a label `POS` representing the address of the positive-branch block.
+- `@R1`: Selects `RAM[1]`. `M` refers to `RAM[1]`.
+- `M=1`: Sets `RAM[1]` to `1`.
+- `(END) @END 0;JMP`: Traps execution in a termination loop (see Section 4.3.2).
+
+![](media/slides/chapter-4/chapter4-slide-104-signum-branching.png)
+*Detailed visual layout of Signum.asm symbolic assembly code alongside its goto-style pseudocode and target memory indices.*
+
+##### 4.3.4 Example 1.7: Variables and Swapping (Flip)
+
+A symbolic variable is an abstraction of a data container that has a name and stores a 16-bit value. High-level languages support complex types, but the Hack machine language operates on a single type: a 16-bit word represented by a single register in the data memory (RAM).
+
+To introduce variables, consider a program designed to swap (flip) the values of `RAM[0]` (represented by `R0`) and `RAM[1]` (represented by `R1`). To accomplish this swap, the program uses a temporary working variable named `temp`.
+
+###### Flip Program Pseudocode
+```text
+temp = R0;
+R0 = R1;
+R1 = temp;
+```
+
+###### Flip Program Implementation
+Here is the full symbolic assembly program for `Flip.asm`:
 
 ```text
-x = 17   -> change x itself
-*x = 17  -> change RAM[523]
+// Program: Flip (swaps values of RAM[0] and RAM[1])
+// Usage: Enter values in RAM[0] and RAM[1]
+
+// temp = RAM[0]
+@R0
+D=M
+@temp
+M=D
+
+// RAM[0] = RAM[1]
+@R1
+D=M
+@R0
+M=D
+
+// RAM[1] = temp
+@temp
+D=M
+@R1
+M=D
+
+// Infinite loop termination
+(END)
+@END
+0;JMP
 ```
 
-In Hack style, pointer work is typically expressed by first computing an address into `A` and then acting on `M`.
+Meaning:
+- `@R0`: Selects `RAM[0]` (containing the first input). `M` refers to `RAM[0]`.
+- `D=M`: Copies the value of `RAM[0]` into the `D` register.
+- `@temp`: Declares the variable `temp`. Since this is a user-defined symbol with no matching label declaration `(temp)`, the assembler treats it as a variable. By contract, the assembler assigns variables to the next available RAM register starting at address `16`. Thus, `@temp` resolves to `@16`, and `M` refers to `RAM[16]`.
+- `M=D`: Writes the value of `RAM[0]` stored in `D` into `RAM[16]` (`temp = RAM[0]`).
+- `@R1`: Selects `RAM[1]` (containing the second input). `M` refers to `RAM[1]`.
+- `D=M`: Copies the value of `RAM[1]` into the `D` register.
+- `@R0`: Selects `RAM[0]`. `M` refers to `RAM[0]`.
+- `M=D`: Overwrites `RAM[0]` with the value in `D` (the value of `RAM[1]`).
+- `@temp`: Selects the variable `temp` (resolved to address `16`). `M` refers to `RAM[16]`.
+- `D=M`: Copies the value of `temp` (`RAM[16]`) into the `D` register.
+- `@R1`: Selects `RAM[1]`. `M` refers to `RAM[1]`.
+- `M=D`: Overwrites `RAM[1]` with the value in `D` (the original value of `RAM[0]` stored in `temp`).
+- `(END) @END 0;JMP`: Traps execution in a termination loop (see Section 4.3.2).
+
+![](media/slides/chapter-4/chapter4-slide-79-variables.png)
+*Typical compilation preview showing symbolic variable mappings (such as sum, x, and n) resolving to sequential RAM registers.*
+
+###### Variable Allocation Contract and Relocatable Code
+The translation and allocation of variables follow a strict contract:
+1. **Unlabeled Symbols as Variables**: A reference to a symbol that has no corresponding label declaration `(Symbol)` is treated by the assembler as a user-defined variable.
+2. **Sequential RAM Allocation**: Variables are dynamically allocated to sequential RAM data locations starting at address `16` (e.g., `temp` resolves to `16`, and any subsequent variables will resolve to `17`, `18`, etc.).
+3. **Relocatable Machine Code**: Because symbolic labels and variables avoid hardcoding specific memory offsets, compiled symbolic programs are **relocatable**. A loader program can load the executable code anywhere in ROM and assign variables to any free block of RAM, which is essential for multi-process multitasking operating systems.
+
+##### 4.3.5 Example 2: Summation Loop
+
+The summation program computes the sum $1 + 2 + 3 + \dots + n$ for a given value *n*, putting the input in `RAM[0]` and the output in `RAM[1]`.
+
+To write nontrivial assembly programs, the recommended workflow is:
+1. Write goto-style pseudocode first.
+2. Trace it on paper to verify the logic.
+3. Translate each pseudo-instruction into assembly instructions.
+
+###### Summation Program Pseudocode
+```text
+// High-level:
+i = 1;
+sum = 0;
+while (i <= R0) {
+    sum = sum + i;
+    i = i + 1;
+}
+R1 = sum;
+
+// Low-level (Goto-style):
+    i = 1;
+    sum = 0;
+LOOP:
+    if (i > R0) goto STOP;
+    sum = sum + i;
+    i = i + 1;
+    goto LOOP;
+STOP:
+    R1 = sum;
+```
+
+###### Summation Program Implementation
+Here is the full symbolic assembly program for `Sum1ToN.asm`, which implements this loop structure:
+
+```text
+// Program: Sum1ToN (R0 represents N)
+// Computes R1 = 1 + 2 + 3 + ... + R0
+// Usage: put a value >= 1 in R0
+
+// i = 1
+@i
+M=1
+
+// sum = 0
+@sum
+M=0
+
+(LOOP)
+// if (i > R0) goto STOP
+@i
+D=M
+@R0
+D=D-M
+@STOP
+D;JGT
+
+// sum = sum + i
+@sum
+D=M
+@i
+D=D+M
+@sum
+M=D
+
+// i = i + 1
+@i
+M=M+1
+
+// goto LOOP
+@LOOP
+0;JMP
+
+(STOP)
+// R1 = sum
+@sum
+D=M
+@R1
+M=D
+
+// infinite loop
+(END)
+@END
+0;JMP
+```
+
+Meaning:
+- `@i`: Selects address of variable `i` (which the assembler allocates to `RAM[16]`). `M` refers to `RAM[16]`.
+- `M=1`: Writes the constant `1` to `RAM[i]`.
+- `@sum`: Selects address of variable `sum` (allocated to `RAM[17]`). `M` refers to `RAM[17]`.
+- `M=0`: Writes the constant `0` to `RAM[sum]`.
+- `(LOOP)`: Declares a label `LOOP` representing the ROM address of the next instruction (the start of the loop condition).
+- `@i`: Selects address of variable `i`. `M` refers to `RAM[i]`.
+- `D=M`: Copies the value of `i` to the `D` register.
+- `@R0`: Selects `RAM[0]` (containing the input constant $N$). `M` refers to `RAM[0]`.
+- `D=D-M`: Subtracts the value of `RAM[0]` from the `D` register (`D = i - N`).
+- `@STOP`: Preloads the address of the label `STOP` into the `A` register.
+- `D;JGT`: Jumps to the address in `A` (`STOP`) if the subtraction result is positive (`D > 0`, which means `i > N`).
+- `@sum`: Selects address of variable `sum`. `M` refers to `RAM[sum]`.
+- `D=M`: Copies `sum` into the `D` register.
+- `@i`: Selects address of variable `i`. `M` refers to `RAM[i]`.
+- `D=D+M`: Adds the value of `i` to `D` (`D = sum + i`).
+- `@sum`: Selects address of variable `sum`. `M` refers to `RAM[sum]`.
+- `M=D`: Overwrites the variable `sum` with the new accumulated sum in `D`.
+- `@i`: Selects address of variable `i`. `M` refers to `RAM[i]`.
+- `M=M+1`: Increments the variable `i` directly by 1.
+- `@LOOP`: Preloads the address of label `LOOP` into the `A` register.
+- `0;JMP`: Jumps unconditionally back to the start of the loop.
+- `(STOP)`: Declares a label `STOP` representing the address of the loop exit block.
+- `@sum`: Selects address of variable `sum`. `M` refers to `RAM[sum]`.
+- `D=M`: Copies the final accumulated sum into the `D` register.
+- `@R1`: Selects `RAM[1]` (the output register). `M` refers to `RAM[1]`.
+- `M=D`: Writes the final sum in `D` into `RAM[1]`.
+- `(END) @END 0;JMP`: Traps execution in a termination loop (see Section 4.3.2).
+
+![](media/slides/chapter-4/chapter4-slide-113-sum1ton-assembly.png)
+*Detailed visual layout of Sum1ToN.asm symbolic assembly code alongside its loop pseudocode roadmap.*
+
+###### Execution Trace Table (N=3)
+This trace table demonstrates the values of key variables and registers after each iteration when inputs are set to $N=3$ (i.e., `R0 = 3`):
+
+| Iteration | Step / Line | Register `D` | Variable `i` | Variable `sum` | Register `R1` (Result) | Action |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **Initial** | Before Loop | 0 | 1 | 0 | 0 | Initialize `i = 1`, `sum = 0` |
+| **1** | Loop Check | $1 - 3 = -2$ | 1 | 0 | 0 | $1 \le 3$, loop continues |
+| | Loop Body | 1 | 1 | $0 + 1 = 1$ | 0 | Add `i` to `sum`, increment `i = 2` |
+| **2** | Loop Check | $2 - 3 = -1$ | 2 | 1 | 0 | $2 \le 3$, loop continues |
+| | Loop Body | 2 | 2 | $1 + 2 = 3$ | 0 | Add `i` to `sum`, increment `i = 3` |
+| **3** | Loop Check | $3 - 3 = 0$ | 3 | 3 | 0 | $3 \le 3$, loop continues |
+| | Loop Body | 3 | 3 | $3 + 3 = 6$ | 0 | Add `i` to `sum`, increment `i = 4` |
+| **4** | Loop Check | $4 - 3 = 1$ | 4 | 6 | 0 | $4 > 3$, jump to `STOP` |
+| **Final** | Termination | 6 | 4 | 6 | 6 | Write `sum` to `R1`, enter `(END)` loop |
+
+###### Assembler Symbolic Resolution Rules
+When an assembler processes this symbolic code:
+1. **Labels (`(LOOP)`, `(STOP)`, `(END)`)**: Resolved to instruction ROM addresses. They act as placeholders mapping to the index of the next instruction and generate no physical bits in the compiled `.hack` file.
+2. **Variables (`i`, `sum`)**: Recognized by the absence of matching label declarations. The assembler allocates variables sequentially starting at data RAM address `16`. Thus, references to `@i` and `@sum` resolve to `@16` and `@17`.
+3. **Relocatability**: Symbolic labels enable **relocatable code**. Since jump targets and variable storage offsets are calculated dynamically by the assembler/loader rather than hardcoded, the compiler can relocate this program to any ROM address range without breaking jump pointers.
+
+##### 4.3.6 Example 3: Array Processing and Pointers
+
+High-level languages provide abstraction objects like arrays, enabling indexing expressions like `arr[i]`. At the machine language level, this abstraction is lost. The CPU only recognizes data memory as a flat, contiguous sequence of registers. An array is represented by:
+1. A **base address**: The physical RAM address of the first array element (`arr[0]`).
+2. A **length** (`n`): The number of registers reserved for the array.
+
+To manipulate array elements dynamically (e.g. `arr[i] = -1`), low-level programs use variables that store memory addresses. A variable that stores an address is called a **pointer**.
+
+###### Pointer Demo Program Pseudocode
+```text
+// High-level:
+i = 0;
+while (i < R1) {
+    RAM[R0 + i] = -1;
+    i = i + 1;
+}
+
+// Low-level (Goto-style):
+    i = 0;
+LOOP:
+    if (i == R1) goto END;
+    RAM[R0 + i] = -1;
+    i = i + 1;
+    goto LOOP;
+END:
+```
+
+###### Array Processing Program Implementation
+Here is the full symbolic assembly program for `PointerDemo.asm`. It sets the first `n` registers of the memory block starting at the base address `base` to `-1`:
+```text
+// Program: PointerDemo.asm
+// Starting at the address stored in R0,
+// sets the first R1 words to -1
+// Inputs: R0 (base address), R1 (n)
+
+// i = 0
+@i
+M=0
+
+(LOOP)
+// if (i == R1) goto END
+@i
+D=M
+@R1
+D=D-M
+@END
+D;JEQ
+
+// RAM[R0 + i] = -1
+@R0
+D=M
+@i
+A=D+M
+M=-1
+
+// i = i + 1
+@i
+M=M+1
+
+// goto LOOP
+@LOOP
+0;JMP
+
+(END)
+@END
+0;JMP
+```
+
+Meaning:
+- `@i`: Selects variable `i` (loop counter, allocated to `RAM[16]`). `M` refers to `RAM[16]`.
+- `M=0`: Initializes the loop index `i = 0`.
+- `(LOOP)`: Declares a label marking the loop start.
+- `@i`: Selects variable `i`. `M` refers to `RAM[i]`.
+- `D=M`: Copies the current index `i` into the `D` register.
+- `@R1`: Selects `RAM[1]` (which holds `n`, the size of the array). `M` refers to `RAM[1]`.
+- `D=D-M`: Subtracts `n` from `i` (`D = i - n`).
+- `@END`: Preloads the termination loop label `END`.
+- `D;JEQ`: Jumps to `END` if `D == 0` (meaning `i == n`).
+- `@R0`: Selects `RAM[0]` (which holds the array base address). `M` refers to `RAM[0]`.
+- `D=M`: Copies the array base address into `D`.
+- `@i`: Selects the variable `i`. `M` refers to `RAM[i]`.
+- `A=D+M`: Computes the target address `base_address + index` and stores it directly in the address register `A`.
+- `M=-1`: Dereferences the pointer: writes `-1` (representing 16 set bits) into `RAM[A]` (which points to `arr[i]`).
+- `@i`: Selects variable `i`. `M` refers to `RAM[i]`.
+- `M=M+1`: Increments the loop counter `i = i + 1`.
+- `@LOOP`: Preloads loop label `LOOP`.
+- `0;JMP`: Jumps unconditionally back to the loop start.
+- `(END) @END 0;JMP`: Traps execution in a termination loop (see Section 4.3.2).
+
+![](media/slides/chapter-4/chapter4-slide-132-pointer-demo.png)
+*Detailed visual layout of PointerDemo.asm symbolic assembly code alongside its goto-style pseudocode and target memory indices.*
 
 ![](media/figure_4.7.png)
-
 **Figure 4.7** Array processing example, using pointer-based access to array elements.
 
-The heart of the figure is address computation.
+###### Pointer Manipulation Mechanics
+- **Dereferencing**: In the Hack architecture, accessing a memory cell via a pointer is a two-step process: first, the pointer address arithmetic is computed and loaded into the `A` register, which automatically designates `M` as the dereferenced cell `RAM[A]`.
+- **Compiling ADT/Objects**: As compilers compile high-level objects, they reduce array subscription (`arr[i]`) and object attribute lookups (`obj.field`) down to exactly this primitive pointer arithmetic sequence: `A = base_address + offset` followed by a read/write on `M`.
 
-The program does not ask for `arr[i]` directly.
+##### 4.3.7 Input/Output Programming
 
-It computes the address of that element, puts that address into `A`, and then uses `M` to access the selected memory word.
+Hack programs communicate with peripheral hardware devices using **memory-mapped I/O**. Control register states and data streams are mapped directly to predefined RAM address blocks, allowing standard register memory instructions to control hardware devices.
 
-This small pattern is the seed of much richer high-level behavior.
+###### Screen Memory Mapping (Rectangle Drawing)
+The physical display is a 256-row by 512-column grid of monochrome pixels. It maps to an 8K block of RAM starting at address `16384` (`SCREEN`).
+- Each row of 512 pixels is mapped to 32 consecutive 16-bit registers ($32 \times 16 = 512$ pixels).
+- The pixel at column `col` and row `row` maps to the `col % 16` bit of the register at:
+$$\text{Address} = \text{SCREEN} + 32 \times \text{row} + \frac{\text{col}}{16}$$
 
-Later, compilers will reduce array indexing, field access, and many variable manipulations to exactly this sort of address arithmetic plus `M` access.
+To draw a 16-pixel wide, `R0` rows high solid black rectangle at the top-left corner of the screen, we write `-1` (all 16 bits set to 1) to consecutive row-starts. Each row-start is offset by exactly 32 words from the previous one.
+
+###### Rectangle Program Pseudocode
+```text
+// High-level:
+addr = SCREEN;
+n = R0;
+i = 0;
+while (i < n) {
+    RAM[addr] = -1;  // Draw 16 black pixels on current row
+    addr = addr + 32; // Jump to next row start
+    i = i + 1;
+}
+
+// Low-level (Goto-style):
+    addr = SCREEN;
+    n = R0;
+    i = 0;
+LOOP:
+    if (i == n) goto END;
+    RAM[addr] = -1;
+    addr = addr + 32;
+    i = i + 1;
+    goto LOOP;
+END:
+```
+
+###### Rectangle Program Implementation
+Here is the full symbolic assembly program for `Rectangle.asm`:
+```text
+// Program: Rectangle (draws a 16-pixel wide, R0 rows high rectangle at top left)
+// Input: R0 (number of rows)
+
+// addr = SCREEN
+@SCREEN
+D=A
+@addr
+M=D
+
+// n = R0
+@R0
+D=M
+@n
+M=D
+
+// i = 0
+@i
+M=0
+
+(LOOP)
+// if (i == n) goto END
+@i
+D=M
+@n
+D=D-M
+@END
+D;JEQ
+
+// RAM[addr] = -1 (draw 16 black pixels)
+@addr
+A=M
+M=-1
+
+// addr = addr + 32 (next row)
+@32
+D=A
+@addr
+M=D+M
+
+// i = i + 1
+@i
+M=M+1
+
+@LOOP
+0;JMP
+
+(END)
+@END
+0;JMP
+```
+
+Meaning:
+- `@SCREEN`: Selects the predefined constant `SCREEN` (address `16384`).
+- `D=A`: Copies the address `16384` into the `D` register.
+- `@addr`: Selects the user variable `addr` (pointer to screen memory, allocated to `RAM[16]`). `M` refers to `RAM[16]`.
+- `M=D`: Initializes `addr = 16384` (the start of the screen memory map).
+- `@R0`: Selects `RAM[0]` (containing the row-count input). `M` refers to `RAM[0]`.
+- `D=M`: Copies the row-count into `D`.
+- `@n`: Selects variable `n` (allocated to `RAM[17]`). `M` refers to `RAM[17]`.
+- `M=D`: Saves the row count in variable `n`.
+- `@i`: Selects loop counter variable `i` (allocated to `RAM[18]`). `M` refers to `RAM[18]`.
+- `M=0`: Initializes the counter `i = 0`.
+- `@i`: Selects variable `i`. `M` refers to `RAM[i]`.
+- `D=M`: Copies `i` into `D`.
+- `@n`: Selects variable `n`. `M` refers to `RAM[n]`.
+- `D=D-M`: Subtracts `n` from `i` (`D = i - n`).
+- `@END`: Preloads the label `END`.
+- `D;JEQ`: Jumps to `END` if `i == n` (meaning the rectangle is complete).
+- `@addr`: Selects pointer variable `addr`. `M` refers to `RAM[addr]`.
+- `A=M`: Loads the memory address stored in `addr` (the target screen memory location) into the address register `A`.
+- `M=-1`: Writes `-1` (16 binary 1s) to the selected screen memory register, drawing 16 black pixels on that row.
+- `@32`: Sets `A` to the row word offset `32`.
+- `D=A`: Copies `32` into the `D` register.
+- `@addr`: Selects pointer variable `addr`. `M` refers to `RAM[addr]`.
+- `M=D+M`: Increments the pointer `addr` by `32` words, targeting the start of the next row.
+- `@i`: Selects variable `i`. `M` refers to `RAM[i]`.
+- `M=M+1`: Increments the loop index by 1.
+- `@LOOP`: Preloads label `LOOP`.
+- `0;JMP`: Jumps unconditionally back to the start of the loop.
+- `(END) @END 0;JMP`: Traps execution in a termination loop (see Section 4.3.2).
+
+###### Keyboard Memory Mapping
+The physical keyboard maps to a single 16-bit register at address `24576` (`KBD`).
+- When no key is pressed, the register value is `0`.
+- When a key is pressed, its physical scan code (e.g. space = 32, up arrow = 131, 'q' = 113) is loaded into the register.
+
+###### Keyboard Checking Pseudocode
+```text
+if (RAM[KBD] == 113) goto END;
+```
+
+###### Keyboard Checking Implementation
+To detect keypresses, low-level programs poll the keyboard register. The following symbolic assembly segment sets register `D` to the currently pressed scan code and branches to `END` if the user presses the 'q' key (character code `113`):
+
+```text
+// Set D to the scan code of the pressed key
+@KBD
+D=M
+
+// If key is 'q' (113), goto END
+@113
+D=D-A
+@END
+D;JEQ
+```
+
+Meaning:
+- `@KBD`: Selects the predefined constant `KBD` (address `24576`).
+- `D=M`: Copies the scan code of the currently pressed key from `RAM[24576]` into register `D`.
+- `@113`: Sets the `A` register to the character code constant `113` ('q').
+- `D=D-A`: Subtracts `113` from the scan code stored in `D` (`D = scan_code - 113`).
+- `@END`: Preloads the label `END`.
+- `D;JEQ`: Jumps to the termination label `END` if the pressed key is 'q' (`D == 0`).
+
+![](media/slides/chapter-4/chapter4-slide-184-keyboard-checking.png)
+*Detailed visual layout showing how to read the KBD register and branch based on character codes.*
 
 #### 4.4 Project
 
-Project 4 is different from the first three projects.
+The fourth project provides hands-on experience with low-level assembly programming on the Hack hardware platform. Instead of building HDL chips, the task is to write symbolic machine language programs and test them in the CPU Emulator.
 
-You do not build HDL chips here.
+##### 4.4.1 Multiplication (`Mult.asm`)
 
-You write programs.
+The Hack computer does not feature a hardware multiplier in its ALU. Therefore, multiplication must be realized in software. The goal of this program is to compute the product of two numbers using repeated addition.
 
-The objective is to get direct experience with low-level programming on the Hack platform.
+###### Program Interface Specification
+- **Inputs**: The input values are stored in memory registers `R0` and `R1` (i.e., `RAM[0]` and `RAM[1]`).
+- **Output**: The program computes the product and writes the result into `R2` (`RAM[2]`).
+- **Constraints**: Assume that $R0 \ge 0$, $R1 \ge 0$, and $R0 \times R1 < 32768$ (overflow checks are not required).
 
-The resources are:
+###### Multiplication Loop Strategy
+To multiply $R0 \times R1$, the program initializes the output `R2` to `0` and adds the value of `R0` to `R2` exactly `R1` times. 
 
+###### Multiplication Program Pseudocode
 ```text
-the CPU emulator in nand2tetris/tools
-the supplied test scripts in projects/04
+// High-level:
+R2 = 0;
+i = 0;
+while (i < R1) {
+    R2 = R2 + R0;
+    i = i + 1;
+}
+
+// Low-level (Goto-style):
+    R2 = 0;
+    i = 0;
+LOOP:
+    if (i == R1) goto END;
+    R2 = R2 + R0;
+    i = i + 1;
+    goto LOOP;
+END:
+    infinite loop;
 ```
 
-The project has two programs.
+###### Implementation Details
+- **Loop Counters**: Variable `i` (loop index) counts additions.
+- **Accruing Results**: The sum is built up incrementally in register `R2`.
+- **Termination**: Once `i == R1`, execution jumps to the termination loop.
+- **Optimization**: To minimize loop cycles, the loop can choose to add the larger input to `R2` the smaller input number of times.
 
-**Mult.asm**:
+![](media/slides/chapter-4/chapter4-slide-187-mult-program.png)
+*Typical register layout showing test inputs and comparison check outputs for the Mult.asm program.*
 
+##### 4.4.2 Input/Output Handling (`Fill.asm`)
+
+This program interacts with the computer's physical screen and keyboard maps, demonstrating how graphics and user interactions emerge from raw RAM writes.
+
+###### Program Behavioral Specification
+- The program runs an infinite polling loop listening to the keyboard at address `KBD`.
+- When a key is pressed (any key, scan code $> 0$), the program blackens the entire screen by writing `black` (value `-1`) to every register in the screen memory map.
+- When no key is pressed (scan code $== 0$), the program clears the screen by writing `white` (value `0`) to every register in the screen memory map.
+
+###### I/O Polling and Screen-Draw Strategy
+The screen memory map consists of 8192 registers starting at `SCREEN` (`16384`) up to `24575`. The program constantly reads `KBD` (`24576`). It chooses the fill value based on the scan code and runs a countdown loop from `SCREEN` to the end of the memory block, updating each register dynamically.
+
+###### Interactive Program Pseudocode
 ```text
-inputs  -> R0 and R1
-output  -> R2
-task    -> compute R0 * R1
+// High-level:
+while (true) {
+    state = (RAM[KBD] != 0) ? -1 : 0;
+    for (i = 0; i < 8192; i++) {
+        RAM[SCREEN + i] = state;
+    }
+}
+
+// Low-level (Goto-style):
+POLL:
+    if (RAM[KBD] != 0) goto BLACK;
+    state = 0; // white
+    goto DRAW;
+BLACK:
+    state = -1; // black
+DRAW:
+    addr = SCREEN;
+    i = 8192; // 32 words/row * 256 rows
+DRAW_LOOP:
+    if (i == 0) goto POLL;
+    RAM[addr] = state;
+    addr = addr + 1;
+    i = i - 1;
+    goto DRAW_LOOP;
 ```
 
-The assumptions are:
+###### Implementation Details
+- **Infinite Outer Loop**: The program never terminates; the inner loop loops back to `POLL` once screen writing finishes, resetting the countdown.
+- **Pointer Manipulation**: Address arithmetic `addr = addr + 1` moves the target register sequentially through the screen map.
 
+![](media/slides/chapter-4/chapter4-slide-190-fill-program.png)
+*Interactive specification layout illustrating key polling logic, screen memory map limits, and hardware-simulated behaviors.*
+
+##### 4.4.3 CPU Emulator and Assembly Cycle
+
+Symbolic assembly code cannot execute directly on hardware; it must be translated into binary bits. The CPU Emulator facilitates this cycle:
+
+###### Visual Emulator Interfaces
+The CPU Emulator GUI displays:
+- **ROM**: Instruction memory.
+- **RAM**: Data memory registers (including screen/keyboard mapping offsets).
+- **Control**: Values in registers `A`, `D`, the Program Counter `PC`, and ALU outputs.
+- **Visual Display**: Shows pixels rendered in real time from screen RAM writes.
+- **Keyboard Input**: Intercepts physical keyboard inputs and writes codes into `KBD`.
+
+###### The Assembly Translation Cycle
+1. **Source Code**: Write assembly code in a standard text editor and save it with the `.asm` extension.
+2. **On-the-Fly Assembly**: The CPU Emulator reads `.asm` source files directly and translates them into binary machine code (`.hack`) upon loading, highlighting line numbers for compile-time errors.
+3. **Execution & Inspection**: Step through instructions line-by-line, inspect register states, turn off animations for speed, and compare memory outputs against test cmp scripts.
+
+###### Technical Development Guidelines
+- **Case Sensitivity**: Symbolic labels and variables are strictly case-sensitive. `@sum` and `@Sum` refer to two completely independent registers.
+- **Styling Convention**: By convention, use lowercase for variables (e.g. `i`, `addr`, `sum`, `state`) and uppercase for labels (e.g. `(LOOP)`, `(END)`, `(BLACK)`). This allows immediate visual identification of user-defined symbols.
+- **Code Cleanliness**: Maintain proper indentation and document blocks of instructions with comments explaining high-level actions rather than repeating the assembly instructions.
+
+The Hack machine language is designed to be minimal and spartan, serving as a clean target for building a computer in a six-week hardware project. In this perspective, we contrast Hack with industrial machine languages and reflect on the nature of compiler translation and low-level programming.
+
+##### 4.5.1 Hack vs. Industrial Machine Languages
+
+Most modern processors (such as x86, ARM, or MIPS) feature instruction sets that are far richer and more complex than Hack. 
+
+###### Architectural Complexity Differences
+- **Rich Instruction Sets (CISC vs. RISC)**: Industrial architectures offer hundreds of instructions, including dedicated hardware operations for floating-point arithmetic, multiplication, division, and block memory transfers. Hack, by contrast, only supports basic 16-bit addition, subtraction, and bitwise logical operations. Any complex math (such as multiplication in `Mult.asm`) must be implemented in software.
+- **Register File Size**: Practical CPUs provide dozens of general-purpose registers to minimize memory accesses. Hack contains only two main user registers: `D` (data) and `A` (address/data).
+- **Variable-Width Instructions**: Many architectures use instructions of varying lengths (e.g., from 1 byte up to 15 bytes in x86) to squeeze operations and memory operands into a single step. Hack enforces a strict, fixed width of 16 bits for every instruction.
+
+###### The "1/2 Address" Concept
+In a typical 32-bit or 64-bit instruction, there are enough bits to encode both the operation code (opcode) and one or more memory address operands (e.g., `add D, 1015` or `load D, RAM[1013]`). 
+
+Because Hack instructions are only 16 bits wide, and a full memory address requires 15 bits, it is mechanically impossible to pack both an opcode and a memory address in a single instruction. Hack solves this by operating as a **1/2 address machine**:
+- **Step 1 (Set Address)**: An *A*-instruction (e.g., `@sum`) loads the target address into the `A` register.
+- **Step 2 (Operate)**: A *C*-instruction (e.g., `M=0`) performs the operation on the selected register `M` (which represents `RAM[A]`).
+
+This design creates the characteristic alternating rhythm of Hack assembly programs:
 ```text
-R0 >= 0
-R1 >= 0
-R0 * R1 < 32768
+A-instruction  -->  @addr
+C-instruction  -->  D=M
+A-instruction  -->  @sum
+C-instruction  -->  M=D
 ```
 
-The educational point is that multiplication is not a primitive Hack instruction.
+While this alternating pattern makes code longer, the assembler could easily support *macro-instructions* (such as `sum=0` or `goto LOOP`) and expand them into their corresponding two-instruction physical counterparts.
 
-So you must realize it in software, typically using repeated addition and a loop.
+##### 4.5.2 Syntax Differences: Algebraic vs. Prefix Mnemonics
 
-**Fill.asm**:
+The surface syntax of the Hack language is intentionally friendlier and more readable than conventional assembly languages.
 
-```text
-if a key is pressed     -> blacken the screen
-if no key is pressed    -> clear the screen
-```
+| Language / Operation | Hack Syntax (Algebraic) | Conventional Syntax (Prefix) |
+| :--- | :--- | :--- |
+| **Arithmetic Addition** | `D=D+M` | `add D, M` (or `add D, address`) |
+| **Memory Register Load** | `D=M` | `load D, M` (or `load D, address`) |
+| **Unconditional Jump** | `0;JMP` | `jmp label` |
 
-This program combines two machine-language ideas at once:
+###### Mnemonics as ALU Tokens
+In Hack, the algebraic expression `D=D+M` does not algebraically evaluate expressions like a high-level parser. Instead, the characters `D+M` are parsed as a single mnemonic token matching a specific 7-bit combination in the C-instruction's `comp` field. This token directly sets control lines on the ALU to compute the addition.
 
-```text
-poll KBD
-write across the SCREEN memory map
-```
+##### 4.5.3 The Role of Machine Language and Compilers
 
-It also teaches that visible graphics can emerge from plain RAM writes.
+In contemporary software engineering, developers do not write machine-level instructions by hand. 
 
-The chapter introduces the CPU emulator used for this work:
+###### High-Level Abstraction
+Programmers write code in high-level object-oriented or procedural languages (such as Java, C++, or Python). A **compiler** translates this code into binary machine language. To build a compiler, developers must fully understand the target machine language specification. In the second part of the course, we write a compiler that translates a high-level object-oriented language called *Jack* into Hack machine code.
 
-![](media/figure_4.8.png)
+###### Real-Time Optimization Exceptions
+The primary exception where developers inspect compiled machine code is in performance-critical, real-time, or resource-constrained embedded systems. Developers typically write in a middle-level language like C, compile it, and inspect the resulting assembly. If the compiled code is bloated, they rewrite the C source code to prompt the compiler to generate more efficient assembly sequences.
 
-**Figure 4.8** The CPU emulator, with a program loaded in the instruction memory (ROM) and some data in the data memory (RAM). The figure shows a snapshot taken during the program’s execution.
+##### 4.5.4 Spartan Simplicity and Turing Completeness
 
-This figure is important because it makes Chapter 4 concrete.
+The Hack machine language contains only two basic commands (*A*-instructions and *C*-instructions) and symbolic representation. Yet, this spartan design is **Turing-complete**. 
 
-You are no longer just describing instructions abstractly.
+Any computable algorithm written in any high-level language can be compiled down to run on the Hack platform. The simplicity of the underlying hardware does not limit its computational expressiveness. Sophisticated software emerges not from complex hardware primitives, but from stacking simple, expressive instructions into logical hierarchies.
 
-You can watch those instructions change machine state in real time.
+### Examples
 
-The emulator shows the state of:
-
-```text
-ROM
-RAM
-A
-D
-PC
-ALU
-screen
-keyboard input
-```
-
-One especially useful convenience is that the emulator can load both:
-
-```text
-.hack files
-.asm files
-```
-
-When given `.asm`, it assembles on the fly.
-
-So for this project, you do not need a separate assembler yet.
-
-Recommended workflow:
-
-```text
-write program
-load it into the CPU emulator
-run the supplied test
-fix errors
-repeat
-```
-
-The course also states some quality expectations for these programs: they should be short, efficient, elegant, and self-describing rather than merely correct.
-
-Practical warning:
-
-```text
-Hack assembly is case-sensitive
-```
-
-So `@foo` and `@Foo` are different symbols.
-
-#### 4.5 Perspective
-
-Hack machine language is intentionally small.
-
-Real machine languages often have:
-
-```text
-more instruction formats
-more registers
-more addressing modes
-more operations
-more data types
-```
-
-Hack keeps only what the course needs.
-
-Its surface syntax is also friendlier than many industrial assembly languages.
-
-For example:
-
-```text
-D=D+M
-```
-
-looks algebraic and readable.
-
-But the important mental correction is this:
-
-```text
-D+M is not parsed as algebra by the machine
-it is a mnemonic naming one allowed ALU operation
-```
-
-The deeper architectural limitation is instruction width.
-
-Hack uses 16-bit instructions, and a full memory address already needs 15 bits.
-
-So one instruction cannot conveniently hold both:
-
-```text
-a rich operation code
-a full memory address
-```
-
-That is why Hack behaves like a kind of:
-
-```text
-half-address machine
-```
-
-Memory-oriented work usually needs two steps:
-
-```text
-use @xxx to choose an address
-use a C-instruction to act on it
-```
-
-This explains the characteristic Hack rhythm:
-
-```text
-A-instruction
-C-instruction
-A-instruction
-C-instruction
-...
-```
-
-If this feels repetitive, the chapter points out that a smarter assembler could support macro-instructions like:
-
-```text
-sum=0
-goto LOOP
-```
-
-and then expand them into ordinary Hack instructions.
-
-So the awkwardness is not a fundamental limit of computation.
-
-It is mostly a deliberate simplification of the language interface.
-
-The course closes with one more practical reminder: most programmers do not write machine-language programs directly.
-
-Usually they write high-level code and let a compiler generate machine code, only dropping closer to the machine in unusual cases like real-time or performance-critical work.
-
-Finally, the chapter closes by returning to the assembler.
-
-The assembler has two jobs:
-
-```text
-translate symbolic instructions into binary
-resolve symbols into real addresses
-```
-
-That translation process becomes the main subject of Chapter 6.

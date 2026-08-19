@@ -11,7 +11,7 @@ This folder tracks study progress through "The Elements of Computing Systems" (N
 
 ## Current Progress
 
-- `NOTES.md` contains the ongoing learning notes. Currently finished up to and including **1.3 Hardware Construction**.
+- `NOTES.md` contains the ongoing learning notes. Currently finished up to and including **Chapter 4 (Machine Language)**.
 - `projects/` currently includes Project 1, Project 2, and Project 3 notes.
 - We work subsection-by-subsection and only move on when the current subsection is fully clear.
 - Do not jump ahead or bulk-append full-book indexes unless the user explicitly asks for that exact operation.
@@ -22,13 +22,13 @@ The notes should read like clear teaching material, not like dense academic note
 
 Use this style consistently:
 
+- **Follow Book Structure Exactly**: Every section and subsection must follow the book's exact structural outline (using `The_Elements_of_Computing_Systems_2021.md` as the source of truth), preserving all headings, code blocks, and figure references, while enriching them with the video transcripts and lecture slide graphics.
 - Move from concrete implementation to abstraction step by step.
 - Prefer short paragraphs, explicit examples, and small code/text blocks.
 - Explain interfaces with input/control/output meanings.
 - Explain behavior with simple rules like `if load = 0: hold` and `if load = 1: store`.
 - Use construction ladders such as `DFF -> Bit -> Register -> RAM` when a chapter builds layers.
 - Include mental models after technical details when helpful.
-- Preserve all headings and relevant image references from the book subsection being covered.
 - Do not collapse explanations into vague prose; show how the mechanism works.
 - Put implementation links in each chapter's `Project` subsection, and link directly to the exact chip headings inside `projects/`.
 
@@ -42,7 +42,7 @@ In general (across all chapters), keep the notes in the same style as our Chapte
 - When showing any code-like snippet (HDL, assembly, pseudocode), follow it immediately with a `Meaning:` block that is line-by-line and explicitly states what changes.
 - For figures and program examples, explain by blocks (initialization, loop condition, loop body, increment/jump, termination) and use short pseudocode as a roadmap before diving into snippets.
 - Use tiny traces when helpful (one or two iterations, a few key state values) to make pointer-like or stateful behavior concrete.
-- Keep `NOTES.md` self-contained: do not add meta lines like `Sources:` or `Slides + transcript emphasis:` inside the notes.
+- Keep `NOTES.md` self-contained: do not add meta lines like `Sources:` or `Slides + transcript emphasis:` inside the notes. Never use phrasing that references the book, lectures, slides, transcripts, or video course directly (e.g., "in the accompanying lecture transcripts", "the lectures say", "the book states", "as explained in the lecture", "the slides show"). The content must be presented directly and objectively as part of the material itself.
 
 Hack-specific example of the above (only when relevant): `A` and `D` are registers; `M` is not a register, it means `RAM[A]`, and `A` is always one 16-bit value whose interpretation depends on the next instruction.
 
