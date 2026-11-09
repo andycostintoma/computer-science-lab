@@ -11,7 +11,7 @@ This folder tracks study progress through "The Elements of Computing Systems" (N
 
 ## Current Progress
 
-- `NOTES.md` contains the ongoing learning notes. Currently finished up to and including **Chapter 4 (Machine Language)**.
+- `NOTES.md` contains the ongoing learning notes. Currently finished up to and including **Section 5.1 (Computer Architecture Fundamentals)** in Chapter 5.
 - `projects/` currently includes Project 1, Project 2, and Project 3 notes.
 - We work subsection-by-subsection and only move on when the current subsection is fully clear.
 - Do not jump ahead or bulk-append full-book indexes unless the user explicitly asks for that exact operation.

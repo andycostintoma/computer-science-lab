@@ -5218,5 +5218,154 @@ The Hack machine language contains only two basic commands (*A*-instructions and
 
 Any computable algorithm written in any high-level language can be compiled down to run on the Hack platform. The simplicity of the underlying hardware does not limit its computational expressiveness. Sophisticated software emerges not from complex hardware primitives, but from stacking simple, expressive instructions into logical hierarchies.
 
-### Examples
+### 5 Computer Architecture
 
+> Make everything as simple as possible, but not simpler.
+> —Albert Einstein (1879–1955)
+
+This chapter marks the culmination of the hardware design journey. Chapters 1 through 3 constructed elementary combinational and sequential chips: Boolean logic gates, an Arithmetic Logic Unit (ALU), multi-bit registers, and hierarchical Random Access Memory (RAM). Chapter 4 established the Hack machine language—the target symbolic and binary instruction set used to program the hardware. 
+
+The task of computer architecture is to integrate these separate components into a unified, general-purpose computer capable of executing arbitrary programs. The resulting platform, named Hack, balances minimal hardware complexity with complete computational power: it uses a small set of simple chips, yet is fully Turing-complete and capable of running high-level object-oriented programs, graphics, animations, and interactive games.
+
+#### 5.1 Computer Architecture Fundamentals
+
+##### 5.1.1 The Stored Program Concept
+
+A non-computational physical machine is typically dedicated to a single, inflexible task: a mechanical watch only tracks time, and a washing machine only cleans clothes. Modifying its function requires physically disassembling and rewiring its mechanisms. 
+
+A general-purpose digital computer achieves universal flexibility through the **stored program concept**:
+- **Fixed Hardware Engine**: The physical computer consists of a fixed, static set of logic gates and registers capable of executing a small repertoire of elementary instructions (arithmetic, logic, memory transfers, and branching).
+- **Software as Data**: The sequence of instructions defining a program is not hardwired into physical circuits. Instead, program instructions are encoded as binary numbers and stored inside the computer's memory devices alongside data.
+- **Dynamic Reconfiguration**: To repurpose the machine from an interactive video game to a scientific simulation, no wires are changed. The operating system simply clears the memory and loads a new sequence of instruction words. The computer becomes whatever program currently resides in its memory.
+
+The theoretical foundation for this idea originated with Alan Turing's 1936 model of the **Universal Turing Machine**, demonstrating that a single abstract machine could simulate any other computable machine if supplied with its symbolic description. In 1945, John von Neumann and his collaborators translated this theoretical concept into practical engineering reality.
+
+##### 5.1.2 The von Neumann Architecture
+
+The **von Neumann architecture** is the foundational blueprint underlying almost all modern general-purpose computers.
+
+![](media/figure_5.1.png)
+**Figure 5.1** A generic von Neumann computer architecture.
+
+The architecture organizes hardware into four core functional blocks:
+1. **Central Processing Unit (CPU)**: Executes instructions, performs arithmetic and logic computations, manages internal high-speed registers, and directs data movement throughout the system.
+2. **Memory**: A unified linear address space that stores both program instructions (code) and operational data values.
+3. **Input Device**: Interfaces with the outside world to ingest external data (such as keystrokes, sensor readings, or network packets) into memory.
+4. **Output Device**: Emits computational results to the external world (such as screen pixels, audio signals, or network transmitters).
+
+###### Concrete Bus Architecture and Signal Flow
+At the physical silicon level, the CPU and Memory interact through dedicated bundles of wires called **buses**. A bus routes multi-bit binary signals between chips in synchronized parallel pulses.
+
+![](media/slides/chapter-5/chapter5-slide-18-bus-architecture.png)
+*High-level interconnection of CPU and Memory blocks via the data, address, and control buses.*
+
+The architecture relies on three primary buses:
+- **Data Bus**: A bidirectional highway carrying numeric values and operands between memory, CPU internal registers, and the ALU. When reading memory, data travels from RAM into the CPU; when writing memory, the ALU or a CPU register drives data into RAM.
+- **Address Bus**: A unidirectional pathway driven exclusively by the CPU to select which specific memory cell is accessed. The address bus routes addresses to memory for two distinct operations: specifying which instruction to read next, and specifying which data cell to read or write.
+- **Control Bus**: A network of dedicated individual wires carrying synchronization and command signals. It routes instruction opcodes to configure the ALU, transfers write-enable pulses (`load` bits) to registers and RAM, and feeds status condition flags (such as zero or negative flags) back into branching control logic.
+
+##### 5.1.3 Memory
+
+Computer memory can be analyzed from two distinct perspectives: physical structure and logical organization.
+
+###### Physical Structure: Random Access Memory
+Physically, memory is implemented as a linear sequence of addressable storage cells called **memory registers**, each holding an $n$-bit word (16 bits in the Hack platform). Every register is assigned a unique numerical index ($0, 1, 2, \dots, N-1$) known as its **address**.
+
+Memory access requires supplying an address to the chip's address input pins:
+- **Constant-Time Access**: The defining property of **Random Access Memory (RAM)** is that *any* arbitrarily chosen register can be accessed in identical, instantaneous time (within a single clock cycle), completely independent of the physical location of the cell or the total capacity of the memory unit.
+- **Read Operation**: The CPU places address $k$ on the address bus. The internal decoding logic of the RAM asserts the output lines of register $k$, making its value available on the data bus within the current clock cycle.
+- **Write Operation**: The CPU places address $k$ on the address bus, places value $v$ on the data bus, and asserts the memory's `load` control bit. At the next clock tick, register $k$ commits value $v$, overwriting its previous contents.
+
+###### Logical Organization: Data Memory vs. Instruction Memory
+Logically, the memory space serves two distinct roles:
+1. **Data Memory**: Stores the state variables, arrays, pointers, and objects used during computation. High-level variable manipulations (such as `x = y + 1` or array indexing `arr[i]`) are reduced by the compiler into reading from and writing to specific data memory registers.
+2. **Instruction Memory**: Stores the executable binary machine code of the program. Before execution begins, the compiled binary file is transferred from secondary storage (such as a disk or flash drive) into the instruction memory. During program execution, the CPU sequentially accesses instruction memory cells to retrieve instruction words.
+
+Architecturally, the mechanism used to load a program into memory from external storage is an external operating-system concern; once execution commences, the CPU assumes the program code is already residing in accessible memory.
+
+##### 5.1.4 Central Processing Unit
+
+The **Central Processing Unit (CPU)** is the computational centerpiece of the architecture. It is responsible for continuously fetching instructions from memory, decoding their meaning, executing the requested operations, and deciding which instruction to fetch next.
+
+The CPU contains three primary internal building blocks:
+- **Arithmetic Logic Unit (ALU)**: The raw computational engine. It accepts binary inputs from registers or memory and computes arithmetic operations (addition, subtraction) or bitwise logical operations (AND, OR, NOT). It also emits single-bit condition flags (e.g., zero flag `zr`, negative flag `ng`) indicating properties of the output.
+- **Internal Registers**: High-speed, on-chip storage cells that hold operands, addresses, and program state. Moving signals across external buses to off-chip RAM introduces physical propagation delays and bus contention. If the high-speed combinational ALU had to fetch every operand from external RAM, it would suffer from **processor starvation**—idling while waiting for sluggish memory lines. Placing a small bank of registers directly on the CPU silicon provides immediate, zero-latency access to active data.
+  - *Data Registers*: Store temporary values and intermediate arithmetic results.
+  - *Address Registers*: Store memory addresses to select target locations in RAM or ROM.
+  - *Program Counter (PC)*: A specialized register that stores the address of the next instruction to fetch and execute.
+- **Control Unit**: The decoding and dispatch logic. Machine instructions consist of packed bit fields (micro-codes). The control unit parses these fields and routes control signals across the chip: configuring the ALU's computation mode, enabling write-load lines on target registers, selecting multiplexor inputs, and evaluating branch conditions.
+
+###### The Fetch-Execute Cycle
+The CPU operates by repeating a continuous two-phase operational loop governed by the system clock:
+
+```text
+┌─────────────────────────────────────────────────────────────┐
+│                    Fetch-Execute Cycle                      │
+│                                                             │
+│  1. FETCH:                                                  │
+│     - Route Program Counter (PC) address to Program Memory. │
+│     - Read instruction word from memory output lines.       │
+│                                                             │
+│  2. EXECUTE:                                                │
+│     - Decode instruction bits into control signals.         │
+│     - Direct ALU computation on registers / memory data.    │
+│     - Store result in destination register(s) or RAM.       │
+│     - Update PC (increment by 1, or jump to target address).│
+└─────────────────────────────────────────────────────────────┘
+```
+
+###### The Memory Access Clash: Two-Cycle vs. Single-Cycle Architectures
+In a pure, classical von Neumann machine, instruction code and data share a single physical memory block. This introduces a structural hardware conflict known as the **von Neumann bottleneck**:
+- During the **Fetch phase**, memory must be addressed by the **Program Counter (PC)** to retrieve the next instruction.
+- During the **Execute phase**, the instruction may require reading or writing an operand in **Data Memory** (e.g., `D = RAM[address]`), requiring memory to be addressed by a data address.
+
+Because a standard RAM chip possesses only one set of address input pins and one set of data output pins, it cannot simultaneously access an instruction word and a data word at the same physical instant.
+
+Computer architectures resolve this conflict in one of two ways:
+
+**Approach 1: Two-Cycle, One-Memory Machine (Time-Multiplexing)**
+The CPU splits the execution of each instruction across two distinct clock sub-cycles:
+
+![](media/slides/chapter-5/chapter5-slide-28-twocycle-onememory.png)
+*A unified-memory architecture using multiplexing and an Instruction Register to resolve memory access conflicts over two cycles.*
+
+1. **Cycle 1 (Fetch)**: A hardware multiplexor routes the `PC` to the memory address input. The fetched instruction is routed through a demultiplexer and latched into an on-chip **Instruction Register (IR)**.
+2. **Cycle 2 (Execute)**: The address multiplexor switches to route the data address to memory. The CPU executes the instruction stored in the `IR`, reading or writing data memory via the ALU.
+- *Trade-off*: Requires only one physical memory block, but halves instruction execution throughput because every instruction requires two separate memory access cycles.
+
+**Approach 2: Single-Cycle, Two-Memory Machine (Harvard Architecture)**
+Instead of time-multiplexing a single memory block, the computer physically separates memory into two independent chips:
+
+![](media/slides/chapter-5/chapter5-slide-30-singlecycle-twomemory.png)
+*A Harvard architecture featuring physically separated instruction and data memory units, enabling simultaneous single-cycle operation.*
+
+- **Instruction Memory (ROM)**: Dedicated exclusively to program code. Addressed directly by the `PC` to emit the current instruction word.
+- **Data Memory (RAM)**: Dedicated exclusively to read/write program variables and memory maps. Addressed independently by the CPU's address register.
+- *Trade-off*: Requires two physical memory chips and distinct address spaces, but eliminates the memory bus conflict entirely. The CPU can fetch the next instruction from ROM while simultaneously reading or writing data in RAM, completing instructions in a single clock cycle. The Hack platform adopts this Harvard architecture variant.
+
+##### 5.1.5 Input and Output
+
+General-purpose computers must interact with a diverse ecosystem of external peripheral devices: keyboards, monitors, disk drives, network interfaces, microphones, and sensors. Each peripheral possesses unique mechanical, analog, or serial characteristics.
+
+To prevent computer architecture from being fragmented by hardware-specific peripheral implementations, computer systems employ **memory-mapped I/O**.
+
+###### Memory-Mapped I/O Abstraction
+Under memory-mapped I/O, the CPU does not implement specialized input/output instructions or dedicated peripheral buses. Instead:
+- Dedicated segments of the computer's regular RAM address space are assigned to specific I/O devices, acting as their **memory maps**.
+- Reading from or writing to an I/O device is performed using standard memory read and write operations. To the CPU, communicating with a peripheral is indistinguishable from manipulating an ordinary memory register.
+
+###### Interface Contracts: Screen and Keyboard
+1. **Output Mapping (Display Screen)**:
+   - A physical display screen is a two-dimensional grid of pixels (e.g., $512 \times 256$ pixels in Hack).
+   - The screen is serialized into a continuous, one-dimensional block of memory registers (the *Screen Memory Map*).
+   - Each memory bit directly controls the visual state of a single pixel on the physical monitor (e.g., `0` for white, `1` for black).
+   - An external video controller hardware circuit continuously scans this memory segment and refreshes the physical display screen (typically 30 to 60 times per second). Writing to a screen memory address immediately changes the pixels on the display without CPU involvement in the rasterization hardware.
+2. **Input Mapping (Keyboard)**:
+   - An input device like a keyboard is mapped to a single dedicated memory register (the *Keyboard Memory Map*).
+   - When a physical key is pressed, external hardware interface logic writes the key's character scan code directly into this designated register. When no key is pressed, the register holds `0`.
+   - The CPU reads keyboard input simply by inspecting the value stored in this memory register.
+
+###### Decoupling Hardware via Standards and Drivers
+Memory-mapped I/O completely decouples the central computer architecture from peripheral engineering:
+- **System Universality**: The CPU architecture remains completely unchanged regardless of whether the screen is an LCD panel, an OLED monitor, or a CRT tube, or whether the keyboard is mechanical or optical.
+- **Device Drivers**: Operating systems manage peripheral communication through small software modules called **device drivers**. The driver translates high-level software requests (such as `drawCircle(x, y, r)` or `readChar()`) into the exact sequence of memory reads and writes mandated by the hardware memory map.
